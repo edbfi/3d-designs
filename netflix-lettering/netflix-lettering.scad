@@ -138,7 +138,10 @@ $fn = 48;
 eps = 0.01;          // overlap for coplanar booleans
 BIG = 1e4;           // "infinity" for bounding bands
 NORM_W = 100;        // normalised word width used while bending
-warp_strips = 500;   // bend resolution (vertical strips across the word)
+// Bend resolution: enough vertical strips that the step between neighbours along the
+// bottom edge stays under bend_step (mm). Straight text (arc_depth = 0) needs none.
+bend_step = 0.1;
+warp_strips = min(800, max(60, ceil(4.2 * letter_height * arc_depth / bend_step)));
 H = letter_height;
 
 txt = force_caps ? upper(text_string) : text_string;
@@ -262,6 +265,11 @@ module norm_box() {
 // Bend normalised-frame children strip by strip (y scales about the top edge y = 0).
 // Strips abut exactly (no overlap), so the union has no slivers.
 module warp2d() {
+    if (arc_depth == 0) children();
+    else warp2d_strips() children();
+}
+
+module warp2d_strips() {
     x_start = -NORM_W / 2 - 2;
     dx = (NORM_W + 4) / warp_strips;
     for (i = [0 : warp_strips - 1]) {
@@ -297,7 +305,8 @@ module word2d() {
 }
 
 // Morphological opening: drops scraps thinner than 0.04 mm left by coincident edges.
-module clean2d() { offset(r = 0.02) offset(r = -0.02) children(); }
+// Bevelled rather than rounded joins: round joins add an arc at every strip corner.
+module clean2d() { offset(delta = 0.02, chamfer = true) offset(delta = -0.02, chamfer = true) children(); }
 
 // Region under the bent bottom edge (between the first and last letter), down to y = -1.9H.
 // Bent with the same strips as the letters, so the two meet exactly.
@@ -309,7 +318,9 @@ module under2d() {
 }
 
 // The word's x-range as a vertical band, and its bbox (y is known: [-H, 0]), final frame.
-module word_xband() { xband2d() word2d(); }
+// The bend only moves points vertically, so the unbent box gives the same x-range far more
+// cheaply than the bent letters (which would rebuild every bend strip).
+module word_xband() { offset(delta = stroke_weight) xband2d() to_final() norm_box(); }
 module word_box() { intersection() { word_xband(); translate([-BIG, -H]) square([2 * BIG, H]); } }
 
 // Band / box widened by d on both sides in x.
@@ -359,8 +370,9 @@ module chamfer_extrude(h, c) {
     linear_extrude(h - c + (n > 0 ? eps : 0)) children();
     if (n > 0) for (k = [1 : n])
         translate([0, 0, h - c + (k - 1) * s])
-            // round joins: a mitred inset turns microscopic notches into long spikes
-            linear_extrude(s + (k < n ? eps : 0)) offset(r = -k * s) children();
+            // bevelled joins: a mitred inset turns microscopic notches into long spikes,
+            // and round joins multiply the vertex count
+            linear_extrude(s + (k < n ? eps : 0)) offset(delta = -k * s, chamfer = true) children();
 }
 
 // Rounded rectangle from a 2D shape's bbox.
@@ -535,6 +547,16 @@ module loose_letter(i, zone = "all") {
     }
 }
 
+// All letters in place (display preview; no flat bottoms or back recess).
+module loose_word(zone) {
+    f = letters_depth - letters_face_depth;
+    intersection() {
+        chamfer_extrude(letters_depth, letters_chamfer) word2d();
+        if (zone == "face") translate([-BIG, -BIG, f]) cube([2 * BIG, 2 * BIG, BIG]);
+        if (zone == "body") translate([-BIG, -BIG, -1]) cube([2 * BIG, 2 * BIG, f + 1]);
+    }
+}
+
 // ------------------------------------------------------------------ template (2D, 1:1)
 
 module template2d() {
@@ -567,11 +589,11 @@ module display() {
                     color(color_track) plaque_track();
                 }
     } else {
-        for (i = [0 : n_letters - 1])
-            translate([0, letters_depth / 2, H]) rotate([90, 0, 0]) {
-                color(color_base) loose_letter(i, "body");
-                color(color_letters) loose_letter(i, "face");
-            }
+        // the whole word at once: splitting it into letters is only needed for printing
+        translate([0, letters_depth / 2, H]) rotate([90, 0, 0]) {
+            color(color_base) loose_word("body");
+            color(color_letters) loose_word("face");
+        }
     }
 }
 
