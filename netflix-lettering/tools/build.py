@@ -184,7 +184,9 @@ def make_variants():
                         Part(f"{text}-stand-letters-onepiece", dict(p, part="onepiece_letters", **rot), 1)],
                         print_params={"enable_support": "1", "support_type": "tree(auto)"})])]
                 notes = ["Printed upright in one piece; the AMS switches between red and black.",
-                         "Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides.",
+                         "Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides. "
+                         "(The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio "
+                         "flags model-built supports as a floating cantilever, so the files use its own.)",
                          "The word runs along the bed's Y axis so the thin letters are stiff against the moving bed."]
             vs.append(Variant(text, "stand", printer, [RED, BLACK], plates, notes))
 
@@ -586,6 +588,12 @@ def check_project(final: Path, v: Variant, layout):
     return problems
 
 
+def check_overhangs(info):
+    """Bambu's slice report flags overhangs it would leave unsupported."""
+    return [f"plate {p['id']}: {p['warning_message'].strip()}" for p in info.get("sliced_plates", [])
+            if any(k in (p.get("warning_message") or "").lower() for k in ("floating", "cantilever"))]
+
+
 def check_gcode(final: Path, layout):
     """Every pause must land at the start of its layer; start G-code must be the real one."""
     problems = []
@@ -635,7 +643,7 @@ def build_variant(v: Variant, out_dir: Path, keep_unsliced: bool):
         warn = [p.get("warning_message") for p in info.get("sliced_plates", []) if p.get("warning_message")]
         raise RuntimeError(f"{v.key}: slicing failed ({rc}) {info.get('error_string')} {warn}")
     name_plates(final, layout)  # the CLI drops plate names when it slices
-    problems = check_gcode(final, layout) + check_project(final, v, layout)
+    problems = check_gcode(final, layout) + check_project(final, v, layout) + check_overhangs(info)
     if problems:
         raise RuntimeError(f"{v.key}: " + "; ".join(problems))
 
