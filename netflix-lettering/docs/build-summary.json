@@ -1,16 +1,241 @@
 [
  {
-  "key": "netflix-stand-a1-mini",
+  "key": "netflix-stand-ams-a1-mini",
   "text": "NETFLIX",
   "design": "stand",
+  "set": "ams",
   "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini (no AMS)",
+  "printer_label": "Bambu Lab A1 mini, with AMS lite",
   "filaments": [
    "#E50914",
    "#161616"
   ],
   "notes": [
-   "Print plate 1 in red and plate 2 in black, on two printers at the same time if you like.",
+   "Printed upright in one piece; the AMS switches between red and black.",
+   "Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio flags model-built supports as a floating cantilever, so the files use its own.)",
+   "The word runs along the bed's Y axis so the thin letters are stiff against the moving bed."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/1 One piece - red letters on black plinth (tree supports)",
+    "minutes": 112,
+    "grams": {
+     "1": 24.5,
+     "2": 28.9
+    },
+    "colour_changes": 29,
+    "pause_z": null,
+    "objects": [
+     "Stand"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "ams/a1-mini/netflix-stand-ams-a1-mini.3mf"
+ },
+ {
+  "key": "netflix-plaque-ams-a1-mini",
+  "text": "NETFLIX",
+  "design": "plaque",
+  "set": "ams",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, with AMS lite",
+  "filaments": [
+   "#E50914",
+   "#161616",
+   "#5A5A5A"
+  ],
+  "notes": [
+   "One print: the AMS does the black plaque, red letters and bar, and the grey bar track.",
+   "Slide the plaque into the stand's leaning slot."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/1 Plaque (black, red, grey) + stand (black)",
+    "minutes": 78,
+    "grams": {
+     "1": 7.4,
+     "2": 47.5,
+     "3": 0.7
+    },
+    "colour_changes": 17,
+    "pause_z": null,
+    "objects": [
+     "Plaque",
+     "Plaque stand"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "ams/a1-mini/netflix-plaque-ams-a1-mini.3mf"
+ },
+ {
+  "key": "netflix-letters-ams-a1-mini",
+  "text": "NETFLIX",
+  "design": "letters",
+  "set": "ams",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, with AMS lite",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Two-tone letters: the AMS changes from black to red once per plate.",
+   "Hang them with the paper template in templates/ so the arc lines up."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Letters N E T F L I X - black body, red face",
+    "minutes": 84,
+    "grams": {
+     "1": 18.5,
+     "2": 29.1
+    },
+    "colour_changes": 1,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 N",
+     "Letter 2 E",
+     "Letter 3 T",
+     "Letter 4 F",
+     "Letter 5 L",
+     "Letter 6 I",
+     "Letter 7 X"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "ams/a1-mini/netflix-letters-ams-a1-mini.3mf"
+ },
+ {
+  "key": "netflix-stand-ams-a2l-combo",
+  "text": "NETFLIX",
+  "design": "stand",
+  "set": "ams",
+  "printer": "a2l-combo",
+  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Printed upright in one piece; the AMS switches between red and black.",
+   "Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio flags model-built supports as a floating cantilever, so the files use its own.)",
+   "The word runs along the bed's Y axis so the thin letters are stiff against the moving bed."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/1 One piece - red letters on black plinth (tree supports)",
+    "minutes": 300,
+    "grams": {
+     "1": 78.1,
+     "2": 106.6
+    },
+    "colour_changes": 51,
+    "pause_z": null,
+    "objects": [
+     "Stand"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "ams/a2l-combo/netflix-stand-ams-a2l-combo.3mf"
+ },
+ {
+  "key": "netflix-plaque-ams-a2l-combo",
+  "text": "NETFLIX",
+  "design": "plaque",
+  "set": "ams",
+  "printer": "a2l-combo",
+  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
+  "filaments": [
+   "#E50914",
+   "#161616",
+   "#5A5A5A"
+  ],
+  "notes": [
+   "One print: the AMS does the black plaque, red letters and bar, and the grey bar track.",
+   "Slide the plaque into the stand's leaning slot."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/1 Plaque (black, red, grey) + stand (black)",
+    "minutes": 214,
+    "grams": {
+     "1": 22.2,
+     "2": 159.0,
+     "3": 1.3
+    },
+    "colour_changes": 23,
+    "pause_z": null,
+    "objects": [
+     "Plaque",
+     "Plaque stand"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "ams/a2l-combo/netflix-plaque-ams-a2l-combo.3mf"
+ },
+ {
+  "key": "netflix-letters-ams-a2l-combo",
+  "text": "NETFLIX",
+  "design": "letters",
+  "set": "ams",
+  "printer": "a2l-combo",
+  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Two-tone letters: the AMS changes from black to red once per plate.",
+   "Hang them with the paper template in templates/ so the arc lines up."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Letters N E T F L I X - black body, red face",
+    "minutes": 196,
+    "grams": {
+     "1": 50.8,
+     "2": 84.5
+    },
+    "colour_changes": 1,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 N",
+     "Letter 2 E",
+     "Letter 3 T",
+     "Letter 4 F",
+     "Letter 5 L",
+     "Letter 6 I",
+     "Letter 7 X"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "ams/a2l-combo/netflix-letters-ams-a2l-combo.3mf"
+ },
+ {
+  "key": "netflix-stand-single-colour-a1-mini",
+  "text": "NETFLIX",
+  "design": "stand",
+  "set": "single-colour",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
    "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent)."
   ],
   "plates": [
@@ -43,14 +268,163 @@
     "warning": ""
    }
   ],
-  "file": "a1-mini/netflix-stand-a1-mini.3mf"
+  "file": "single-colour/a1-mini/netflix-stand-single-colour-a1-mini.3mf"
  },
  {
-  "key": "netflix-plaque-a1-mini",
+  "key": "netflix-plaque-single-colour-a1-mini",
   "text": "NETFLIX",
   "design": "plaque",
+  "set": "single-colour",
   "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini (no AMS)",
+  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Plate 1 in red: the letters and the progress bar's fill as separate pieces, printed face down.",
+   "Plate 2 in black: the plaque with matching pockets, and its stand.",
+   "Press each red piece into its pocket (0.15 mm clearance per side; a drop of glue makes it permanent). Slide the plaque into the stand's leaning slot."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Red pieces - letters and bar, face down (printer A)",
+    "minutes": 17,
+    "grams": {
+     "1": 7.0
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Red pieces"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Plaque with pockets + stand - black (printer B)",
+    "minutes": 74,
+    "grams": {
+     "2": 50.2
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Plaque",
+     "Plaque stand"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "single-colour/a1-mini/netflix-plaque-single-colour-a1-mini.3mf"
+ },
+ {
+  "key": "netflix-letters-single-colour-a1-mini",
+  "text": "NETFLIX",
+  "design": "letters",
+  "set": "single-colour",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
+  "filaments": [
+   "#E50914"
+  ],
+  "notes": [
+   "All-red letters, split over two plates so two printers can share the work.",
+   "Hang them with the paper template in templates/ so the arc lines up."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Letters N E T F - red",
+    "minutes": 51,
+    "grams": {
+     "1": 29.3
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 N",
+     "Letter 2 E",
+     "Letter 3 T",
+     "Letter 4 F"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Letters L I X - red",
+    "minutes": 34,
+    "grams": {
+     "1": 17.9
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Letter 5 L",
+     "Letter 6 I",
+     "Letter 7 X"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "single-colour/a1-mini/netflix-letters-single-colour-a1-mini.3mf"
+ },
+ {
+  "key": "netflix-stand-colour-swap-a1-mini",
+  "text": "NETFLIX",
+  "design": "stand",
+  "set": "colour-swap",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
+   "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
+   "No pause needed: each plate is one colour, so on one printer just change the spool between plates. (The arched plinth has no single layer where black could end, so a one-piece swap isn't possible.)"
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Letters - red - face down (printer A)",
+    "minutes": 38,
+    "grams": {
+     "1": 17.3
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Letters"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Plinth - black (printer B)",
+    "minutes": 46,
+    "grams": {
+     "2": 28.0
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Plinth"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "colour-swap/a1-mini/netflix-stand-colour-swap-a1-mini.3mf"
+ },
+ {
+  "key": "netflix-plaque-colour-swap-a1-mini",
+  "text": "NETFLIX",
+  "design": "plaque",
+  "set": "colour-swap",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
   "filaments": [
    "#161616"
   ],
@@ -89,19 +463,20 @@
     "warning": ""
    }
   ],
-  "file": "a1-mini/netflix-plaque-a1-mini.3mf"
+  "file": "colour-swap/a1-mini/netflix-plaque-colour-swap-a1-mini.3mf"
  },
  {
-  "key": "netflix-letters-a1-mini",
+  "key": "netflix-letters-colour-swap-a1-mini",
   "text": "NETFLIX",
   "design": "letters",
+  "set": "colour-swap",
   "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini (no AMS)",
+  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
   "filaments": [
    "#161616"
   ],
   "notes": [
-   "Each plate starts in black and pauses at 7.2 mm: swap to red and resume (delete the pause in Bambu Studio for all-red letters).",
+   "Each plate starts in black and pauses at 7.2 mm: swap to red and resume, for black letters with a red face.",
    "The letters are split over two plates so two printers can share the work.",
    "Hang them with the paper template in templates/ so the arc lines up."
   ],
@@ -140,31 +515,32 @@
     "warning": ""
    }
   ],
-  "file": "a1-mini/netflix-letters-a1-mini.3mf"
+  "file": "colour-swap/a1-mini/netflix-letters-colour-swap-a1-mini.3mf"
  },
  {
-  "key": "netflix-stand-a1-mini-ams-lite",
-  "text": "NETFLIX",
+  "key": "serier-stand-ams-a1-mini",
+  "text": "SERIER",
   "design": "stand",
-  "printer": "a1-mini-ams-lite",
-  "printer_label": "Bambu Lab A1 mini + AMS lite",
+  "set": "ams",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, with AMS lite",
   "filaments": [
    "#E50914",
    "#161616"
   ],
   "notes": [
    "Printed upright in one piece; the AMS switches between red and black.",
-   "Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides.",
+   "Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio flags model-built supports as a floating cantilever, so the files use its own.)",
    "The word runs along the bed's Y axis so the thin letters are stiff against the moving bed."
   ],
   "plates": [
    {
     "plate": 1,
     "name": "1/1 One piece - red letters on black plinth (tree supports)",
-    "minutes": 112,
+    "minutes": 109,
     "grams": {
-     "1": 24.5,
-     "2": 28.9
+     "1": 24.0,
+     "2": 25.4
     },
     "colour_changes": 29,
     "pause_z": null,
@@ -174,14 +550,15 @@
     "warning": ""
    }
   ],
-  "file": "a1-mini-ams-lite/netflix-stand-a1-mini-ams-lite.3mf"
+  "file": "ams/a1-mini/serier-stand-ams-a1-mini.3mf"
  },
  {
-  "key": "netflix-plaque-a1-mini-ams-lite",
-  "text": "NETFLIX",
+  "key": "serier-plaque-ams-a1-mini",
+  "text": "SERIER",
   "design": "plaque",
-  "printer": "a1-mini-ams-lite",
-  "printer_label": "Bambu Lab A1 mini + AMS lite",
+  "set": "ams",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, with AMS lite",
   "filaments": [
    "#E50914",
    "#161616",
@@ -195,11 +572,11 @@
    {
     "plate": 1,
     "name": "1/1 Plaque (black, red, grey) + stand (black)",
-    "minutes": 78,
+    "minutes": 71,
     "grams": {
-     "1": 7.4,
-     "2": 47.5,
-     "3": 0.7
+     "1": 7.0,
+     "2": 41.4,
+     "3": 0.6
     },
     "colour_changes": 17,
     "pause_z": null,
@@ -210,14 +587,15 @@
     "warning": ""
    }
   ],
-  "file": "a1-mini-ams-lite/netflix-plaque-a1-mini-ams-lite.3mf"
+  "file": "ams/a1-mini/serier-plaque-ams-a1-mini.3mf"
  },
  {
-  "key": "netflix-letters-a1-mini-ams-lite",
-  "text": "NETFLIX",
+  "key": "serier-letters-ams-a1-mini",
+  "text": "SERIER",
   "design": "letters",
-  "printer": "a1-mini-ams-lite",
-  "printer_label": "Bambu Lab A1 mini + AMS lite",
+  "set": "ams",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, with AMS lite",
   "filaments": [
    "#E50914",
    "#161616"
@@ -229,51 +607,51 @@
   "plates": [
    {
     "plate": 1,
-    "name": "Letters N E T F L I X - black body, red face",
-    "minutes": 84,
+    "name": "Letters S E R I E R - black body, red face",
+    "minutes": 87,
     "grams": {
-     "1": 18.5,
-     "2": 29.1
+     "1": 17.3,
+     "2": 27.1
     },
     "colour_changes": 1,
     "pause_z": null,
     "objects": [
-     "Letter 1 N",
+     "Letter 1 S",
      "Letter 2 E",
-     "Letter 3 T",
-     "Letter 4 F",
-     "Letter 5 L",
-     "Letter 6 I",
-     "Letter 7 X"
+     "Letter 3 R",
+     "Letter 4 I",
+     "Letter 5 E",
+     "Letter 6 R"
     ],
     "warning": ""
    }
   ],
-  "file": "a1-mini-ams-lite/netflix-letters-a1-mini-ams-lite.3mf"
+  "file": "ams/a1-mini/serier-letters-ams-a1-mini.3mf"
  },
  {
-  "key": "netflix-stand-a2l-combo-ams-lite",
-  "text": "NETFLIX",
+  "key": "serier-stand-ams-a2l-combo",
+  "text": "SERIER",
   "design": "stand",
-  "printer": "a2l-combo-ams-lite",
-  "printer_label": "Bambu Lab A2L Combo (AMS lite)",
+  "set": "ams",
+  "printer": "a2l-combo",
+  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
   "filaments": [
    "#E50914",
    "#161616"
   ],
   "notes": [
    "Printed upright in one piece; the AMS switches between red and black.",
-   "Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides.",
+   "Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio flags model-built supports as a floating cantilever, so the files use its own.)",
    "The word runs along the bed's Y axis so the thin letters are stiff against the moving bed."
   ],
   "plates": [
    {
     "plate": 1,
     "name": "1/1 One piece - red letters on black plinth (tree supports)",
-    "minutes": 300,
+    "minutes": 295,
     "grams": {
-     "1": 78.1,
-     "2": 106.6
+     "1": 76.8,
+     "2": 93.8
     },
     "colour_changes": 51,
     "pause_z": null,
@@ -283,14 +661,15 @@
     "warning": ""
    }
   ],
-  "file": "a2l-combo-ams-lite/netflix-stand-a2l-combo-ams-lite.3mf"
+  "file": "ams/a2l-combo/serier-stand-ams-a2l-combo.3mf"
  },
  {
-  "key": "netflix-plaque-a2l-combo-ams-lite",
-  "text": "NETFLIX",
+  "key": "serier-plaque-ams-a2l-combo",
+  "text": "SERIER",
   "design": "plaque",
-  "printer": "a2l-combo-ams-lite",
-  "printer_label": "Bambu Lab A2L Combo (AMS lite)",
+  "set": "ams",
+  "printer": "a2l-combo",
+  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
   "filaments": [
    "#E50914",
    "#161616",
@@ -304,11 +683,11 @@
    {
     "plate": 1,
     "name": "1/1 Plaque (black, red, grey) + stand (black)",
-    "minutes": 214,
+    "minutes": 191,
     "grams": {
-     "1": 22.2,
-     "2": 159.0,
-     "3": 1.3
+     "1": 20.9,
+     "2": 137.4,
+     "3": 1.2
     },
     "colour_changes": 23,
     "pause_z": null,
@@ -319,14 +698,15 @@
     "warning": ""
    }
   ],
-  "file": "a2l-combo-ams-lite/netflix-plaque-a2l-combo-ams-lite.3mf"
+  "file": "ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf"
  },
  {
-  "key": "netflix-letters-a2l-combo-ams-lite",
-  "text": "NETFLIX",
+  "key": "serier-letters-ams-a2l-combo",
+  "text": "SERIER",
   "design": "letters",
-  "printer": "a2l-combo-ams-lite",
-  "printer_label": "Bambu Lab A2L Combo (AMS lite)",
+  "set": "ams",
+  "printer": "a2l-combo",
+  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
   "filaments": [
    "#E50914",
    "#161616"
@@ -338,40 +718,40 @@
   "plates": [
    {
     "plate": 1,
-    "name": "Letters N E T F L I X - black body, red face",
-    "minutes": 196,
+    "name": "Letters S E R I E R - black body, red face",
+    "minutes": 205,
     "grams": {
-     "1": 50.8,
-     "2": 84.5
+     "1": 47.7,
+     "2": 78.7
     },
     "colour_changes": 1,
     "pause_z": null,
     "objects": [
-     "Letter 1 N",
+     "Letter 1 S",
      "Letter 2 E",
-     "Letter 3 T",
-     "Letter 4 F",
-     "Letter 5 L",
-     "Letter 6 I",
-     "Letter 7 X"
+     "Letter 3 R",
+     "Letter 4 I",
+     "Letter 5 E",
+     "Letter 6 R"
     ],
     "warning": ""
    }
   ],
-  "file": "a2l-combo-ams-lite/netflix-letters-a2l-combo-ams-lite.3mf"
+  "file": "ams/a2l-combo/serier-letters-ams-a2l-combo.3mf"
  },
  {
-  "key": "serier-stand-a1-mini",
+  "key": "serier-stand-single-colour-a1-mini",
   "text": "SERIER",
   "design": "stand",
+  "set": "single-colour",
   "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini (no AMS)",
+  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
   "filaments": [
    "#E50914",
    "#161616"
   ],
   "notes": [
-   "Print plate 1 in red and plate 2 in black, on two printers at the same time if you like.",
+   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
    "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent)."
   ],
   "plates": [
@@ -404,14 +784,162 @@
     "warning": ""
    }
   ],
-  "file": "a1-mini/serier-stand-a1-mini.3mf"
+  "file": "single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf"
  },
  {
-  "key": "serier-plaque-a1-mini",
+  "key": "serier-plaque-single-colour-a1-mini",
   "text": "SERIER",
   "design": "plaque",
+  "set": "single-colour",
   "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini (no AMS)",
+  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Plate 1 in red: the letters and the progress bar's fill as separate pieces, printed face down.",
+   "Plate 2 in black: the plaque with matching pockets, and its stand.",
+   "Press each red piece into its pocket (0.15 mm clearance per side; a drop of glue makes it permanent). Slide the plaque into the stand's leaning slot."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Red pieces - letters and bar, face down (printer A)",
+    "minutes": 17,
+    "grams": {
+     "1": 6.5
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Red pieces"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Plaque with pockets + stand - black (printer B)",
+    "minutes": 65,
+    "grams": {
+     "2": 43.7
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Plaque",
+     "Plaque stand"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "single-colour/a1-mini/serier-plaque-single-colour-a1-mini.3mf"
+ },
+ {
+  "key": "serier-letters-single-colour-a1-mini",
+  "text": "SERIER",
+  "design": "letters",
+  "set": "single-colour",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
+  "filaments": [
+   "#E50914"
+  ],
+  "notes": [
+   "All-red letters, split over two plates so two printers can share the work.",
+   "Hang them with the paper template in templates/ so the arc lines up."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Letters S E R - red",
+    "minutes": 48,
+    "grams": {
+     "1": 23.5
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 S",
+     "Letter 2 E",
+     "Letter 3 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Letters I E R - red",
+    "minutes": 40,
+    "grams": {
+     "1": 20.5
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Letter 4 I",
+     "Letter 5 E",
+     "Letter 6 R"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf"
+ },
+ {
+  "key": "serier-stand-colour-swap-a1-mini",
+  "text": "SERIER",
+  "design": "stand",
+  "set": "colour-swap",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
+   "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
+   "No pause needed: each plate is one colour, so on one printer just change the spool between plates. (The arched plinth has no single layer where black could end, so a one-piece swap isn't possible.)"
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Letters - red - face down (printer A)",
+    "minutes": 40,
+    "grams": {
+     "1": 16.2
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Letters"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Plinth - black (printer B)",
+    "minutes": 42,
+    "grams": {
+     "2": 24.1
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Plinth"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf"
+ },
+ {
+  "key": "serier-plaque-colour-swap-a1-mini",
+  "text": "SERIER",
+  "design": "plaque",
+  "set": "colour-swap",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
   "filaments": [
    "#161616"
   ],
@@ -450,19 +978,20 @@
     "warning": ""
    }
   ],
-  "file": "a1-mini/serier-plaque-a1-mini.3mf"
+  "file": "colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf"
  },
  {
-  "key": "serier-letters-a1-mini",
+  "key": "serier-letters-colour-swap-a1-mini",
   "text": "SERIER",
   "design": "letters",
+  "set": "colour-swap",
   "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini (no AMS)",
+  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
   "filaments": [
    "#161616"
   ],
   "notes": [
-   "Each plate starts in black and pauses at 7.2 mm: swap to red and resume (delete the pause in Bambu Studio for all-red letters).",
+   "Each plate starts in black and pauses at 7.2 mm: swap to red and resume, for black letters with a red face.",
    "The letters are split over two plates so two printers can share the work.",
    "Hang them with the paper template in templates/ so the arc lines up."
   ],
@@ -500,222 +1029,6 @@
     "warning": ""
    }
   ],
-  "file": "a1-mini/serier-letters-a1-mini.3mf"
- },
- {
-  "key": "serier-stand-a1-mini-ams-lite",
-  "text": "SERIER",
-  "design": "stand",
-  "printer": "a1-mini-ams-lite",
-  "printer_label": "Bambu Lab A1 mini + AMS lite",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Printed upright in one piece; the AMS switches between red and black.",
-   "Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides.",
-   "The word runs along the bed's Y axis so the thin letters are stiff against the moving bed."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1/1 One piece - red letters on black plinth (tree supports)",
-    "minutes": 109,
-    "grams": {
-     "1": 24.0,
-     "2": 25.4
-    },
-    "colour_changes": 29,
-    "pause_z": null,
-    "objects": [
-     "Stand"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "a1-mini-ams-lite/serier-stand-a1-mini-ams-lite.3mf"
- },
- {
-  "key": "serier-plaque-a1-mini-ams-lite",
-  "text": "SERIER",
-  "design": "plaque",
-  "printer": "a1-mini-ams-lite",
-  "printer_label": "Bambu Lab A1 mini + AMS lite",
-  "filaments": [
-   "#E50914",
-   "#161616",
-   "#5A5A5A"
-  ],
-  "notes": [
-   "One print: the AMS does the black plaque, red letters and bar, and the grey bar track.",
-   "Slide the plaque into the stand's leaning slot."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1/1 Plaque (black, red, grey) + stand (black)",
-    "minutes": 71,
-    "grams": {
-     "1": 7.0,
-     "2": 41.4,
-     "3": 0.6
-    },
-    "colour_changes": 17,
-    "pause_z": null,
-    "objects": [
-     "Plaque",
-     "Plaque stand"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "a1-mini-ams-lite/serier-plaque-a1-mini-ams-lite.3mf"
- },
- {
-  "key": "serier-letters-a1-mini-ams-lite",
-  "text": "SERIER",
-  "design": "letters",
-  "printer": "a1-mini-ams-lite",
-  "printer_label": "Bambu Lab A1 mini + AMS lite",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Two-tone letters: the AMS changes from black to red once per plate.",
-   "Hang them with the paper template in templates/ so the arc lines up."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "Letters S E R I E R - black body, red face",
-    "minutes": 87,
-    "grams": {
-     "1": 17.3,
-     "2": 27.1
-    },
-    "colour_changes": 1,
-    "pause_z": null,
-    "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R",
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "a1-mini-ams-lite/serier-letters-a1-mini-ams-lite.3mf"
- },
- {
-  "key": "serier-stand-a2l-combo-ams-lite",
-  "text": "SERIER",
-  "design": "stand",
-  "printer": "a2l-combo-ams-lite",
-  "printer_label": "Bambu Lab A2L Combo (AMS lite)",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Printed upright in one piece; the AMS switches between red and black.",
-   "Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides.",
-   "The word runs along the bed's Y axis so the thin letters are stiff against the moving bed."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1/1 One piece - red letters on black plinth (tree supports)",
-    "minutes": 295,
-    "grams": {
-     "1": 76.8,
-     "2": 93.8
-    },
-    "colour_changes": 51,
-    "pause_z": null,
-    "objects": [
-     "Stand"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "a2l-combo-ams-lite/serier-stand-a2l-combo-ams-lite.3mf"
- },
- {
-  "key": "serier-plaque-a2l-combo-ams-lite",
-  "text": "SERIER",
-  "design": "plaque",
-  "printer": "a2l-combo-ams-lite",
-  "printer_label": "Bambu Lab A2L Combo (AMS lite)",
-  "filaments": [
-   "#E50914",
-   "#161616",
-   "#5A5A5A"
-  ],
-  "notes": [
-   "One print: the AMS does the black plaque, red letters and bar, and the grey bar track.",
-   "Slide the plaque into the stand's leaning slot."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1/1 Plaque (black, red, grey) + stand (black)",
-    "minutes": 191,
-    "grams": {
-     "1": 20.9,
-     "2": 137.4,
-     "3": 1.2
-    },
-    "colour_changes": 23,
-    "pause_z": null,
-    "objects": [
-     "Plaque",
-     "Plaque stand"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "a2l-combo-ams-lite/serier-plaque-a2l-combo-ams-lite.3mf"
- },
- {
-  "key": "serier-letters-a2l-combo-ams-lite",
-  "text": "SERIER",
-  "design": "letters",
-  "printer": "a2l-combo-ams-lite",
-  "printer_label": "Bambu Lab A2L Combo (AMS lite)",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Two-tone letters: the AMS changes from black to red once per plate.",
-   "Hang them with the paper template in templates/ so the arc lines up."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "Letters S E R I E R - black body, red face",
-    "minutes": 205,
-    "grams": {
-     "1": 47.7,
-     "2": 78.7
-    },
-    "colour_changes": 1,
-    "pause_z": null,
-    "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R",
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "a2l-combo-ams-lite/serier-letters-a2l-combo-ams-lite.3mf"
+  "file": "colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf"
  }
 ]

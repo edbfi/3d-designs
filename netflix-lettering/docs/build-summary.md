@@ -10,39 +10,115 @@ total for both colours (black up to the pause, red after it).
 
 | Project | Printer | Plates | Print time | Filament |
 |---|---|---|---|---|
-| [`a1-mini/netflix-stand-a1-mini.3mf`](../print-files/a1-mini/netflix-stand-a1-mini.3mf) | Bambu Lab A1 mini (no AMS) | 2 | 1 h 24 min | red 17 g, black 28 g |
-| [`a1-mini/netflix-plaque-a1-mini.3mf`](../print-files/a1-mini/netflix-plaque-a1-mini.3mf) | Bambu Lab A1 mini (no AMS) | 2 | 1 h 14 min | 52 g black + red (manual swap) |
-| [`a1-mini/netflix-letters-a1-mini.3mf`](../print-files/a1-mini/netflix-letters-a1-mini.3mf) | Bambu Lab A1 mini (no AMS) | 2 | 1 h 25 min | 47 g black + red (manual swap) |
-| [`a1-mini-ams-lite/netflix-stand-a1-mini-ams-lite.3mf`](../print-files/a1-mini-ams-lite/netflix-stand-a1-mini-ams-lite.3mf) | Bambu Lab A1 mini + AMS lite | 1 | 1 h 52 min | red 24 g, black 29 g |
-| [`a1-mini-ams-lite/netflix-plaque-a1-mini-ams-lite.3mf`](../print-files/a1-mini-ams-lite/netflix-plaque-a1-mini-ams-lite.3mf) | Bambu Lab A1 mini + AMS lite | 1 | 1 h 18 min | red 7 g, black 48 g, grey 1 g |
-| [`a1-mini-ams-lite/netflix-letters-a1-mini-ams-lite.3mf`](../print-files/a1-mini-ams-lite/netflix-letters-a1-mini-ams-lite.3mf) | Bambu Lab A1 mini + AMS lite | 1 | 1 h 24 min | red 18 g, black 29 g |
-| [`a2l-combo-ams-lite/netflix-stand-a2l-combo-ams-lite.3mf`](../print-files/a2l-combo-ams-lite/netflix-stand-a2l-combo-ams-lite.3mf) | Bambu Lab A2L Combo (AMS lite) | 1 | 5 h 00 min | red 78 g, black 107 g |
-| [`a2l-combo-ams-lite/netflix-plaque-a2l-combo-ams-lite.3mf`](../print-files/a2l-combo-ams-lite/netflix-plaque-a2l-combo-ams-lite.3mf) | Bambu Lab A2L Combo (AMS lite) | 1 | 3 h 34 min | red 22 g, black 159 g, grey 1 g |
-| [`a2l-combo-ams-lite/netflix-letters-a2l-combo-ams-lite.3mf`](../print-files/a2l-combo-ams-lite/netflix-letters-a2l-combo-ams-lite.3mf) | Bambu Lab A2L Combo (AMS lite) | 1 | 3 h 16 min | red 51 g, black 84 g |
-| [`a1-mini/serier-stand-a1-mini.3mf`](../print-files/a1-mini/serier-stand-a1-mini.3mf) | Bambu Lab A1 mini (no AMS) | 2 | 1 h 22 min | red 16 g, black 24 g |
-| [`a1-mini/serier-plaque-a1-mini.3mf`](../print-files/a1-mini/serier-plaque-a1-mini.3mf) | Bambu Lab A1 mini (no AMS) | 2 | 1 h 05 min | 45 g black + red (manual swap) |
-| [`a1-mini/serier-letters-a1-mini.3mf`](../print-files/a1-mini/serier-letters-a1-mini.3mf) | Bambu Lab A1 mini (no AMS) | 2 | 1 h 28 min | 44 g black + red (manual swap) |
-| [`a1-mini-ams-lite/serier-stand-a1-mini-ams-lite.3mf`](../print-files/a1-mini-ams-lite/serier-stand-a1-mini-ams-lite.3mf) | Bambu Lab A1 mini + AMS lite | 1 | 1 h 49 min | red 24 g, black 25 g |
-| [`a1-mini-ams-lite/serier-plaque-a1-mini-ams-lite.3mf`](../print-files/a1-mini-ams-lite/serier-plaque-a1-mini-ams-lite.3mf) | Bambu Lab A1 mini + AMS lite | 1 | 1 h 11 min | red 7 g, black 41 g, grey 1 g |
-| [`a1-mini-ams-lite/serier-letters-a1-mini-ams-lite.3mf`](../print-files/a1-mini-ams-lite/serier-letters-a1-mini-ams-lite.3mf) | Bambu Lab A1 mini + AMS lite | 1 | 1 h 27 min | red 17 g, black 27 g |
-| [`a2l-combo-ams-lite/serier-stand-a2l-combo-ams-lite.3mf`](../print-files/a2l-combo-ams-lite/serier-stand-a2l-combo-ams-lite.3mf) | Bambu Lab A2L Combo (AMS lite) | 1 | 4 h 55 min | red 77 g, black 94 g |
-| [`a2l-combo-ams-lite/serier-plaque-a2l-combo-ams-lite.3mf`](../print-files/a2l-combo-ams-lite/serier-plaque-a2l-combo-ams-lite.3mf) | Bambu Lab A2L Combo (AMS lite) | 1 | 3 h 11 min | red 21 g, black 137 g, grey 1 g |
-| [`a2l-combo-ams-lite/serier-letters-a2l-combo-ams-lite.3mf`](../print-files/a2l-combo-ams-lite/serier-letters-a2l-combo-ams-lite.3mf) | Bambu Lab A2L Combo (AMS lite) | 1 | 3 h 25 min | red 48 g, black 79 g |
+| [`ams/a1-mini/netflix-stand-ams-a1-mini.3mf`](../print-files/ams/a1-mini/netflix-stand-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 1 | 1 h 52 min | red 24 g, black 29 g |
+| [`ams/a1-mini/netflix-plaque-ams-a1-mini.3mf`](../print-files/ams/a1-mini/netflix-plaque-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 1 | 1 h 18 min | red 7 g, black 48 g, grey 1 g |
+| [`ams/a1-mini/netflix-letters-ams-a1-mini.3mf`](../print-files/ams/a1-mini/netflix-letters-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 1 | 1 h 24 min | red 18 g, black 29 g |
+| [`ams/a2l-combo/netflix-stand-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/netflix-stand-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 1 | 5 h 00 min | red 78 g, black 107 g |
+| [`ams/a2l-combo/netflix-plaque-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/netflix-plaque-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 1 | 3 h 34 min | red 22 g, black 159 g, grey 1 g |
+| [`ams/a2l-combo/netflix-letters-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/netflix-letters-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 1 | 3 h 16 min | red 51 g, black 84 g |
+| [`single-colour/a1-mini/netflix-stand-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/netflix-stand-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 24 min | red 17 g, black 28 g |
+| [`single-colour/a1-mini/netflix-plaque-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/netflix-plaque-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 31 min | red 7 g, black 50 g |
+| [`single-colour/a1-mini/netflix-letters-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/netflix-letters-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 25 min | red 47 g |
+| [`colour-swap/a1-mini/netflix-stand-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/netflix-stand-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 24 min | red 17 g, black 28 g |
+| [`colour-swap/a1-mini/netflix-plaque-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/netflix-plaque-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 14 min | 52 g black + red (manual swap) |
+| [`colour-swap/a1-mini/netflix-letters-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/netflix-letters-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 25 min | 47 g black + red (manual swap) |
+| [`ams/a1-mini/serier-stand-ams-a1-mini.3mf`](../print-files/ams/a1-mini/serier-stand-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 1 | 1 h 49 min | red 24 g, black 25 g |
+| [`ams/a1-mini/serier-plaque-ams-a1-mini.3mf`](../print-files/ams/a1-mini/serier-plaque-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 1 | 1 h 11 min | red 7 g, black 41 g, grey 1 g |
+| [`ams/a1-mini/serier-letters-ams-a1-mini.3mf`](../print-files/ams/a1-mini/serier-letters-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 1 | 1 h 27 min | red 17 g, black 27 g |
+| [`ams/a2l-combo/serier-stand-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-stand-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 1 | 4 h 55 min | red 77 g, black 94 g |
+| [`ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 1 | 3 h 11 min | red 21 g, black 137 g, grey 1 g |
+| [`ams/a2l-combo/serier-letters-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-letters-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 1 | 3 h 25 min | red 48 g, black 79 g |
+| [`single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 22 min | red 16 g, black 24 g |
+| [`single-colour/a1-mini/serier-plaque-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/serier-plaque-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 22 min | red 6 g, black 44 g |
+| [`single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 28 min | red 44 g |
+| [`colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 22 min | red 16 g, black 24 g |
+| [`colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 05 min | 45 g black + red (manual swap) |
+| [`colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 28 min | 44 g black + red (manual swap) |
 
 Plates of one project can run on different printers at the same time,
 so the wall-clock time with two A1 minis is the longest plate, not the total.
 
 ## Plates
 
-### a1-mini/netflix-stand-a1-mini.3mf
+### ams/a1-mini/netflix-stand-ams-a1-mini.3mf
 
-- Print plate 1 in red and plate 2 in black, on two printers at the same time if you like.
+- Printed upright in one piece; the AMS switches between red and black.
+- Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio flags model-built supports as a floating cantilever, so the files use its own.)
+- The word runs along the bed's Y axis so the thin letters are stiff against the moving bed.
+
+- Plate 1: **1/1 One piece - red letters on black plinth (tree supports)**: 112 min, 29 AMS changes
+
+### ams/a1-mini/netflix-plaque-ams-a1-mini.3mf
+
+- One print: the AMS does the black plaque, red letters and bar, and the grey bar track.
+- Slide the plaque into the stand's leaning slot.
+
+- Plate 1: **1/1 Plaque (black, red, grey) + stand (black)**: 78 min, 17 AMS changes
+
+### ams/a1-mini/netflix-letters-ams-a1-mini.3mf
+
+- Two-tone letters: the AMS changes from black to red once per plate.
+- Hang them with the paper template in templates/ so the arc lines up.
+
+- Plate 1: **Letters N E T F L I X - black body, red face**: 84 min, 1 AMS changes
+
+### ams/a2l-combo/netflix-stand-ams-a2l-combo.3mf
+
+- Printed upright in one piece; the AMS switches between red and black.
+- Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio flags model-built supports as a floating cantilever, so the files use its own.)
+- The word runs along the bed's Y axis so the thin letters are stiff against the moving bed.
+
+- Plate 1: **1/1 One piece - red letters on black plinth (tree supports)**: 300 min, 51 AMS changes
+
+### ams/a2l-combo/netflix-plaque-ams-a2l-combo.3mf
+
+- One print: the AMS does the black plaque, red letters and bar, and the grey bar track.
+- Slide the plaque into the stand's leaning slot.
+
+- Plate 1: **1/1 Plaque (black, red, grey) + stand (black)**: 214 min, 23 AMS changes
+
+### ams/a2l-combo/netflix-letters-ams-a2l-combo.3mf
+
+- Two-tone letters: the AMS changes from black to red once per plate.
+- Hang them with the paper template in templates/ so the arc lines up.
+
+- Plate 1: **Letters N E T F L I X - black body, red face**: 196 min, 1 AMS changes
+
+### single-colour/a1-mini/netflix-stand-single-colour-a1-mini.3mf
+
+- Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
 - Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).
 
 - Plate 1: **1/2 Letters - red - face down (printer A)**: 38 min
 - Plate 2: **2/2 Plinth - black (printer B)**: 46 min
 
-### a1-mini/netflix-plaque-a1-mini.3mf
+### single-colour/a1-mini/netflix-plaque-single-colour-a1-mini.3mf
+
+- Plate 1 in red: the letters and the progress bar's fill as separate pieces, printed face down.
+- Plate 2 in black: the plaque with matching pockets, and its stand.
+- Press each red piece into its pocket (0.15 mm clearance per side; a drop of glue makes it permanent). Slide the plaque into the stand's leaning slot.
+
+- Plate 1: **1/2 Red pieces - letters and bar, face down (printer A)**: 17 min
+- Plate 2: **2/2 Plaque with pockets + stand - black (printer B)**: 74 min
+
+### single-colour/a1-mini/netflix-letters-single-colour-a1-mini.3mf
+
+- All-red letters, split over two plates so two printers can share the work.
+- Hang them with the paper template in templates/ so the arc lines up.
+
+- Plate 1: **1/2 Letters N E T F - red**: 51 min
+- Plate 2: **2/2 Letters L I X - red**: 34 min
+
+### colour-swap/a1-mini/netflix-stand-colour-swap-a1-mini.3mf
+
+- Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
+- Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).
+- No pause needed: each plate is one colour, so on one printer just change the spool between plates. (The arched plinth has no single layer where black could end, so a one-piece swap isn't possible.)
+
+- Plate 1: **1/2 Letters - red - face down (printer A)**: 38 min
+- Plate 2: **2/2 Plinth - black (printer B)**: 46 min
+
+### colour-swap/a1-mini/netflix-plaque-colour-swap-a1-mini.3mf
 
 - Plate 1 starts in black and pauses at 4.2 mm: unload black, load red, resume.
 - The progress bar's track stays as a black groove; the filled part and the letters come out red.
@@ -51,68 +127,94 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 - Plate 1: **1/2 Plaque - start black, PAUSE at 4.2 mm, load red (printer A)**: 47 min, pause at 4.2 mm
 - Plate 2: **2/2 Stand - black (printer B)**: 27 min
 
-### a1-mini/netflix-letters-a1-mini.3mf
+### colour-swap/a1-mini/netflix-letters-colour-swap-a1-mini.3mf
 
-- Each plate starts in black and pauses at 7.2 mm: swap to red and resume (delete the pause in Bambu Studio for all-red letters).
+- Each plate starts in black and pauses at 7.2 mm: swap to red and resume, for black letters with a red face.
 - The letters are split over two plates so two printers can share the work.
 - Hang them with the paper template in templates/ so the arc lines up.
 
 - Plate 1: **1/2 Letters N E T F - start black, PAUSE at 7.2 mm, load red**: 51 min, pause at 7.2 mm
 - Plate 2: **2/2 Letters L I X - start black, PAUSE at 7.2 mm, load red**: 34 min, pause at 7.2 mm
 
-### a1-mini-ams-lite/netflix-stand-a1-mini-ams-lite.3mf
+### ams/a1-mini/serier-stand-ams-a1-mini.3mf
 
 - Printed upright in one piece; the AMS switches between red and black.
-- Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides.
+- Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio flags model-built supports as a floating cantilever, so the files use its own.)
 - The word runs along the bed's Y axis so the thin letters are stiff against the moving bed.
 
-- Plate 1: **1/1 One piece - red letters on black plinth (tree supports)**: 112 min, 29 AMS changes
+- Plate 1: **1/1 One piece - red letters on black plinth (tree supports)**: 109 min, 29 AMS changes
 
-### a1-mini-ams-lite/netflix-plaque-a1-mini-ams-lite.3mf
+### ams/a1-mini/serier-plaque-ams-a1-mini.3mf
 
 - One print: the AMS does the black plaque, red letters and bar, and the grey bar track.
 - Slide the plaque into the stand's leaning slot.
 
-- Plate 1: **1/1 Plaque (black, red, grey) + stand (black)**: 78 min, 17 AMS changes
+- Plate 1: **1/1 Plaque (black, red, grey) + stand (black)**: 71 min, 17 AMS changes
 
-### a1-mini-ams-lite/netflix-letters-a1-mini-ams-lite.3mf
+### ams/a1-mini/serier-letters-ams-a1-mini.3mf
 
 - Two-tone letters: the AMS changes from black to red once per plate.
 - Hang them with the paper template in templates/ so the arc lines up.
 
-- Plate 1: **Letters N E T F L I X - black body, red face**: 84 min, 1 AMS changes
+- Plate 1: **Letters S E R I E R - black body, red face**: 87 min, 1 AMS changes
 
-### a2l-combo-ams-lite/netflix-stand-a2l-combo-ams-lite.3mf
+### ams/a2l-combo/serier-stand-ams-a2l-combo.3mf
 
 - Printed upright in one piece; the AMS switches between red and black.
-- Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides.
+- Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio flags model-built supports as a floating cantilever, so the files use its own.)
 - The word runs along the bed's Y axis so the thin letters are stiff against the moving bed.
 
-- Plate 1: **1/1 One piece - red letters on black plinth (tree supports)**: 300 min, 51 AMS changes
+- Plate 1: **1/1 One piece - red letters on black plinth (tree supports)**: 295 min, 51 AMS changes
 
-### a2l-combo-ams-lite/netflix-plaque-a2l-combo-ams-lite.3mf
+### ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf
 
 - One print: the AMS does the black plaque, red letters and bar, and the grey bar track.
 - Slide the plaque into the stand's leaning slot.
 
-- Plate 1: **1/1 Plaque (black, red, grey) + stand (black)**: 214 min, 23 AMS changes
+- Plate 1: **1/1 Plaque (black, red, grey) + stand (black)**: 191 min, 23 AMS changes
 
-### a2l-combo-ams-lite/netflix-letters-a2l-combo-ams-lite.3mf
+### ams/a2l-combo/serier-letters-ams-a2l-combo.3mf
 
 - Two-tone letters: the AMS changes from black to red once per plate.
 - Hang them with the paper template in templates/ so the arc lines up.
 
-- Plate 1: **Letters N E T F L I X - black body, red face**: 196 min, 1 AMS changes
+- Plate 1: **Letters S E R I E R - black body, red face**: 205 min, 1 AMS changes
 
-### a1-mini/serier-stand-a1-mini.3mf
+### single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf
 
-- Print plate 1 in red and plate 2 in black, on two printers at the same time if you like.
+- Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
 - Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).
 
 - Plate 1: **1/2 Letters - red - face down (printer A)**: 40 min
 - Plate 2: **2/2 Plinth - black (printer B)**: 42 min
 
-### a1-mini/serier-plaque-a1-mini.3mf
+### single-colour/a1-mini/serier-plaque-single-colour-a1-mini.3mf
+
+- Plate 1 in red: the letters and the progress bar's fill as separate pieces, printed face down.
+- Plate 2 in black: the plaque with matching pockets, and its stand.
+- Press each red piece into its pocket (0.15 mm clearance per side; a drop of glue makes it permanent). Slide the plaque into the stand's leaning slot.
+
+- Plate 1: **1/2 Red pieces - letters and bar, face down (printer A)**: 17 min
+- Plate 2: **2/2 Plaque with pockets + stand - black (printer B)**: 65 min
+
+### single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf
+
+- All-red letters, split over two plates so two printers can share the work.
+- Hang them with the paper template in templates/ so the arc lines up.
+
+- Plate 1: **1/2 Letters S E R - red**: 48 min
+- Plate 2: **2/2 Letters I E R - red**: 40 min
+
+### colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf
+
+- Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
+- Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).
+- No pause needed: each plate is one colour, so on one printer just change the spool between plates. (The arched plinth has no single layer where black could end, so a one-piece swap isn't possible.)
+
+- Plate 1: **1/2 Letters - red - face down (printer A)**: 40 min
+- Plate 2: **2/2 Plinth - black (printer B)**: 42 min
+
+### colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf
 
 - Plate 1 starts in black and pauses at 4.2 mm: unload black, load red, resume.
 - The progress bar's track stays as a black groove; the filled part and the letters come out red.
@@ -121,56 +223,12 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 - Plate 1: **1/2 Plaque - start black, PAUSE at 4.2 mm, load red (printer A)**: 42 min, pause at 4.2 mm
 - Plate 2: **2/2 Stand - black (printer B)**: 23 min
 
-### a1-mini/serier-letters-a1-mini.3mf
+### colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf
 
-- Each plate starts in black and pauses at 7.2 mm: swap to red and resume (delete the pause in Bambu Studio for all-red letters).
+- Each plate starts in black and pauses at 7.2 mm: swap to red and resume, for black letters with a red face.
 - The letters are split over two plates so two printers can share the work.
 - Hang them with the paper template in templates/ so the arc lines up.
 
 - Plate 1: **1/2 Letters S E R - start black, PAUSE at 7.2 mm, load red**: 48 min, pause at 7.2 mm
 - Plate 2: **2/2 Letters I E R - start black, PAUSE at 7.2 mm, load red**: 40 min, pause at 7.2 mm
-
-### a1-mini-ams-lite/serier-stand-a1-mini-ams-lite.3mf
-
-- Printed upright in one piece; the AMS switches between red and black.
-- Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides.
-- The word runs along the bed's Y axis so the thin letters are stiff against the moving bed.
-
-- Plate 1: **1/1 One piece - red letters on black plinth (tree supports)**: 109 min, 29 AMS changes
-
-### a1-mini-ams-lite/serier-plaque-a1-mini-ams-lite.3mf
-
-- One print: the AMS does the black plaque, red letters and bar, and the grey bar track.
-- Slide the plaque into the stand's leaning slot.
-
-- Plate 1: **1/1 Plaque (black, red, grey) + stand (black)**: 71 min, 17 AMS changes
-
-### a1-mini-ams-lite/serier-letters-a1-mini-ams-lite.3mf
-
-- Two-tone letters: the AMS changes from black to red once per plate.
-- Hang them with the paper template in templates/ so the arc lines up.
-
-- Plate 1: **Letters S E R I E R - black body, red face**: 87 min, 1 AMS changes
-
-### a2l-combo-ams-lite/serier-stand-a2l-combo-ams-lite.3mf
-
-- Printed upright in one piece; the AMS switches between red and black.
-- Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides.
-- The word runs along the bed's Y axis so the thin letters are stiff against the moving bed.
-
-- Plate 1: **1/1 One piece - red letters on black plinth (tree supports)**: 295 min, 51 AMS changes
-
-### a2l-combo-ams-lite/serier-plaque-a2l-combo-ams-lite.3mf
-
-- One print: the AMS does the black plaque, red letters and bar, and the grey bar track.
-- Slide the plaque into the stand's leaning slot.
-
-- Plate 1: **1/1 Plaque (black, red, grey) + stand (black)**: 191 min, 23 AMS changes
-
-### a2l-combo-ams-lite/serier-letters-a2l-combo-ams-lite.3mf
-
-- Two-tone letters: the AMS changes from black to red once per plate.
-- Hang them with the paper template in templates/ so the arc lines up.
-
-- Plate 1: **Letters S E R I E R - black body, red face**: 205 min, 1 AMS changes
 

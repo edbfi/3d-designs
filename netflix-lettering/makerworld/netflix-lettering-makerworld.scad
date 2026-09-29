@@ -64,6 +64,13 @@ stand_base_chamfer = 1.2; // [0:0.2:4]
 stand_tab_depth = 4; // [1:0.5:10]
 // Letter position front to back on the plinth (0 = centred, negative = towards the front)
 stand_letter_offset = 0; // [-20:0.5:20]
+// One-piece upright print: breakaway fins under flat overhangs (arms of E, F, T). Off by default:
+// slicer tree supports are proven here, and Bambu Studio warns about model-built supports.
+stand_fins = false;
+// Fin wall thickness
+stand_fin_thickness = 0.8; // [0.4:0.1:2]
+// Air gap between fins and letters (about one layer)
+stand_fin_gap = 0.25; // [0.1:0.05:0.6]
 
 /* [Plaque] */
 // Plaque thickness (black body)
@@ -92,6 +99,8 @@ plaque_bar_width = 2.4; // [1:0.1:6]
 plaque_track_depth = 0.6; // [0.2:0.2:2]
 // Height of the red bar fill above the plaque face
 plaque_bar_relief = 1; // [0.2:0.2:4]
+// Single-colour version: how deep the separate red letters and bar sit in their pockets
+plaque_inlay_depth = 1.2; // [0.6:0.2:3]
 // Lean of the plaque in its stand (degrees back from vertical)
 plaque_tilt = 12; // [0:1:30]
 // Stand length as a fraction of the plaque width
@@ -158,6 +167,7 @@ assert(letter_index >= 0 && letter_index < n_letters, "letter_index is past the 
 assert(stand_tab_depth < stand_base_height, "stand_tab_depth must be less than stand_base_height");
 assert(stand_base_height < 0.85 * letter_height && plaque_margin_bottom < 0.85 * letter_height, "base height and plaque bottom margin must stay under 0.85 x letter_height");
 assert(letters_face_depth < letters_depth, "letters_face_depth must be less than letters_depth");
+assert(plaque_inlay_depth < plaque_thickness - 0.8, "plaque_inlay_depth must leave at least 0.8 mm of plaque under the pockets");
 assert(plaque_margin_bottom - plaque_bar_gap - plaque_bar_width > (plaque_stand_height - 3) / cos(plaque_tilt) + 1,
        "progress bar would be hidden by the stand: raise plaque_margin_bottom or lower plaque_stand_height");
 echo(str("Text '", txt, "', font ", font_name, ", outer letters ", H, " mm, design ", design, ", part ", part));
@@ -446,6 +456,47 @@ module stand_letters_upright() {
     stand_place(stand_letter_depth, stand_letter_offset) clean2d() difference() { word2d(); under2d(); }
 }
 
+// Overhangs flatter than 45 degrees, final frame: a 1 mm skin under every downward-facing
+// edge, opened with r = 0.35 mm so that only skins thicker than 0.7 mm survive (a skin's
+// thickness is 1 mm x cos(slope)). Edges resting on the plinth are left out.
+module stand_overhang2d() {
+    t = 1;
+    offset(r = 0.35, $fn = 12) offset(r = -0.35, $fn = 12) difference() {
+        word2d();
+        translate([0, t]) word2d();
+        translate([0, t + 0.01]) under2d();
+    }
+}
+
+// Region under those overhangs, down to whatever is below (plinth or a lower arm). The fin
+// gap is kept above and beside a fin but not under it, so every fin stands on something.
+module stand_fin2d() {
+    g = stand_fin_gap;
+    clean2d() difference() {
+        intersection() { smear_down(H) stand_overhang2d(); above2d(-H - 0.01); }
+        smear_down(g) word2d();
+        minkowski() { word2d(); square([2 * g, eps], center = true); }
+        under2d();
+    }
+}
+
+// Breakaway fins for the one-piece upright print: two thin walls, one near each face of the
+// letters, tied together by one-layer rungs every 5 mm. They stand on the plinth (or a lower
+// arm) and stop stand_fin_gap below and beside the letters, so they snap off.
+module stand_fins() {
+    t = stand_fin_thickness;
+    w = stand_letter_depth - 3;              // distance between the two walls' centres
+    rung = layer_height;
+    translate([0, stand_letter_offset, 0]) {
+        for (y = [-w / 2, w / 2]) translate([0, y, 0]) stand_place(t) stand_fin2d();
+        intersection() {
+            stand_place(w) stand_fin2d();
+            for (z = [stand_base_height + 5 : 5 : stand_base_height + H * 1.2])
+                translate([-BIG, -BIG, z]) cube([2 * BIG, 2 * BIG, rung]);
+        }
+    }
+}
+
 // Two-part letters, print pose: face down (mirrored so the front is on the bed).
 module stand_letters_flat() {
     mirror([1, 0, 0]) linear_extrude(stand_letter_depth)
@@ -507,6 +558,28 @@ module plaque_red() {
     if (plaque_progress_bar)
         translate([0, 0, plaque_thickness - plaque_track_depth])
             linear_extrude(plaque_track_depth + plaque_bar_relief) plaque_fill2d();
+}
+
+// Single-colour version, black part: the plaque with pockets for the separate red pieces.
+module plaque_body_inlay() {
+    difference() {
+        plaque_body();
+        translate([0, 0, plaque_thickness - plaque_inlay_depth])
+            linear_extrude(plaque_inlay_depth + 1) offset(delta = clearance) {
+                word2d();
+                if (plaque_progress_bar) plaque_fill2d();
+            }
+    }
+}
+
+// Single-colour version, red part: letters and bar fill as press-in pieces, face down
+// (mirrored so the front is on the textured plate).
+module plaque_inlays() {
+    mirror([1, 0, 0]) {
+        linear_extrude(plaque_inlay_depth + plaque_relief) word2d();
+        if (plaque_progress_bar)
+            linear_extrude(plaque_inlay_depth + plaque_bar_relief) plaque_fill2d();
+    }
 }
 
 module plaque_track() {
@@ -597,6 +670,7 @@ module mw_plate_1() {
         if (makerworld_stand == "one piece") {
             color(color_base) stand_base(pockets = false);
             color(color_letters) stand_letters_upright();
+            if (stand_fins) color(color_letters) stand_fins();
         } else color(color_letters) stand_letters_flat();
     } else if (design == "plaque") {
         color(color_base) plaque_body();
@@ -647,11 +721,14 @@ module print_part() {
     if      (part == "letters")          stand_letters_flat();
     else if (part == "base")             stand_base(pockets = true);
     else if (part == "onepiece_letters") stand_letters_upright();
+    else if (part == "onepiece_fins")    stand_fins();
     else if (part == "onepiece_base")    stand_base(pockets = false);
     else if (part == "plaque_body")      plaque_body();
     else if (part == "plaque_red")       plaque_red();
     else if (part == "plaque_track")     plaque_track();
     else if (part == "plaque_stand")     plaque_stand();
+    else if (part == "plaque_body_inlay") plaque_body_inlay();
+    else if (part == "plaque_inlays")    plaque_inlays();
     else if (part == "letter")           loose_letter(letter_index, "all");
     else if (part == "letter_face")      loose_letter(letter_index, "face");
     else if (part == "letter_body")      loose_letter(letter_index, "body");
