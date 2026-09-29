@@ -47,7 +47,7 @@ letter_height = 42; // [15:1:150]
 // Which display to build
 design = "stand"; // [stand, plaque, letters]
 // What to output: "display" = coloured preview; the rest are print parts laid flat
-part = "display"; // [display, letters, base, onepiece_letters, onepiece_base, onepiece_fins, plaque_body, plaque_red, plaque_track, plaque_stand, letter, letter_face, letter_body, template]
+part = "display"; // [display, letters, base, onepiece_letters, onepiece_base, onepiece_fins, plaque_body, plaque_red, plaque_track, plaque_stand, plaque_body_inlay, plaque_inlays, letter, letter_face, letter_body, template]
 // Which letter for the single-letter parts (0 = first)
 letter_index = 0; // [0:1:30]
 
@@ -103,6 +103,8 @@ plaque_bar_width = 2.4; // [1:0.1:6]
 plaque_track_depth = 0.6; // [0.2:0.2:2]
 // Height of the red bar fill above the plaque face
 plaque_bar_relief = 1; // [0.2:0.2:4]
+// Single-colour version: how deep the separate red letters and bar sit in their pockets
+plaque_inlay_depth = 1.2; // [0.6:0.2:3]
 // Lean of the plaque in its stand (degrees back from vertical)
 plaque_tilt = 12; // [0:1:30]
 // Stand length as a fraction of the plaque width
@@ -165,6 +167,7 @@ assert(letter_index >= 0 && letter_index < n_letters, "letter_index is past the 
 assert(stand_tab_depth < stand_base_height, "stand_tab_depth must be less than stand_base_height");
 assert(stand_base_height < 0.85 * letter_height && plaque_margin_bottom < 0.85 * letter_height, "base height and plaque bottom margin must stay under 0.85 x letter_height");
 assert(letters_face_depth < letters_depth, "letters_face_depth must be less than letters_depth");
+assert(plaque_inlay_depth < plaque_thickness - 0.8, "plaque_inlay_depth must leave at least 0.8 mm of plaque under the pockets");
 assert(plaque_margin_bottom - plaque_bar_gap - plaque_bar_width > (plaque_stand_height - 3) / cos(plaque_tilt) + 1,
        "progress bar would be hidden by the stand: raise plaque_margin_bottom or lower plaque_stand_height");
 echo(str("Text '", txt, "', font ", font_name, ", outer letters ", H, " mm, design ", design, ", part ", part));
@@ -557,6 +560,28 @@ module plaque_red() {
             linear_extrude(plaque_track_depth + plaque_bar_relief) plaque_fill2d();
 }
 
+// Single-colour version, black part: the plaque with pockets for the separate red pieces.
+module plaque_body_inlay() {
+    difference() {
+        plaque_body();
+        translate([0, 0, plaque_thickness - plaque_inlay_depth])
+            linear_extrude(plaque_inlay_depth + 1) offset(delta = clearance) {
+                word2d();
+                if (plaque_progress_bar) plaque_fill2d();
+            }
+    }
+}
+
+// Single-colour version, red part: letters and bar fill as press-in pieces, face down
+// (mirrored so the front is on the textured plate).
+module plaque_inlays() {
+    mirror([1, 0, 0]) {
+        linear_extrude(plaque_inlay_depth + plaque_relief) word2d();
+        if (plaque_progress_bar)
+            linear_extrude(plaque_inlay_depth + plaque_bar_relief) plaque_fill2d();
+    }
+}
+
 module plaque_track() {
     if (plaque_progress_bar)
         translate([0, 0, plaque_thickness - plaque_track_depth])
@@ -702,6 +727,8 @@ module print_part() {
     else if (part == "plaque_red")       plaque_red();
     else if (part == "plaque_track")     plaque_track();
     else if (part == "plaque_stand")     plaque_stand();
+    else if (part == "plaque_body_inlay") plaque_body_inlay();
+    else if (part == "plaque_inlays")    plaque_inlays();
     else if (part == "letter")           loose_letter(letter_index, "all");
     else if (part == "letter_face")      loose_letter(letter_index, "face");
     else if (part == "letter_body")      loose_letter(letter_index, "body");
