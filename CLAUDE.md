@@ -12,6 +12,7 @@ python3 tools/build.py                                   # regenerate print-file
 python3 tools/build.py --only netflix --only 'a1-mini$'  # a subset (regex on the variant key)
 python3 tools/build.py --list                            # variant keys
 python3 tools/build.py --renders-only                    # only docs/images/renders
+python3 tools/build.py --makerworld-only                 # only the MakerWorld edition
 openscad -o /tmp/x.stl -D 'design="plaque"' -D 'part="plaque_body"' netflix-lettering.scad   # one part
 ```
 
@@ -19,7 +20,7 @@ openscad -o /tmp/x.stl -D 'design="plaque"' -D 'part="plaque_body"' netflix-lett
 
 ## Generated files: regenerate, don't hand-edit
 
-`print-files/`, `templates/`, `docs/build-summary.*`, `docs/images/plates/` and `docs/images/renders/` are written by `tools/build.py`. Change the `.scad` or the build script and rerun it. A partial run (`--only`) merges into the existing build summary.
+`print-files/`, `templates/`, `makerworld/`, `docs/build-summary.*`, `docs/images/plates/` and `docs/images/renders/` are written by `tools/build.py`. Change the `.scad` or the build script and rerun it. A partial run (`--only`) merges into the existing build summary.
 
 The build fails loudly rather than writing a bad project. For every variant it checks:
 
@@ -42,7 +43,9 @@ Change these parts of `tools/build.py` only with a test slice afterwards:
 ## OpenSCAD rules
 
 - Keep the `.scad` free of experimental features (`textmetrics`, `fill`, `import` as a function, ...). It has to run in the stock Customizer and in MakerWorld's Parametric Model Maker. Text size is never measured numerically; everything that depends on the text's width or height comes from geometry (bounding bands, resize anchors, Minkowski shifts). Read the comments on `to_norm`, `to_final`, `centre_shift2d` and `norm_box` before changing them.
-- The per-strip bend (`warp2d`) instantiates its child 500 times. Keep that child cheap (bare text or a box), or render times explode.
+- The per-strip bend (`warp2d`) instantiates its child once per strip (up to 800). Keep that child cheap (bare text or a box), and use bevelled offsets (`chamfer = true`) rather than round ones, or render times explode.
+- MakerWorld's Parametric Model Maker gives a render about 10 s. Keep a full render of every design under about 3 s locally with the Manifold backend.
+- Printable output for MakerWorld goes in `mw_plate_N()` modules (colours via `color()`), plus `mw_assembly_view()` for its preview. Never call them from the file. MakerWorld adds any top-level geometry to every plate, which is why desktop output sits behind `desktop_output` and the MakerWorld edition in `makerworld/` is generated with it off.
 - Units are mm, Z is up, and the display datum is centred on the text with its base at Z = 0.
 
 ## Naming
