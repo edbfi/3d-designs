@@ -691,7 +691,8 @@ def export_makerworld_edition():
 
     MakerWorld adds any top-level geometry to every plate, so the edition switches the
     desktop output off (its output is the mw_plate_N modules), drops the local font
-    includes (MakerWorld has the fonts installed) and hides the desktop-only settings."""
+    includes (MakerWorld has the fonts installed), swaps the font dropdown for MakerWorld's
+    font picker and hides the desktop-only settings."""
     src = SCAD.read_text().splitlines()
     out, hidden = [], []
     i = 0
@@ -704,6 +705,9 @@ def export_makerworld_edition():
             hidden.append(line.split(";")[0] + ";")
         elif line.startswith("use <fonts/"):
             pass
+        elif line.startswith("font_name = "):
+            # MakerWorld's own font picker (500+ Google Fonts) instead of the desktop dropdown
+            out.append(line.split(";")[0] + "; // font")
         elif line.startswith("desktop_output = true;"):
             out.append(line.replace("desktop_output = true;", "desktop_output = false;"))
         else:
