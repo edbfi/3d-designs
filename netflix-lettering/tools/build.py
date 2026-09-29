@@ -14,6 +14,7 @@ Usage:
   python3 tools/build.py --only netflix --only "a1-mini$"   # filter variants (regex)
   python3 tools/build.py --list            # show variants
   python3 tools/build.py --renders-only    # just the preview renders in docs/images/renders
+  python3 tools/build.py --makerworld-only # just the MakerWorld edition in makerworld/
 
 Needs OpenSCAD (2021.01 or newer; a 2025+ snapshot with the Manifold backend is much faster)
 and Bambu Studio (tested with 02.08.02.61).
@@ -40,6 +41,7 @@ BUILD = ROOT / "build"                           # scratch, git-ignored
 PRINT_FILES = ROOT / "print-files"               # ready-to-print Bambu projects, one folder per printer setup
 TEMPLATES = ROOT / "templates"                   # 1:1 wall templates for the loose letters
 DOCS = ROOT / "docs"
+MAKERWORLD = ROOT / "makerworld"                 # MakerWorld Parametric Model Maker edition of the .scad
 PLATE_IMAGES = DOCS / "images" / "plates"
 RENDER_IMAGES = DOCS / "images" / "renders"
 
@@ -680,6 +682,62 @@ def export_templates(texts):
             out.write_text(svg)
 
 
+# Desktop-only settings, hidden in the MakerWorld edition (its plates replace them).
+DESKTOP_ONLY = ("part", "letter_index", "print_rotate")
+
+
+def export_makerworld_edition():
+    """Write the MakerWorld Parametric Model Maker edition of the .scad and check it.
+
+    MakerWorld adds any top-level geometry to every plate, so the edition switches the
+    desktop output off (its output is the mw_plate_N modules), drops the local font
+    includes (MakerWorld has the fonts installed) and hides the desktop-only settings."""
+    src = SCAD.read_text().splitlines()
+    out, hidden = [], []
+    i = 0
+    while i < len(src):
+        line = src[i]
+        name = line.split("=")[0].strip() if "=" in line and not line.startswith((" ", "/")) else None
+        if name in DESKTOP_ONLY:
+            if out and out[-1].startswith("//"):
+                hidden.append(out.pop())          # keep its comment with it
+            hidden.append(line.split(";")[0] + ";")
+        elif line.startswith("use <fonts/"):
+            pass
+        elif line.startswith("desktop_output = true;"):
+            out.append(line.replace("desktop_output = true;", "desktop_output = false;"))
+        else:
+            out.append(line)
+        i += 1
+    k = out.index("/* [Hidden] */") + 1
+    out[k:k] = hidden
+    header = [
+        "// MakerWorld Parametric Model Maker edition. GENERATED from ../netflix-lettering.scad by",
+        "// tools/build.py: edit the source, not this file. Output comes from mw_plate_1/2 only.",
+        "",
+    ]
+    MAKERWORLD.mkdir(parents=True, exist_ok=True)
+    edition = MAKERWORLD / "netflix-lettering-makerworld.scad"
+    edition.write_text("\n".join(header + out) + "\n")
+
+    # the edition must have no top-level geometry, and every plate must render cleanly
+    for design in ("stand", "plaque", "letters"):
+        for plate in ("", "mw_plate_1();", "mw_plate_2();"):
+            probe = BUILD / "makerworld" / f"probe-{design}-{plate[:10] or 'top'}.scad"
+            probe.parent.mkdir(parents=True, exist_ok=True)
+            fonts = "\n".join(f"use <{f}>" for f in sorted((ROOT / "fonts").glob("*.ttf")))
+            probe.write_text(f"{fonts}\ninclude <{edition}>\n{plate}\n")
+            r = subprocess.run([OPENSCAD, "--backend=manifold", "--export-format", "binstl", "-o",
+                                str(probe.with_suffix(".stl")), "-D", f'design="{design}"', str(probe)],
+                               capture_output=True, text=True)
+            empty = "Current top level object is empty" in r.stderr
+            bad = [l for l in r.stderr.splitlines() if l.startswith(("ERROR", "WARNING"))]
+            if bad or (plate and (r.returncode != 0 or empty)) or (not plate and not empty):
+                raise RuntimeError(f"MakerWorld edition, {design} {plate or 'top level'}: "
+                                   f"{'not empty' if not plate else ''} {bad or r.stderr[-400:]}")
+    return edition
+
+
 # Camera per design for the preview renders: OpenSCAD gimbal "tx,ty,tz,rx,ry,rz,dist".
 RENDER_CAMERAS = {"stand": "0,0,0,74,0,-22,0", "plaque": "0,0,0,80,0,-20,0", "letters": "0,0,0,82,0,-16,0"}
 
@@ -755,9 +813,13 @@ def main():
     ap.add_argument("--keep-unsliced", action="store_true", help="also write the unsliced project")
     ap.add_argument("--renders-only", action="store_true", help="only refresh docs/images/renders")
     ap.add_argument("--no-renders", action="store_true", help="skip the preview renders")
+    ap.add_argument("--makerworld-only", action="store_true", help="only write makerworld/ (the MakerWorld edition)")
     a = ap.parse_args()
     if a.renders_only:
         export_renders(TEXTS)
+        return
+    if a.makerworld_only:
+        log(f"MakerWorld edition: {export_makerworld_edition().relative_to(ROOT)}")
         return
 
     variants = [v for v in make_variants() if all(re.search(o, v.key) for o in a.only)]
@@ -777,6 +839,7 @@ def main():
             f.result()
     log("templates")
     export_templates(sorted({v.text for v in variants if v.design == "letters"}))
+    log(f"MakerWorld edition: {export_makerworld_edition().relative_to(ROOT)}")
     if not a.no_renders:
         log("preview renders")
         export_renders(sorted({v.text for v in variants}))
