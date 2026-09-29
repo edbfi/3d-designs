@@ -27,7 +27,7 @@
 // Text to show
 text_string = "NETFLIX";
 // Font (Bebas Neue matches the Netflix letter widths best; Google fonts also work on MakerWorld)
-font_name = "Bebas Neue"; // [Bebas Neue, Anton, League Gothic, Impact]
+font_name = "Bebas Neue"; // font
 // Turn the text into capitals
 force_caps = true;
 
