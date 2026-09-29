@@ -129,9 +129,13 @@ layer_height = 0.2; // [0.08:0.02:0.32]
 print_rotate = 0; // [0:90:270]
 
 /* [Colours] */
-color_letters = "#E50914";
-color_base    = "#141414";
-color_track   = "#5A5A5A";
+color_letters = "#E50914"; // color
+color_base    = "#141414"; // color
+color_track   = "#5A5A5A"; // color
+
+/* [MakerWorld] */
+// Stand plates in MakerWorld's 3MF: two parts to press together (any printer), or one upright multi-colour piece (AMS)
+makerworld_stand = "two parts"; // [two parts, one piece]
 
 /* [Hidden] */
 $fn = 48;
@@ -547,13 +551,22 @@ module loose_letter(i, zone = "all") {
     }
 }
 
-// All letters in place (display preview; no flat bottoms or back recess).
-module loose_word(zone) {
+// All letters in place, flat, face up (preview and MakerWorld plates; no flat bottoms).
+// half = "left"/"right" keeps only the letters before/from the middle one.
+module loose_word(zone, half = "all") {
     f = letters_depth - letters_face_depth;
-    intersection() {
-        chamfer_extrude(letters_depth, letters_chamfer) word2d();
-        if (zone == "face") translate([-BIG, -BIG, f]) cube([2 * BIG, 2 * BIG, BIG]);
-        if (zone == "body") translate([-BIG, -BIG, -1]) cube([2 * BIG, 2 * BIG, f + 1]);
+    m = floor(n_letters / 2);
+    difference() {
+        intersection() {
+            chamfer_extrude(letters_depth, letters_chamfer) word2d();
+            if (zone == "face") translate([-BIG, -BIG, f]) cube([2 * BIG, 2 * BIG, BIG]);
+            if (zone == "body") translate([-BIG, -BIG, -1]) cube([2 * BIG, 2 * BIG, f + 1]);
+            if (half == "left")  translate([0, 0, -1]) linear_extrude(BIG) hull() { letter_column(0); letter_column(m - 1); }
+            if (half == "right") translate([0, 0, -1]) linear_extrude(BIG) hull() { letter_column(m); letter_column(n_letters - 1); }
+        }
+        if (letters_mount == "recess")
+            translate([0, 0, -1]) linear_extrude(letters_recess_depth + 1)
+                offset(delta = -letters_recess_wall) word2d();
     }
 }
 
@@ -573,6 +586,38 @@ module template2d() {
 }
 
 // ------------------------------------------------------------------ output
+
+// ------------------------------------------------------------------ MakerWorld plates
+// MakerWorld's Parametric Model Maker calls these itself to build a multi-plate, multi-colour
+// 3MF (never call them from this file). Desktop OpenSCAD ignores them. Plate 1 and plate 2
+// can print on two printers at once; colours come from color().
+module mw_plate_1() {
+    if (design == "stand") {
+        if (makerworld_stand == "one piece") {
+            color(color_base) stand_base(pockets = false);
+            color(color_letters) stand_letters_upright();
+        } else color(color_letters) stand_letters_flat();
+    } else if (design == "plaque") {
+        color(color_base) plaque_body();
+        color(color_letters) plaque_red();
+        color(color_track) plaque_track();
+    } else {
+        color(color_base) loose_word("body", "left");
+        color(color_letters) loose_word("face", "left");
+    }
+}
+
+module mw_plate_2() {
+    if (design == "stand") {
+        if (makerworld_stand != "one piece") color(color_base) stand_base(pockets = true);
+    } else if (design == "plaque") color(color_base) plaque_stand();
+    else {
+        color(color_base) loose_word("body", "right");
+        color(color_letters) loose_word("face", "right");
+    }
+}
+
+module mw_assembly_view() { display(); }
 
 module display() {
     if (design == "stand") {
