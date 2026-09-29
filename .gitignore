@@ -1,0 +1,18 @@
+# Build scratch (tools/build.py): exported STLs, flattened presets, Bambu CLI work dirs
+build/
+
+# Local-only reference material (the real Netflix logo is a trademark: never commit it)
+reference/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / editor
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# OpenSCAD backups
+*.scad.bak
