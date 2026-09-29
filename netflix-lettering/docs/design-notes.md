@@ -40,7 +40,7 @@ Bebas Neue matches every letter within about 0.02 of the letter height. The only
 
 ## Bending text in plain OpenSCAD
 
-OpenSCAD can't warp geometry, so `warp2d` cuts the word into 500 vertical strips and scales each one vertically about the top edge, by `1 − arc_depth · (1 − u²)` (u = −1…1 across the word). Neighbouring strips abut exactly. At 42 mm letters, the step between two strips along the bottom edge is at most 0.06 mm, well below what a 0.4 mm nozzle can show.
+OpenSCAD can't warp geometry, so `warp2d` cuts the word into vertical strips and scales each one vertically about the top edge, by `1 − arc_depth · (1 − u²)` (u = −1…1 across the word). Neighbouring strips abut exactly. The number of strips follows from the letter height and arc depth, so the step between two strips along the bottom edge stays around `bend_step` = 0.1 mm, well below what a 0.4 mm nozzle can show. That's about 240 strips for 42 mm letters and the 800-strip cap at 120 mm. Straight text (`arc_depth` = 0) isn't cut at all.
 
 Everything else that has to meet the lettering is bent with the same strips, so the surfaces match to within 0.01 mm:
 
@@ -60,7 +60,23 @@ A MakerWorld-style model must react to any text, font and size, but `textmetrics
 - **Proportional positions**: the progress bar's fill end is the word's right edge scaled by `2f − 1`.
 - **Cleanup**: a morphological opening (`offset(r = 0.02) offset(r = −0.02)`) drops scraps thinner than 0.04 mm that coincident edges can leave. The stepped chamfers use round-join insets, because mitred insets turn microscopic notches into long spikes.
 
-The 500-strip bend instantiates its child 500 times, so that child is kept tiny (bare text or a box). An early version that passed richer subtrees through it took 1 min 40 s per render, against about 5 s now.
+The bend instantiates its child once per strip, so that child is kept tiny (bare text or a box). An early version that passed richer subtrees through it took 1 min 40 s per render.
+
+Three more habits keep a full render at 0.3–2 s (stand 1.3 s, plaque 0.3 s, loose letters 2.1 s at 42 mm):
+
+- Offsets use bevelled joins (`chamfer = true`). Round joins put an arc on every strip corner.
+- The word's x-range comes from the unbent box, because the bend only moves points vertically.
+- The loose-letters preview extrudes the whole word at once instead of letter by letter.
+
+## MakerWorld's Parametric Model Maker
+
+Tested on MakerWorld with the logged-in account (unpublished):
+
+- **Backend:** MakerWorld runs OpenSCAD with the Manifold backend and a render limit of about 10 s. The first upload timed out at 11 s local render time; after the speedups above it generates in about 13–20 s wall-clock, including MakerWorld's own overhead.
+- **Plates:** MakerWorld builds a multi-plate, multi-colour 3MF from `mw_plate_N()` modules and `color()`, and previews `mw_assembly_view()`. It also adds any top-level geometry to every plate. So `tools/build.py` generates `makerworld/netflix-lettering-makerworld.scad` with the desktop output switched off. That edition also drops the local font includes, marks `font_name` with `// font` (MakerWorld's picker of 500+ Google Fonts; Bebas Neue is among them) and hides the desktop-only settings. The build checks that the edition has no top-level geometry and that every plate renders.
+- **What its 3MF gets right:** the downloaded stand project has two plates, the red letters on filament 1 and the black plinth on filament 2. It carries the fully resolved A1 mini profile: real start G-code, 0.20 mm Standard, PLA Basic. Sliced, it takes 38 + 45 min, the same as our own files.
+- **What it gets wrong:** the bed type is Cool Plate, so the bed heats to 35 °C, and supports are on (no supports actually get generated for these parts). Change the plate type to Textured PEI Plate in Bambu Studio before printing. MakerWorld can only preset profile options from a model's upload/edit page.
+- **What it can't do:** there are no filament-swap pauses, so the no-AMS plaque and loose letters come out single-colour unless you print on an AMS printer or add the pause in Bambu Studio yourself. Multi-plate scripts can't offer STL download.
 
 ## Printability decisions
 

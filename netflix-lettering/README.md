@@ -73,7 +73,14 @@ To get your own text into Bambu Studio, you have two options:
 - **One part at a time**: set `part` (for example `letters` and then `base` for the stand), press F6 and export each as STL.
 - **Whole projects**: edit `TEXTS` (and `SIZES` if needed) at the top of [`tools/build.py`](tools/build.py) and run it (see below). You get the same ready-to-print projects as here, for every printer setup.
 
-On **MakerWorld's Parametric Model Maker**, upload `netflix-lettering.scad` alone. Bebas Neue, Anton and League Gothic are Google Fonts, which MakerWorld has installed. The bundled `fonts/` folder is only needed in desktop OpenSCAD; MakerWorld ignores those `use <fonts/...>` lines with a warning. The file uses no experimental OpenSCAD features, so it runs in the stock Customizer too.
+On **MakerWorld's Parametric Model Maker**, use [`makerworld/netflix-lettering-makerworld.scad`](makerworld/netflix-lettering-makerworld.scad), not the desktop file. It's generated from the desktop file and tested on MakerWorld.
+
+- **Plates:** its 3MF has two plates, one per printer, in the right colours: stand letters and plinth, plaque and its stand, or the loose letters split in two. Set `makerworld_stand = "one piece"` for the upright AMS stand.
+- **Fonts:** you get MakerWorld's font picker with 500+ Google Fonts; Bebas Neue is among them.
+- **Before printing a MakerWorld 3MF:** switch the plate type to **Textured PEI Plate** in Bambu Studio. MakerWorld defaults to Cool Plate, which heats the bed to only 35 °C.
+- **No pauses:** MakerWorld can't add filament-swap pauses, so the plaque and loose letters need an AMS for two colours. For the no-AMS two-colour versions, use the files in `print-files/`.
+
+The desktop file uses no experimental OpenSCAD features, so it runs in the stock Customizer too.
 
 ## Rebuilding the print files
 
@@ -118,6 +125,7 @@ netflix-lettering/
 │   ├── a1-mini/                # no AMS: two plates per project, manual swaps where needed
 │   ├── a1-mini-ams-lite/       # A1 mini with AMS lite: one plate, automatic colours
 │   └── a2l-combo-ams-lite/     # A2L Combo: bigger versions, automatic colours
+├── makerworld/                 # MakerWorld Parametric Model Maker edition (generated)
 ├── templates/                  # 1:1 wall templates for the loose letters (SVG)
 ├── docs/
 │   ├── design-notes.md         # research, measurements, techniques
