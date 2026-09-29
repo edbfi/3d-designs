@@ -17,7 +17,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters - red - face down (printer A)",
-    "minutes": 37,
+    "minutes": 38,
     "grams": {
      "1": 17.3
     },
@@ -31,7 +31,7 @@
    {
     "plate": 2,
     "name": "2/2 Plinth - black (printer B)",
-    "minutes": 47,
+    "minutes": 46,
     "grams": {
      "2": 28.0
     },
@@ -63,7 +63,7 @@
    {
     "plate": 1,
     "name": "1/2 Plaque - start black, PAUSE at 4.2 mm, load red (printer A)",
-    "minutes": 46,
+    "minutes": 47,
     "grams": {
      "1": 32.9
     },
@@ -109,7 +109,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters N E T F - start black, PAUSE at 7.2 mm, load red",
-    "minutes": 50,
+    "minutes": 51,
     "grams": {
      "1": 29.3
     },
@@ -128,7 +128,7 @@
     "name": "2/2 Letters L I X - start black, PAUSE at 7.2 mm, load red",
     "minutes": 34,
     "grams": {
-     "1": 17.8
+     "1": 17.9
     },
     "colour_changes": 0,
     "pause_z": 7.2,
@@ -163,8 +163,8 @@
     "name": "1/1 One piece - red letters on black plinth (tree supports)",
     "minutes": 112,
     "grams": {
-     "1": 24.4,
-     "2": 28.8
+     "1": 24.5,
+     "2": 28.9
     },
     "colour_changes": 29,
     "pause_z": null,
@@ -230,10 +230,10 @@
    {
     "plate": 1,
     "name": "Letters N E T F L I X - black body, red face",
-    "minutes": 83,
+    "minutes": 84,
     "grams": {
      "1": 18.5,
-     "2": 29.0
+     "2": 29.1
     },
     "colour_changes": 1,
     "pause_z": null,
@@ -270,10 +270,10 @@
    {
     "plate": 1,
     "name": "1/1 One piece - red letters on black plinth (tree supports)",
-    "minutes": 301,
+    "minutes": 300,
     "grams": {
-     "1": 78.3,
-     "2": 106.7
+     "1": 78.1,
+     "2": 106.6
     },
     "colour_changes": 51,
     "pause_z": null,
@@ -339,10 +339,10 @@
    {
     "plate": 1,
     "name": "Letters N E T F L I X - black body, red face",
-    "minutes": 194,
+    "minutes": 196,
     "grams": {
      "1": 50.8,
-     "2": 84.6
+     "2": 84.5
     },
     "colour_changes": 1,
     "pause_z": null,
@@ -378,9 +378,9 @@
    {
     "plate": 1,
     "name": "1/2 Letters - red - face down (printer A)",
-    "minutes": 39,
+    "minutes": 40,
     "grams": {
-     "1": 16.1
+     "1": 16.2
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -394,7 +394,7 @@
     "name": "2/2 Plinth - black (printer B)",
     "minutes": 42,
     "grams": {
-     "2": 24.2
+     "2": 24.1
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -470,7 +470,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters S E R - start black, PAUSE at 7.2 mm, load red",
-    "minutes": 47,
+    "minutes": 48,
     "grams": {
      "1": 23.5
     },
@@ -486,7 +486,7 @@
    {
     "plate": 2,
     "name": "2/2 Letters I E R - start black, PAUSE at 7.2 mm, load red",
-    "minutes": 39,
+    "minutes": 40,
     "grams": {
      "1": 20.5
     },
@@ -521,10 +521,10 @@
    {
     "plate": 1,
     "name": "1/1 One piece - red letters on black plinth (tree supports)",
-    "minutes": 110,
+    "minutes": 109,
     "grams": {
-     "1": 24.1,
-     "2": 25.8
+     "1": 24.0,
+     "2": 25.4
     },
     "colour_changes": 29,
     "pause_z": null,
@@ -555,9 +555,9 @@
    {
     "plate": 1,
     "name": "1/1 Plaque (black, red, grey) + stand (black)",
-    "minutes": 70,
+    "minutes": 71,
     "grams": {
-     "1": 7.1,
+     "1": 7.0,
      "2": 41.4,
      "3": 0.6
     },
@@ -590,10 +590,10 @@
    {
     "plate": 1,
     "name": "Letters S E R I E R - black body, red face",
-    "minutes": 86,
+    "minutes": 87,
     "grams": {
      "1": 17.3,
-     "2": 27.0
+     "2": 27.1
     },
     "colour_changes": 1,
     "pause_z": null,
@@ -629,10 +629,10 @@
    {
     "plate": 1,
     "name": "1/1 One piece - red letters on black plinth (tree supports)",
-    "minutes": 299,
+    "minutes": 295,
     "grams": {
-     "1": 77.5,
-     "2": 94.2
+     "1": 76.8,
+     "2": 93.8
     },
     "colour_changes": 51,
     "pause_z": null,
@@ -665,9 +665,9 @@
     "name": "1/1 Plaque (black, red, grey) + stand (black)",
     "minutes": 191,
     "grams": {
-     "1": 21.2,
-     "2": 137.5,
-     "3": 1.1
+     "1": 20.9,
+     "2": 137.4,
+     "3": 1.2
     },
     "colour_changes": 23,
     "pause_z": null,
@@ -698,7 +698,7 @@
    {
     "plate": 1,
     "name": "Letters S E R I E R - black body, red face",
-    "minutes": 200,
+    "minutes": 205,
     "grams": {
      "1": 47.7,
      "2": 78.7
