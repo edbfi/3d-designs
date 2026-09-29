@@ -50,7 +50,7 @@ Change these parts of `tools/build.py` only with a test slice afterwards:
 
 ## Naming
 
-Lowercase, hyphen-separated slugs. Design folder = `.scad` name. Print files are `<text>-<design>-<printer-setup>.3mf` inside `print-files/<printer-setup>/`.
+Lowercase, hyphen-separated slugs. Design folder = `.scad` name. Print files are `<text>-<design>-<set>-<printer>.3mf` inside `print-files/<set>/<printer>/`, where the set is how colours are made (`ams`, `single-colour`, `colour-swap`) and the printer is the hardware (`a1-mini`, `a2l-combo`).
 
 ## Trademarks
 
