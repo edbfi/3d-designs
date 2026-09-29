@@ -57,17 +57,23 @@ LAYER = 0.2  # layer height of the process preset used below; pauses are placed 
 
 PRINTERS = {
     "a1-mini": dict(
-        label="Bambu Lab A1 mini (no AMS)", ams=False, bed=(180, 180), margin=6,
+        name="Bambu Lab A1 mini", bed=(180, 180), margin=6,
         machine="Bambu Lab A1 mini 0.4 nozzle", process="0.20mm Standard @BBL A1M",
         filament="Bambu PLA Matte @BBL A1M", size="small"),
-    "a1-mini-ams-lite": dict(
-        label="Bambu Lab A1 mini + AMS lite", ams=True, bed=(180, 180), margin=6,
-        machine="Bambu Lab A1 mini 0.4 nozzle", process="0.20mm Standard @BBL A1M",
-        filament="Bambu PLA Matte @BBL A1M", size="small"),
-    "a2l-combo-ams-lite": dict(
-        label="Bambu Lab A2L Combo (AMS lite)", ams=True, bed=(330, 320), margin=8,
+    "a2l-combo": dict(
+        name="Bambu Lab A2L Combo", bed=(330, 320), margin=8,
         machine="Bambu Lab A2L 0.4 nozzle", process="0.20mm Standard @BBL A2L",
         filament="Bambu PLA Matte @BBL A2L 0.4 nozzle", size="large"),
+}
+
+# Print-file sets: how the colours are made, and for which printers.
+#   ams            the AMS lite switches colours (A1 mini + AMS lite, A2L Combo)
+#   single-colour  every plate is one colour; colours come from separate parts (no AMS)
+#   colour-swap    two-tone plates with a pause to swap filament by hand (no AMS)
+SETS = {
+    "ams": dict(printers=["a1-mini", "a2l-combo"], ams=True, label="with AMS lite"),
+    "single-colour": dict(printers=["a1-mini"], ams=False, label="no AMS, one colour per plate"),
+    "colour-swap": dict(printers=["a1-mini"], ams=False, label="no AMS, manual colour swap"),
 }
 
 # OpenSCAD parameters per size class and design (everything else uses the file's defaults).
@@ -121,14 +127,27 @@ class PlateSpec:
 class Variant:
     text: str
     design: str
-    printer: str
+    set: str                  # key of SETS
+    printer: str              # key of PRINTERS
     filaments: list           # colours per filament slot
     plates: list
     notes: list
 
     @property
     def key(self):
-        return f"{self.text.lower()}-{self.design}-{self.printer}"
+        return f"{self.text.lower()}-{self.design}-{self.set}-{self.printer}"
+
+    @property
+    def ams(self):
+        return SETS[self.set]["ams"]
+
+    @property
+    def folder(self):
+        return f"{self.set}/{self.printer}"
+
+    @property
+    def label(self):
+        return f"{PRINTERS[self.printer]['name']}, {SETS[self.set]['label']}"
 
 
 def scad_params(printer, design, text, **extra):
@@ -158,92 +177,119 @@ def split_balanced(items, n):
     return chunks
 
 
+def stand_two_part(text, p, notes_extra=()):
+    plates = [
+        PlateSpec("1/2 Letters - red - face down (printer A)",
+                  [Group("Letters", [Part(f"{text}-stand-letters", dict(p, part="letters"), 1)])]),
+        PlateSpec("2/2 Plinth - black (printer B)",
+                  [Group("Plinth", [Part(f"{text}-stand-plinth", dict(p, part="base"), 2)])]),
+    ]
+    notes = ["Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
+             "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
+             *notes_extra]
+    return plates, notes
+
+
+def stand_variant(text, set_, printer):
+    p = scad_params(printer, "stand", text)
+    if set_ == "ams":
+        rot = dict(print_rotate=90)
+        plates = [PlateSpec("1/1 One piece - red letters on black plinth (tree supports)", [
+            Group("Stand", [
+                Part(f"{text}-stand-plinth-onepiece", dict(p, part="onepiece_base", **rot), 2),
+                Part(f"{text}-stand-letters-onepiece", dict(p, part="onepiece_letters", **rot), 1)],
+                print_params={"enable_support": "1", "support_type": "tree(auto)"})])]
+        notes = ["Printed upright in one piece; the AMS switches between red and black.",
+                 "Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides. "
+                 "(The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio "
+                 "flags model-built supports as a floating cantilever, so the files use its own.)",
+                 "The word runs along the bed's Y axis so the thin letters are stiff against the moving bed."]
+    elif set_ == "single-colour":
+        plates, notes = stand_two_part(text, p)
+    else:
+        plates, notes = stand_two_part(text, p, (
+            "No pause needed: each plate is one colour, so on one printer just change the spool between plates. "
+            "(The arched plinth has no single layer where black could end, so a one-piece swap isn't possible.)",))
+    return Variant(text, "stand", set_, printer, [RED, BLACK], plates, notes)
+
+
+def plaque_variant(text, set_, printer):
+    p = scad_params(printer, "plaque", text)
+    t = p.get("plaque_thickness", 4)
+    if set_ == "ams":
+        plates = [PlateSpec("1/1 Plaque (black, red, grey) + stand (black)", [
+            Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 2),
+                             Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1),
+                             Part(f"{text}-plaque-track", dict(p, part="plaque_track"), 3)]),
+            Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 2)])])]
+        return Variant(text, "plaque", set_, printer, [RED, BLACK, GREY], plates, [
+            "One print: the AMS does the black plaque, red letters and bar, and the grey bar track.",
+            "Slide the plaque into the stand's leaning slot."])
+    if set_ == "single-colour":
+        plates = [
+            PlateSpec("1/2 Red pieces - letters and bar, face down (printer A)",
+                      [Group("Red pieces", [Part(f"{text}-plaque-inlays", dict(p, part="plaque_inlays"), 1)])]),
+            PlateSpec("2/2 Plaque with pockets + stand - black (printer B)",
+                      [Group("Plaque", [Part(f"{text}-plaque-body-inlay", dict(p, part="plaque_body_inlay"), 2)]),
+                       Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 2)])]),
+        ]
+        return Variant(text, "plaque", set_, printer, [RED, BLACK], plates, [
+            "Plate 1 in red: the letters and the progress bar's fill as separate pieces, printed face down.",
+            "Plate 2 in black: the plaque with matching pockets, and its stand.",
+            "Press each red piece into its pocket (0.15 mm clearance per side; a drop of glue makes it permanent). "
+            "Slide the plaque into the stand's leaning slot."])
+    plates = [
+        PlateSpec(f"1/2 Plaque - start black, PAUSE at {t + LAYER:.1f} mm, load red (printer A)",
+                  [Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 1),
+                                    Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1)])],
+                  pause_z=round(t + LAYER, 2)),
+        PlateSpec("2/2 Stand - black (printer B)",
+                  [Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 1)])]),
+    ]
+    return Variant(text, "plaque", set_, printer, [BLACK], plates, [
+        f"Plate 1 starts in black and pauses at {t + LAYER:.1f} mm: unload black, load red, resume.",
+        "The progress bar's track stays as a black groove; the filled part and the letters come out red.",
+        "Slide the plaque into the stand's leaning slot."])
+
+
+def letters_variant(text, set_, printer):
+    p = scad_params(printer, "letters", text)
+    depth = p.get("letters_depth", 10)
+    face = p.get("letters_face_depth", 3)
+    letters = letters_of(text)
+    hang = "Hang them with the paper template in templates/ so the arc lines up."
+    if set_ == "ams":
+        groups = [Group(f"Letter {i + 1} {c}", [
+            Part(f"{text}-letter-{i + 1}-{c}-body", dict(p, part="letter_body", letter_index=i), 2),
+            Part(f"{text}-letter-{i + 1}-{c}-face", dict(p, part="letter_face", letter_index=i), 1)])
+            for i, c in letters]
+        return Variant(text, "letters", set_, printer, [RED, BLACK],
+                       [PlateSpec("Letters - black body, red face", groups)],
+                       ["Two-tone letters: the AMS changes from black to red once per plate.", hang])
+    groups = [Group(f"Letter {i + 1} {c}", [Part(f"{text}-letter-{i + 1}-{c}",
+                                            dict(p, part="letter", letter_index=i), 1)])
+              for i, c in letters]
+    if set_ == "single-colour":
+        return Variant(text, "letters", set_, printer, [RED],
+                       [PlateSpec("Letters - red", groups)],
+                       ["All-red letters, split over two plates so two printers can share the work.", hang])
+    pz = round(depth - face + LAYER, 2)
+    return Variant(text, "letters", set_, printer, [BLACK],
+                   [PlateSpec(f"Letters - start black, PAUSE at {pz:.1f} mm, load red", groups, pause_z=pz)],
+                   [f"Each plate starts in black and pauses at {pz:.1f} mm: swap to red and resume, for black "
+                    "letters with a red face.",
+                    "The letters are split over two plates so two printers can share the work.", hang])
+
+
 def make_variants():
     vs = []
     for text in TEXTS:
-        for printer, pr in PRINTERS.items():
-            ams = pr["ams"]
-            sz = SIZES[pr["size"]]
-
-            # --- stand: red letters on a black arc plinth
-            p = scad_params(printer, "stand", text)
-            if not ams:
-                plates = [
-                    PlateSpec("1/2 Letters - red - face down (printer A)",
-                              [Group("Letters", [Part(f"{text}-stand-letters", dict(p, part="letters"), 1)])]),
-                    PlateSpec("2/2 Plinth - black (printer B)",
-                              [Group("Plinth", [Part(f"{text}-stand-plinth", dict(p, part="base"), 2)])]),
-                ]
-                notes = ["Print plate 1 in red and plate 2 in black, on two printers at the same time if you like.",
-                         "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent)."]
-            else:
-                rot = dict(print_rotate=90)
-                plates = [PlateSpec("1/1 One piece - red letters on black plinth (tree supports)", [
-                    Group("Stand", [
-                        Part(f"{text}-stand-plinth-onepiece", dict(p, part="onepiece_base", **rot), 2),
-                        Part(f"{text}-stand-letters-onepiece", dict(p, part="onepiece_letters", **rot), 1)],
-                        print_params={"enable_support": "1", "support_type": "tree(auto)"})])]
-                notes = ["Printed upright in one piece; the AMS switches between red and black.",
-                         "Tree supports hold up the arms of E, F and T; they snap off from the hidden undersides. "
-                         "(The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio "
-                         "flags model-built supports as a floating cantilever, so the files use its own.)",
-                         "The word runs along the bed's Y axis so the thin letters are stiff against the moving bed."]
-            vs.append(Variant(text, "stand", printer, [RED, BLACK], plates, notes))
-
-            # --- plaque: black screen plaque with raised red letters and a progress bar
-            p = scad_params(printer, "plaque", text)
-            t = p.get("plaque_thickness", 4)
-            if not ams:
-                plates = [
-                    PlateSpec(f"1/2 Plaque - start black, PAUSE at {t + LAYER:.1f} mm, load red (printer A)",
-                              [Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 1),
-                                                Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1)])],
-                              pause_z=round(t + LAYER, 2)),
-                    PlateSpec("2/2 Stand - black (printer B)",
-                              [Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 1)])]),
-                ]
-                cols = [BLACK]
-                notes = [f"Plate 1 starts in black and pauses at {t + LAYER:.1f} mm: unload black, load red, resume.",
-                         "The progress bar's track stays as a black groove; the filled part and the letters come out red.",
-                         "Slide the plaque into the stand's leaning slot."]
-            else:
-                plates = [PlateSpec("1/1 Plaque (black, red, grey) + stand (black)", [
-                    Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 2),
-                                     Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1),
-                                     Part(f"{text}-plaque-track", dict(p, part="plaque_track"), 3)]),
-                    Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 2)])])]
-                cols = [RED, BLACK, GREY]
-                notes = ["One print: the AMS does the black plaque, red letters and bar, and the grey bar track.",
-                         "Slide the plaque into the stand's leaning slot."]
-            vs.append(Variant(text, "plaque", printer, cols, plates, notes))
-
-            # --- loose letters: two-tone chunky letters (black body, red face)
-            p = scad_params(printer, "letters", text)
-            depth = p.get("letters_depth", 10)
-            face = p.get("letters_face_depth", 3)
-            letters = letters_of(text)
-            if not ams:
-                groups = [Group(f"Letter {i + 1} {c}", [Part(f"{text}-letter-{i + 1}-{c}",
-                                                        dict(p, part="letter", letter_index=i), 1)])
-                          for i, c in letters]
-                pz = round(depth - face + LAYER, 2)
-                plates = [PlateSpec(f"Letters - start black, PAUSE at {pz:.1f} mm, load red", groups, pause_z=pz)]
-                cols = [BLACK]
-                notes = [f"Each plate starts in black and pauses at {pz:.1f} mm: swap to red and resume "
-                         "(delete the pause in Bambu Studio for all-red letters).",
-                         "The letters are split over two plates so two printers can share the work.",
-                         "Hang them with the paper template in templates/ so the arc lines up."]
-            else:
-                groups = [Group(f"Letter {i + 1} {c}", [
-                    Part(f"{text}-letter-{i + 1}-{c}-body", dict(p, part="letter_body", letter_index=i), 2),
-                    Part(f"{text}-letter-{i + 1}-{c}-face", dict(p, part="letter_face", letter_index=i), 1)])
-                    for i, c in letters]
-                plates = [PlateSpec("Letters - black body, red face", groups)]
-                cols = [RED, BLACK]
-                notes = ["Two-tone letters: the AMS changes from black to red once per plate.",
-                         "Hang them with the paper template in templates/ so the arc lines up."]
-            vs.append(Variant(text, "letters", printer, cols, plates, notes))
+        for set_, st in SETS.items():
+            for printer in st["printers"]:
+                vs += [stand_variant(text, set_, printer), plaque_variant(text, set_, printer),
+                       letters_variant(text, set_, printer)]
     return vs
+
 
 # ----------------------------------------------------------------------------- helpers
 
@@ -385,7 +431,7 @@ def pack(v: Variant):
     W, D = pr["bed"]
     m = pr["margin"]
     gap = 8
-    reserve = pr["ams"] and len(v.filaments) > 1
+    reserve = v.ams and len(v.filaments) > 1
     tower = (W - m - TOWER[0] + 5, D - m - TOWER[1] + 5) if reserve else None
     result = []
     for spec in v.plates:
@@ -395,7 +441,7 @@ def pack(v: Variant):
             items.append((g, hi[0] - lo[0], hi[1] - lo[1]))
         # no-AMS loose letters: always two plates so two printers can share the work
         chunks = [items]
-        if v.design == "letters" and not pr["ams"]:
+        if v.design == "letters" and not v.ams:
             chunks = [[it for it, _ in c] for c in split_balanced([(it, it[1]) for it in items], 2)]
         pending = list(chunks)
         plate_sets = []
@@ -666,9 +712,9 @@ def build_variant(v: Variant, out_dir: Path, keep_unsliced: bool):
             colour_changes=p.get("filament_change_times", 0), pause_z=spec.pause_z,
             objects=[g.label for g, _, _ in placed],
             warning=p.get("warning_message", "")))
-    return dict(key=v.key, text=v.text, design=v.design, printer=v.printer,
-                printer_label=pr["label"], filaments=v.filaments, notes=v.notes, plates=plates,
-                file=f"{v.printer}/{v.key}.3mf")
+    return dict(key=v.key, text=v.text, design=v.design, set=v.set, printer=v.printer,
+                printer_label=v.label, filaments=v.filaments, notes=v.notes, plates=plates,
+                file=f"{v.folder}/{v.key}.3mf")
 
 
 def export_templates(texts):
@@ -860,7 +906,7 @@ def main():
     results, failed = [], []
     for v in variants:
         try:
-            r = build_variant(v, PRINT_FILES / v.printer, a.keep_unsliced)
+            r = build_variant(v, PRINT_FILES / v.folder, a.keep_unsliced)
             results.append(r)
             log(f"ok   {v.key}: " + ", ".join(f"p{p['plate']} {p['minutes']} min" for p in r["plates"]))
         except Exception as e:  # keep going, report at the end
