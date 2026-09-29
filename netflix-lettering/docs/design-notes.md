@@ -82,7 +82,14 @@ Tested on MakerWorld with the logged-in account (unpublished):
 
 - **Stand, two-part (no AMS)**: letters print face down, so the textured PEI plate gives the visible face. Tabs follow each letter's bent bottom edge into matching pockets, with 0.15 mm clearance per side (0.146 mm measured).
 - **Stand, one piece (AMS)**: letters print upright. The horizontal arms of E, F and T overhang 7–13 mm, so the project turns on tree supports. The word is turned to run along Y: on a bed-slinger, the thin letters then see the bed's motion along their stiff direction.
-- **Plaque (no AMS)**: one filament swap. Black is used up to the plaque's top face (4.0 mm), and a pause runs at the start of the 4.2 mm layer. The progress bar's track is a groove in the plaque; the red fill and scrubber dot rise out of it, so the no-AMS version still reads as a two-colour bar.
+- **Breakaway fins (option)**: `stand_fins` builds supports into the model, in the spirit of [Support Fins](https://printfins.com/). printfins.com itself is a browser tool with manual orientation and no command-line interface, so the build can't call it.
+  - *Where fins go:* a 1 mm skin is taken under every downward-facing edge and opened with r = 0.35 mm, which keeps only the overhangs flatter than 45°.
+  - *Shape:* the region under those overhangs becomes twin 0.8 mm walls with one-layer rungs every 5 mm. They stand on the plinth or on a lower arm and stop 0.25 mm short of the letters, above and beside.
+  - *Why off by default:* Bambu Studio can't see model-built supports and reports a "floating cantilever", while its own tree supports are warning-free here. The build fails on either warning, so the files use tree supports.
+- **Three print-file sets**: `ams` (the AMS switches colours), `single-colour` (one colour per plate; colours come from separate parts) and `colour-swap` (a pause for a hand swap).
+  - *Stand:* the arched plinth has no single layer where black could end, so the stand can't be swapped mid-print. Its colour-swap version is the two-part stand, with the spool changed between plates.
+- **Plaque (single colour)**: the red letters and bar fill print face down as separate pieces. They press into 1.2 mm pockets in the black plaque, with 0.15 mm clearance per side. The pockets leave 2.8 mm of plaque below; the pieces stand 2 mm (letters) and 1 mm (bar) proud, like the other versions.
+- **Plaque (colour swap)**: one filament swap. Black is used up to the plaque's top face (4.0 mm), and a pause runs at the start of the 4.2 mm layer. The progress bar's track is a groove in the plaque; the red fill and scrubber dot rise out of it, so the no-AMS version still reads as a two-colour bar.
 - **Loose letters**: printed face up, with a 45° chamfer drawn in 0.2 mm steps (one per layer). The face is the top 3 mm, so a two-tone print needs only one colour change per plate. Letters are split over two plates by width, so two printers share the work.
 - **Plate layout**: AMS plates keep a 45 × 55 mm corner free for the prime tower.
 

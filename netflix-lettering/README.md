@@ -12,11 +12,17 @@ Two exhibition pieces for a school library, `NETFLIX` and `SERIER`, in Netflix-s
 
 Open the `.3mf` in Bambu Studio. The printer, plates, filaments, colours and any filament-swap pauses are already set, and every plate is sliced. For the plates, times and grams of each file, see [`docs/build-summary.md`](docs/build-summary.md).
 
-| Design | A1 mini, no AMS (default) | A1 mini + AMS lite | A2L Combo (AMS lite) |
-|---|---|---|---|
-| Stand | [netflix](print-files/a1-mini/netflix-stand-a1-mini.3mf) · [serier](print-files/a1-mini/serier-stand-a1-mini.3mf) | [netflix](print-files/a1-mini-ams-lite/netflix-stand-a1-mini-ams-lite.3mf) · [serier](print-files/a1-mini-ams-lite/serier-stand-a1-mini-ams-lite.3mf) | [netflix](print-files/a2l-combo-ams-lite/netflix-stand-a2l-combo-ams-lite.3mf) · [serier](print-files/a2l-combo-ams-lite/serier-stand-a2l-combo-ams-lite.3mf) |
-| Plaque | [netflix](print-files/a1-mini/netflix-plaque-a1-mini.3mf) · [serier](print-files/a1-mini/serier-plaque-a1-mini.3mf) | [netflix](print-files/a1-mini-ams-lite/netflix-plaque-a1-mini-ams-lite.3mf) · [serier](print-files/a1-mini-ams-lite/serier-plaque-a1-mini-ams-lite.3mf) | [netflix](print-files/a2l-combo-ams-lite/netflix-plaque-a2l-combo-ams-lite.3mf) · [serier](print-files/a2l-combo-ams-lite/serier-plaque-a2l-combo-ams-lite.3mf) |
-| Loose letters | [netflix](print-files/a1-mini/netflix-letters-a1-mini.3mf) · [serier](print-files/a1-mini/serier-letters-a1-mini.3mf) | [netflix](print-files/a1-mini-ams-lite/netflix-letters-a1-mini-ams-lite.3mf) · [serier](print-files/a1-mini-ams-lite/serier-letters-a1-mini-ams-lite.3mf) | [netflix](print-files/a2l-combo-ams-lite/netflix-letters-a2l-combo-ams-lite.3mf) · [serier](print-files/a2l-combo-ams-lite/serier-letters-a2l-combo-ams-lite.3mf) |
+The files come in three sets, each with all three designs:
+
+- **`single-colour/`**: no AMS; every plate prints in one colour. The colours come from separate parts that go together afterwards. This is the simplest option for the two A1 minis.
+- **`colour-swap/`**: no AMS; some plates pause once so you can swap black for red by hand, which gives two-tone parts from one plate.
+- **`ams/`**: the AMS lite switches colours by itself, on the A1 mini with an AMS lite or on the A2L Combo (bigger versions).
+
+| Design | Single colour (A1 mini) | Colour swap (A1 mini) | AMS (A1 mini + AMS lite) | AMS (A2L Combo) |
+|---|---|---|---|---|
+| Stand | [netflix](print-files/single-colour/a1-mini/netflix-stand-single-colour-a1-mini.3mf) · [serier](print-files/single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf) | [netflix](print-files/colour-swap/a1-mini/netflix-stand-colour-swap-a1-mini.3mf) · [serier](print-files/colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf) | [netflix](print-files/ams/a1-mini/netflix-stand-ams-a1-mini.3mf) · [serier](print-files/ams/a1-mini/serier-stand-ams-a1-mini.3mf) | [netflix](print-files/ams/a2l-combo/netflix-stand-ams-a2l-combo.3mf) · [serier](print-files/ams/a2l-combo/serier-stand-ams-a2l-combo.3mf) |
+| Plaque | [netflix](print-files/single-colour/a1-mini/netflix-plaque-single-colour-a1-mini.3mf) · [serier](print-files/single-colour/a1-mini/serier-plaque-single-colour-a1-mini.3mf) | [netflix](print-files/colour-swap/a1-mini/netflix-plaque-colour-swap-a1-mini.3mf) · [serier](print-files/colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf) | [netflix](print-files/ams/a1-mini/netflix-plaque-ams-a1-mini.3mf) · [serier](print-files/ams/a1-mini/serier-plaque-ams-a1-mini.3mf) | [netflix](print-files/ams/a2l-combo/netflix-plaque-ams-a2l-combo.3mf) · [serier](print-files/ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf) |
+| Loose letters | [netflix](print-files/single-colour/a1-mini/netflix-letters-single-colour-a1-mini.3mf) · [serier](print-files/single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf) | [netflix](print-files/colour-swap/a1-mini/netflix-letters-colour-swap-a1-mini.3mf) · [serier](print-files/colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf) | [netflix](print-files/ams/a1-mini/netflix-letters-ams-a1-mini.3mf) · [serier](print-files/ams/a1-mini/serier-letters-ams-a1-mini.3mf) | [netflix](print-files/ams/a2l-combo/netflix-letters-ams-a2l-combo.3mf) · [serier](print-files/ams/a2l-combo/serier-letters-ams-a2l-combo.3mf) |
 
 Finished sizes (NETFLIX; SERIER is about 15 % narrower):
 
@@ -30,19 +36,25 @@ All files use Bambu PLA Matte, the 0.20 mm Standard profile and the textured PEI
 
 ## Printing and assembly
 
-### No AMS: two A1 minis
+Every no-AMS project has two plates, so both A1 minis can run at once: in Bambu Studio, send plate 1 to one printer and plate 2 to the other. With one printer, print them one after the other.
 
-Every A1 mini project has two plates, so both printers can run at once. In Bambu Studio, send plate 1 to one printer and plate 2 to the other.
+### Single colour (no AMS)
 
-- **Stand**: plate 1 is the letters, in red, printed face down so the textured plate gives them a crisp front. Plate 2 is the plinth, in black. Push each letter's tab into its pocket; it is a press fit with 0.15 mm clearance per side, and a drop of glue makes it permanent. About 50 min per printer.
-- **Plaque**: plate 1 starts in black and **pauses at 4.2 mm**. On the printer, unload black, load red and resume. The letters and the filled part of the bar come out red; the rest of the bar stays a black groove. Plate 2 is the black stand. Slide the plaque into its leaning slot.
-- **Loose letters**: both plates start in black and **pause at 7.2 mm**. Swap to red and resume, which gives black letters with a red face. For all-red letters, start with red and just resume at the pause, or delete the pause in Bambu Studio's preview.
+- **Stand**: plate 1 is the letters, in red, printed face down so the textured plate gives them a crisp front. Plate 2 is the plinth, in black. Push each letter's tab into its pocket; it's a press fit with 0.15 mm clearance per side, and a drop of glue makes it permanent. About 50 min per printer.
+- **Plaque**: plate 1 is the red letters and the progress bar's fill as separate pieces, printed face down (about 17 min). Plate 2 is the black plaque with matching pockets, and its stand. Press each red piece into its pocket (0.15 mm clearance; glue optional), then slide the plaque into the stand's leaning slot.
+- **Loose letters**: all red, split over two plates.
 
-### With an AMS lite (A1 mini + AMS lite, or the A2L Combo)
+### Colour swap (no AMS, one manual swap per plate)
+
+- **Stand**: the same two plates as the single-colour set. Change the spool between plates rather than mid-print: the arched plinth has no single layer where black could end, so a one-piece swap isn't possible.
+- **Plaque**: plate 1 starts in black and **pauses at 4.2 mm**. On the printer, unload black, load red and resume. The letters and the filled part of the bar come out red; the rest of the bar stays a black groove. Plate 2 is the black stand.
+- **Loose letters**: both plates start in black and **pause at 7.2 mm**. Swap to red and resume, which gives black letters with a red face.
+
+### AMS (A1 mini + AMS lite, or the A2L Combo)
 
 One plate, no manual swaps. Load red in the slot for filament 1 and black for filament 2. The plaque also uses grey as filament 3, for the bar's track.
 
-- **Stand**: prints upright in one piece, running along the bed's Y axis so the thin letters are stiff against the moving bed. Tree supports hold up the arms of E, F and T and snap off their hidden undersides.
+- **Stand**: prints upright in one piece, running along the bed's Y axis so the thin letters are stiff against the moving bed. Bambu's tree supports hold up the arms of E, F and T and snap off their hidden undersides. The model can build [support-fin](https://printfins.com/)-style breakaway fins instead (`stand_fins = true`). Bambu Studio flags model-built supports as a floating cantilever, though, so the files use its own supports.
 - **Plaque**: the plaque and its stand print together.
 - **Loose letters**: black body with a red face. The AMS changes colour once per plate.
 
@@ -122,9 +134,9 @@ netflix-lettering/
 ├── netflix-lettering.scad      # the parametric model
 ├── fonts/                      # Bebas Neue, Anton, League Gothic + their OFL licences
 ├── print-files/
-│   ├── a1-mini/                # no AMS: two plates per project, manual swaps where needed
-│   ├── a1-mini-ams-lite/       # A1 mini with AMS lite: one plate, automatic colours
-│   └── a2l-combo-ams-lite/     # A2L Combo: bigger versions, automatic colours
+│   ├── single-colour/a1-mini/  # no AMS, one colour per plate, parts go together
+│   ├── colour-swap/a1-mini/    # no AMS, a pause for a manual filament swap
+│   └── ams/                    # AMS lite: a1-mini/ and a2l-combo/ (bigger versions)
 ├── makerworld/                 # MakerWorld Parametric Model Maker edition (generated)
 ├── templates/                  # 1:1 wall templates for the loose letters (SVG)
 ├── docs/
