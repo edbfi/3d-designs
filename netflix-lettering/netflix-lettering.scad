@@ -138,6 +138,7 @@ color_track   = "#5A5A5A"; // color
 makerworld_stand = "two parts"; // [two parts, one piece]
 
 /* [Hidden] */
+desktop_output = true;  // false in the MakerWorld edition
 $fn = 48;
 eps = 0.01;          // overlap for coplanar booleans
 BIG = 1e4;           // "infinity" for bounding bands
@@ -656,6 +657,10 @@ module print_part() {
     else if (part == "letter_body")      loose_letter(letter_index, "body");
 }
 
-if (part == "display") display();
-else if (part == "template") template2d();
-else rotate([0, 0, print_rotate]) print_part();
+// Desktop output. The MakerWorld edition (made by tools/build.py) turns this off, because
+// MakerWorld adds any top-level geometry to every plate; its output is mw_plate_N() above.
+if (desktop_output) {
+    if (part == "display") display();
+    else if (part == "template") template2d();
+    else rotate([0, 0, print_rotate]) print_part();
+}
