@@ -47,7 +47,7 @@ letter_height = 42; // [15:1:150]
 // Which display to build
 design = "stand"; // [stand, plaque, letters]
 // What to output: "display" = coloured preview; the rest are print parts laid flat
-part = "display"; // [display, letters, base, onepiece_letters, onepiece_base, plaque_body, plaque_red, plaque_track, plaque_stand, letter, letter_face, letter_body, template]
+part = "display"; // [display, letters, base, onepiece_letters, onepiece_base, onepiece_fins, plaque_body, plaque_red, plaque_track, plaque_stand, letter, letter_face, letter_body, template]
 // Which letter for the single-letter parts (0 = first)
 letter_index = 0; // [0:1:30]
 
@@ -68,6 +68,13 @@ stand_base_chamfer = 1.2; // [0:0.2:4]
 stand_tab_depth = 4; // [1:0.5:10]
 // Letter position front to back on the plinth (0 = centred, negative = towards the front)
 stand_letter_offset = 0; // [-20:0.5:20]
+// One-piece upright print: breakaway fins under flat overhangs (arms of E, F, T). Off by default:
+// slicer tree supports are proven here, and Bambu Studio warns about model-built supports.
+stand_fins = false;
+// Fin wall thickness
+stand_fin_thickness = 0.8; // [0.4:0.1:2]
+// Air gap between fins and letters (about one layer)
+stand_fin_gap = 0.25; // [0.1:0.05:0.6]
 
 /* [Plaque] */
 // Plaque thickness (black body)
@@ -446,6 +453,47 @@ module stand_letters_upright() {
     stand_place(stand_letter_depth, stand_letter_offset) clean2d() difference() { word2d(); under2d(); }
 }
 
+// Overhangs flatter than 45 degrees, final frame: a 1 mm skin under every downward-facing
+// edge, opened with r = 0.35 mm so that only skins thicker than 0.7 mm survive (a skin's
+// thickness is 1 mm x cos(slope)). Edges resting on the plinth are left out.
+module stand_overhang2d() {
+    t = 1;
+    offset(r = 0.35, $fn = 12) offset(r = -0.35, $fn = 12) difference() {
+        word2d();
+        translate([0, t]) word2d();
+        translate([0, t + 0.01]) under2d();
+    }
+}
+
+// Region under those overhangs, down to whatever is below (plinth or a lower arm). The fin
+// gap is kept above and beside a fin but not under it, so every fin stands on something.
+module stand_fin2d() {
+    g = stand_fin_gap;
+    clean2d() difference() {
+        intersection() { smear_down(H) stand_overhang2d(); above2d(-H - 0.01); }
+        smear_down(g) word2d();
+        minkowski() { word2d(); square([2 * g, eps], center = true); }
+        under2d();
+    }
+}
+
+// Breakaway fins for the one-piece upright print: two thin walls, one near each face of the
+// letters, tied together by one-layer rungs every 5 mm. They stand on the plinth (or a lower
+// arm) and stop stand_fin_gap below and beside the letters, so they snap off.
+module stand_fins() {
+    t = stand_fin_thickness;
+    w = stand_letter_depth - 3;              // distance between the two walls' centres
+    rung = layer_height;
+    translate([0, stand_letter_offset, 0]) {
+        for (y = [-w / 2, w / 2]) translate([0, y, 0]) stand_place(t) stand_fin2d();
+        intersection() {
+            stand_place(w) stand_fin2d();
+            for (z = [stand_base_height + 5 : 5 : stand_base_height + H * 1.2])
+                translate([-BIG, -BIG, z]) cube([2 * BIG, 2 * BIG, rung]);
+        }
+    }
+}
+
 // Two-part letters, print pose: face down (mirrored so the front is on the bed).
 module stand_letters_flat() {
     mirror([1, 0, 0]) linear_extrude(stand_letter_depth)
@@ -597,6 +645,7 @@ module mw_plate_1() {
         if (makerworld_stand == "one piece") {
             color(color_base) stand_base(pockets = false);
             color(color_letters) stand_letters_upright();
+            if (stand_fins) color(color_letters) stand_fins();
         } else color(color_letters) stand_letters_flat();
     } else if (design == "plaque") {
         color(color_base) plaque_body();
@@ -647,6 +696,7 @@ module print_part() {
     if      (part == "letters")          stand_letters_flat();
     else if (part == "base")             stand_base(pockets = true);
     else if (part == "onepiece_letters") stand_letters_upright();
+    else if (part == "onepiece_fins")    stand_fins();
     else if (part == "onepiece_base")    stand_base(pockets = false);
     else if (part == "plaque_body")      plaque_body();
     else if (part == "plaque_red")       plaque_red();
