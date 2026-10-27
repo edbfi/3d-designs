@@ -6,7 +6,7 @@ My parametric 3D-print designs. Each one is an OpenSCAD source you can customise
 
 | Design | What it is | Path |
 |--------|------------|------|
-| Netflix-style lettering | `NETFLIX` and `SERIER` in Netflix-style bent lettering for a school library display: a stand, a plaque and loose wall letters. Built for the Bambu Lab A1 mini (with or without AMS lite) and A2L Combo | [`netflix-lettering`](netflix-lettering) |
+| Streaming-style lettering | `SERIER` in streaming-style bent lettering for a school library display: a stand, a plaque and loose wall letters. Built for the Bambu Lab A1 mini (with or without AMS lite) and A2L Combo | [`streaming-lettering`](streaming-lettering) |
 
 ## Layout
 
