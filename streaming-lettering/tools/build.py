@@ -238,7 +238,7 @@ def plaque_variant(text, set_, printer):
         plates = [PlateSpec("1/2 Plaque (black, red, grey)", [
             Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 2, DOWN),
                              Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1, DOWN),
-                             Part(f"{text}-plaque-track", dict(p, part="plaque_track"), 3)])]),
+                             Part(f"{text}-plaque-track", dict(p, part="plaque_track"), 3, DOWN)])]),
             PlateSpec("2/2 Stand (black)", [stand])]
         return Variant(text, "plaque", set_, printer, [RED, BLACK, GREY], plates, [
             "Plate 1: the AMS does the black plaque, red letters and bar, and the grey bar track.",
@@ -618,7 +618,10 @@ def patch_project(src: Path, dst: Path, v: Variant, layout):
         set_meta(plate, "plater_name", spec.name)
     files["Metadata/model_settings.config"] = (
         '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root, encoding="unicode")).encode()
-    paint_seams(files, root, by_part)
+    painted = paint_seams(files, root, by_part)
+    unpainted = sorted({part.name for _, part in by_part.values() if part.seam_dir} - painted)
+    if unpainted:
+        raise RuntimeError(f"{v.key}: seams not painted on {unpainted}")
 
     ps = json.loads(files["Metadata/project_settings.config"])
     towers = [t for _, _, t in layout]
@@ -657,8 +660,9 @@ SEAM_ENFORCER = "4"  # Bambu's paint bits for an unsplit triangle in state 1 (en
 def paint_seams(files, root, by_part):
     """Seam enforcers on every triangle that faces a part's hidden side (Part.seam_dir), so
     each layer's seam lands where nobody looks. The 3MF text is edited in place: Bambu Studio
-    reads the object files with their original namespace prefixes."""
+    reads the object files with their original namespace prefixes. Returns the painted parts' names."""
     names = part_names(root)
+    painted = set()
     model = files["3D/3dmodel.model"].decode()
     for oid, body in re.findall(r'<object id="(\d+)"[^>]*>(.*?)</object>', model, re.S):
         for comp in re.findall(r"<component ([^>]*)/>", body):
@@ -671,6 +675,8 @@ def paint_seams(files, root, by_part):
                 raise RuntimeError(f"{hit[1].name}: rotated in the project, cannot paint its seams")
             path = a["p:path"].lstrip("/")
             files[path] = paint_object(files[path].decode(), a["objectid"], hit[1].seam_dir).encode()
+            painted.add(hit[1].name)
+    return painted
 
 
 def paint_object(text, object_id, direction, min_cos=0.6):
