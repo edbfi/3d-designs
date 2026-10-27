@@ -58,7 +58,7 @@ A MakerWorld-style model must react to any text, font and size, but `textmetrics
 - **Final size**: a box three times the letter height rides along 2000 units to the right, so every shape gets the letters' scale. It's then cut off again (`to_final`).
 - **Centring**: the font's side bearings would push the word off-centre and make the arc lopsided. A Minkowski sum with a tiny square at minus the ink centre fixes that. The square is built from the ink box's corners scaled by −½ (`centre_shift2d`).
 - **Proportional positions**: the progress bar's fill end is the word's right edge scaled by `2f − 1`.
-- **Cleanup**: a morphological opening (`offset(r = 0.02) offset(r = −0.02)`) drops scraps thinner than 0.04 mm that coincident edges can leave. The stepped chamfers use round-join insets, because mitred insets turn microscopic notches into long spikes.
+- **Cleanup**: a morphological opening (`offset(r = 0.02) offset(r = −0.02)`) drops scraps thinner than 0.04 mm that coincident edges can leave. A tiny mitred closing (±0.002 mm, `seal2d`) then seals the zero-width slits where glyph outlines meet. Extruded, a slit becomes a double wall inside the solid, so the mesh is no longer a closed solid (S and R had them). The stepped chamfers use round-join insets, because mitred insets turn microscopic notches into long spikes.
 
 The bend instantiates its child once per strip, so that child is kept tiny (bare text or a box). An early version that passed richer subtrees through it took 1 min 40 s per render.
 
@@ -81,17 +81,22 @@ Tested on MakerWorld with the logged-in account (unpublished):
 ## Printability decisions
 
 - **Stand, two-part (no AMS)**: letters print face down, so the textured PEI plate gives the visible face. Tabs follow each letter's bent bottom edge into matching pockets, with 0.15 mm clearance per side (0.146 mm measured).
-- **Stand, one piece (AMS)**: letters print upright. The horizontal arms of letters such as E, F and T overhang 7–13 mm, so the project turns on tree supports. The word is turned to run along Y: on a bed-slinger, the thin letters then see the bed's motion along their stiff direction.
+- **Stand, one piece (AMS)**: letters print upright. The horizontal arms of letters such as E, F and T overhang 7–13 mm, so the project turns on tree supports, in Bambu's "Tree Strong" style. On the A2L that's 11.5 g of support against 28.2 g for the default style, and 317 min against 362 min. The word is turned to run along Y: on a bed-slinger, the thin letters then see the bed's motion along their stiff direction.
+  - *Colour changes:* the arched plinth top shares about 51 layers with the letters on the A2L (28 on the A1 mini), and each of those layers needs a colour change. That's the price of a one-piece stand; the two-part stand needs none.
 - **Breakaway fins (option)**: `stand_fins` builds supports into the model, in the spirit of [Support Fins](https://printfins.com/). printfins.com itself is a browser tool with manual orientation and no command-line interface, so the build can't call it.
   - *Where fins go:* a 1 mm skin is taken under every downward-facing edge and opened with r = 0.35 mm, which keeps only the overhangs flatter than 45°.
   - *Shape:* the region under those overhangs becomes twin 0.8 mm walls with one-layer rungs every 5 mm. They stand on the plinth or on a lower arm and stop 0.25 mm short of the letters, above and beside.
   - *Why off by default:* Bambu Studio can't see model-built supports and reports a "floating cantilever", while its own tree supports are warning-free here. The build fails on either warning, so the files use tree supports.
 - **Three print-file sets**: `ams` (the AMS switches colours), `single-colour` (one colour per plate; colours come from separate parts) and `colour-swap` (a pause for a hand swap).
   - *Stand:* the arched plinth has no single layer where black could end, so the stand can't be swapped mid-print. Its colour-swap version is the two-part stand, with the spool changed between plates.
+- **Plaque (AMS)**: the plaque and its stand are on separate plates. On one plate, the black stand keeps rising beside the red letters, which costs a colour change on every one of their layers: 22 changes on the A2L, against 8 for the plaque alone.
 - **Plaque (single colour)**: the red letters and bar fill print face down as separate pieces. They press into 1.2 mm pockets in the black plaque, with 0.15 mm clearance per side. The pockets leave 2.8 mm of plaque below; the pieces stand 2 mm (letters) and 1 mm (bar) proud, like the other versions.
 - **Plaque (colour swap)**: one filament swap. Black is used up to the plaque's top face (4.0 mm), and a pause runs at the start of the 4.2 mm layer. The progress bar's track is a groove in the plaque; the red fill and scrubber dot rise out of it, so the no-AMS version still reads as a two-colour bar.
-- **Loose letters**: printed face up, with a 45° chamfer drawn in 0.2 mm steps (one per layer). The face is the top 3 mm, so a two-tone print needs only one colour change per plate. Letters are split over two plates by width, so two printers share the work.
-- **Plate layout**: AMS plates keep a 45 × 55 mm corner free for the prime tower.
+- **Loose letters**: printed face down (`letters_face_down`), so the textured plate gives the face its finish, as on the stand letters. The 45° chamfer, drawn in 0.2 mm steps (one per layer), then prints as a gentle overhang, and a back recess opens upwards with nothing to bridge. The face is the bottom 3 mm, so a two-tone print needs one colour change per plate, from red to black (the cheaper direction to purge). Lightning infill: only the back needs support, and lighter letters stay put on tape or putty (89 g instead of 126 g for the A2L set). Letters are split over two plates by width, so two printers share the work.
+- **Seams**: `tools/build.py` paints seam enforcers (Bambu's `paint_seam` triangle attribute) onto every face that points to a part's hidden side: the back of upright letters and plinths, and the bottom edge of flat-printed letters, tabs and plaques. On the A2L stand, 99 % of the letters' seams now sit on their backs; with the stock aligned seams, 76 % were on the fronts.
+- **Plinth arch**: printed in the standard 0.2 mm layers. 0.1 mm layers on the arch (a height-range modifier) were tried on the two-part plinth: half-height steps on the gentle arc, but 17 min more on a 48 min plate, for a difference that matte PLA mostly hides.
+- **Prime tower**: off on purpose. Bambu Studio's command-line slicer used to drop it by accident: with the same filament preset in every slot and no colours on the command line, it decides the print is single-filament. The build now passes the colours and sets the tower off explicitly. Measured on the A2L stand: a tower adds 16 min and 6 g, and flushing into infill (which needs the tower) saves less than the tower costs.
+- **Plate layout**: AMS plates keep a 45 × 55 mm corner free, in case you turn the prime tower on.
 
 ## Verification
 
@@ -101,7 +106,7 @@ Checked for these designs:
 - **One-piece contact**: letters meet the plinth with 0.008 mm³ of overlap. Vertical rays through every letter run solid into the plinth.
 - **Two-part fit**: letter tabs clear the plinth pockets by 0.146 mm.
 - **Every build variant**:
-  - no slivers in any part,
+  - no slivers in any part, and every part a closed solid (each edge shared by exactly two triangles),
   - real Bambu start G-code (textured-plate bed temperature, A1 mini/A2L calibration routine),
   - each plate on the intended filament,
   - pauses exactly at the intended layer,

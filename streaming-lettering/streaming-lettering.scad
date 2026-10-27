@@ -125,6 +125,9 @@ letters_face_depth = 3; // [0.6:0.2:10]
 letters_flat_bottom = false;
 // Back: "none" or a "recess" for tape, putty or magnet sheet
 letters_mount = "none"; // [none, recess]
+// Print the letters face down: the textured plate gives the face its finish, the chamfer
+// prints as a gentle 45-degree overhang and a back recess needs no bridging
+letters_face_down = true;
 // Recess depth and wall thickness
 letters_recess_depth = 3; // [1:0.5:10]
 letters_recess_wall = 2.4; // [1.2:0.2:6]
@@ -321,7 +324,12 @@ module word2d() {
 
 // Morphological opening: drops scraps thinner than 0.04 mm left by coincident edges.
 // Bevelled rather than rounded joins: round joins add an arc at every strip corner.
-module clean2d() { offset(delta = 0.02, chamfer = true) offset(delta = -0.02, chamfer = true) children(); }
+module clean2d() { seal2d() offset(delta = 0.02, chamfer = true) offset(delta = -0.02, chamfer = true) children(); }
+
+// Tiny mitred closing: seals zero-width slits (where glyph outlines meet, or left by an
+// intersection), which would otherwise extrude into walls inside the solid, so the mesh
+// would not be a closed solid.
+module seal2d() { offset(delta = -0.002) offset(delta = 0.002) children(); }
 
 // Region under the bent bottom edge (between the first and last letter), down to y = -1.9H.
 // Bent with the same strips as the letters, so the two meet exactly.
@@ -357,7 +365,7 @@ module letter_column(i) {
 
 // One letter in the final frame (optionally with a flat bottom).
 module letter2d(i) {
-    intersection() {
+    seal2d() intersection() {
         letter_column(i);
         union() {
             word2d();
@@ -625,6 +633,13 @@ module loose_letter(i, zone = "all") {
     }
 }
 
+// Loose letters, face up -> print pose: turned over onto the face when letters_face_down
+// (a rotation, not a mirror, so the letters read correctly once picked up).
+module letters_print_pose() {
+    if (letters_face_down) translate([0, 0, letters_depth]) rotate([0, 180, 0]) children();
+    else children();
+}
+
 // All letters in place, flat, face up (preview and MakerWorld plates; no flat bottoms).
 // half = "left"/"right" keeps only the letters before/from the middle one.
 module loose_word(zone, half = "all") {
@@ -676,7 +691,7 @@ module mw_plate_1() {
         color(color_base) plaque_body();
         color(color_letters) plaque_red();
         color(color_track) plaque_track();
-    } else {
+    } else letters_print_pose() {
         color(color_base) loose_word("body", "left");
         color(color_letters) loose_word("face", "left");
     }
@@ -686,7 +701,7 @@ module mw_plate_2() {
     if (design == "stand") {
         if (makerworld_stand != "one piece") color(color_base) stand_base(pockets = true);
     } else if (design == "plaque") color(color_base) plaque_stand();
-    else {
+    else letters_print_pose() {
         color(color_base) loose_word("body", "right");
         color(color_letters) loose_word("face", "right");
     }
@@ -729,9 +744,9 @@ module print_part() {
     else if (part == "plaque_stand")     plaque_stand();
     else if (part == "plaque_body_inlay") plaque_body_inlay();
     else if (part == "plaque_inlays")    plaque_inlays();
-    else if (part == "letter")           loose_letter(letter_index, "all");
-    else if (part == "letter_face")      loose_letter(letter_index, "face");
-    else if (part == "letter_body")      loose_letter(letter_index, "body");
+    else if (part == "letter")           letters_print_pose() loose_letter(letter_index, "all");
+    else if (part == "letter_face")      letters_print_pose() loose_letter(letter_index, "face");
+    else if (part == "letter_body")      letters_print_pose() loose_letter(letter_index, "body");
 }
 
 // Desktop output. The MakerWorld edition (made by tools/build.py) turns this off, because
