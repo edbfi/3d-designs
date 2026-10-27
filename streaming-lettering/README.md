@@ -40,8 +40,8 @@ Every no-AMS project has two plates, so both A1 minis can run at once: in Bambu 
 
 ### Single colour (no AMS)
 
-- **Stand**: plate 1 is the letters, in red, printed face down so the textured plate gives them a crisp front. Plate 2 is the plinth, in black. Push each letter's tab into its pocket; it's a press fit with 0.15 mm clearance per side, and a drop of glue makes it permanent. About 50 min per printer.
-- **Plaque**: plate 1 is the red letters and the progress bar's fill as separate pieces, printed face down (about 17 min). Plate 2 is the black plaque with matching pockets, and its stand. Press each red piece into its pocket (0.15 mm clearance; glue optional), then slide the plaque into the stand's leaning slot.
+- **Stand**: plate 1 is the letters, in red, printed face down so the textured plate gives them a crisp front. Plate 2 is the plinth, in black. Push each letter's tab into its pocket; it's a press fit with 0.15 mm clearance per side, and a drop of glue makes it permanent.
+- **Plaque**: plate 1 is the red letters and the progress bar's fill as separate pieces, printed face down. Plate 2 is the black plaque with matching pockets, and its stand. Press each red piece into its pocket (0.15 mm clearance; glue optional), then slide the plaque into the stand's leaning slot.
 - **Loose letters**: all red, printed face down, split over two plates.
 
 ### Colour swap (no AMS, one manual swap per plate)
@@ -54,7 +54,7 @@ Every no-AMS project has two plates, so both A1 minis can run at once: in Bambu 
 
 No manual swaps. Load red in the slot for filament 1 and black for filament 2. The plaque also uses grey as filament 3, for the bar's track.
 
-- **Stand**: prints upright in one piece, running along the bed's Y axis so the thin letters are stiff against the moving bed. Bambu's tree supports ("Tree Strong") hold up the arms of letters such as E, F and T and snap off their hidden undersides. The model can build [support-fin](https://printfins.com/)-style breakaway fins instead (`stand_fins = true`). Bambu Studio flags model-built supports as a floating cantilever, though, so the files use its own supports.
+- **Stand**: prints upright in one piece, running along the bed's Y axis so the thin letters are stiff against the moving bed. Bambu's tree supports ("Tree Strong") hold up the arms of letters such as E, F and T and snap off their hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`; see the design notes for why the files don't.)
 - **Plaque**: plate 1 is the plaque, plate 2 its stand. Printed together, the black stand would cost an extra colour change on every layer of the red letters.
 - **Loose letters**: printed face down: a red face, then a black body. The AMS changes colour once per plate.
 
@@ -64,15 +64,15 @@ Print the matching template from [`templates/`](templates) at 100 % scale (no "f
 
 ## Print settings
 
-The files start from Bambu's stock 0.20 mm Standard profile. What's changed, and why:
+The files start from Bambu's stock 0.20 mm Standard profile. What's changed, and why (measurements in [`docs/design-notes.md`](docs/design-notes.md#printability-decisions)):
 
 | Setting | Where | Why |
 |---|---|---|
 | Painted seams | every part | Each layer's seam is painted onto a hidden side: the letters' backs, their bottom edges, the tabs, the edge that sits in the plaque stand. Stock seams landed on the stand letters' fronts. |
 | Face down | loose letters, stand letters (two-part), plaque inlays | The textured plate gives the visible face a crisp, even finish with no top-surface lines. |
 | Lightning infill | loose letters | Only the back needs holding up; the letters come out about 30 % lighter, which helps tape and putty hold them. |
-| Tree Strong supports | one-piece stand | Measured on the A2L: 17 g less support and 45 min faster than the default trees. |
-| No prime tower | AMS files | The A-series printers purge into their chute. On the A2L stand a tower added 16 min and 6 g for no visible gain. |
+| Tree Strong supports | one-piece stand | Less support and a faster print than the default trees. |
+| No prime tower | every file | The A-series printers purge into their chute; a tower only adds time and filament. |
 
 Plinths and the plaque stand keep the stock 15 % infill: their weight keeps the display from tipping over.
 
@@ -92,8 +92,6 @@ Open `streaming-lettering.scad` in [OpenSCAD](https://openscad.org) and show **W
 
 Each design has its own group of settings: plinth size, chamfers, letter depth, plaque margins, progress-bar fill, stand tilt, mounting recess and so on. Every setting has a comment in the file.
 
-A full render takes 5–20 s.
-
 To get your own text into Bambu Studio, you have two options:
 
 - **One part at a time**: set `part` (for example `letters` and then `base` for the stand), press F6 and export each as STL.
@@ -111,66 +109,22 @@ The desktop file uses no experimental OpenSCAD features, so it runs in the stock
 ## Rebuilding the print files
 
 ```bash
-python3 tools/build.py                                   # everything, about 4 minutes
+python3 tools/build.py                                   # everything
 python3 tools/build.py --only serier --only 'a1-mini$'   # a subset
 python3 tools/build.py --list                            # all variant keys
 ```
 
-Needs an OpenSCAD snapshot with the Manifold backend (2025 or newer) and Bambu Studio in `/Applications` (tested with 02.08.02.61).
-
-On Linux (arm64 or amd64), `tools/docker/` runs the script in a container instead: the official OpenSCAD image plus Flathub's build of Bambu Studio 02.08.02.61, pinned. Nothing is compiled; the first run builds the image in a few minutes (a 1.5 GB download).
+Needs an OpenSCAD snapshot with the Manifold backend (2025 or newer) and Bambu Studio in `/Applications` (tested with 02.08.02.61). On Linux (arm64 or amd64), `tools/docker/` runs the script in a container with both pinned:
 
 ```bash
 tools/docker/run.sh python3 tools/build.py --jobs 2   # CPUS=2 to cap the container lower (default 3)
 ```
 
-It slices like the macOS app: re-slicing the original A2L stand gave 362 min against the app's 361, with the same colour changes.
-
-For every variant the script:
-
-1. exports the parts,
-2. lays out the plates,
-3. builds the project with Bambu Studio's CLI and adds the pauses,
-4. slices every plate with the stock Bambu profiles.
-
-It refuses to write a project unless all of these hold:
-
-- no stray mesh slivers, and every part a closed solid,
-- the real printer start G-code is present,
-- each plate uses the right filament,
-- pauses are at the exact layer.
-
-Plate previews, the build summary, templates and renders in `docs/` are regenerated too.
+The script exports the parts, lays out and slices every plate with the stock Bambu profiles, and refuses to write a project that fails its checks (listed in [`docs/build-summary.md`](docs/build-summary.md)). It also regenerates `templates/`, `makerworld/` and the images and summary in `docs/`. A failed variant leaves its logs in `build/work/<variant>/`.
 
 ## How the streaming look is made
 
-The reference wordmark is custom lettering in a proprietary typeface. So this uses **Bebas Neue**, a free font (SIL OFL) whose letter widths match the wordmark's within about 2 % of the letter height. It is then bent the same way:
-
-- the top edge stays flat;
-- the bottom edge follows a parabola, so the middle letters are 13.4 % shorter than the outer ones.
-
-Those numbers, and letter spacing 1.08, were measured and fitted against the reference wordmark. For the measurements, the font comparison and the geometry tricks that keep the model customisable without experimental OpenSCAD features, see [`docs/design-notes.md`](docs/design-notes.md).
-
-## Files
-
-```
-streaming-lettering/
-├── streaming-lettering.scad    # the parametric model
-├── fonts/                      # Bebas Neue, Anton, League Gothic + their OFL licences
-├── print-files/
-│   ├── single-colour/a1-mini/  # no AMS, one colour per plate, parts go together
-│   ├── colour-swap/a1-mini/    # no AMS, a pause for a manual filament swap
-│   └── ams/                    # AMS lite: a1-mini/ and a2l-combo/ (bigger versions)
-├── makerworld/                 # MakerWorld Parametric Model Maker edition (generated)
-├── templates/                  # 1:1 wall templates for the loose letters (SVG)
-├── docs/
-│   ├── design-notes.md         # research, measurements, techniques
-│   ├── build-summary.md        # every project: plates, times, grams (generated)
-│   └── images/                 # renders and Bambu plate previews (generated)
-└── tools/
-    ├── build.py                # regenerates print-files/, templates/ and docs/
-    └── docker/                 # Linux toolchain (arm64 and amd64): Bambu Studio + OpenSCAD
-```
+The reference wordmark uses a proprietary typeface, so this bends **Bebas Neue**, a free font (SIL OFL) with nearly the same letter widths: the top edge stays flat and the bottom follows a parabola, with the middle letters 13.4 % shorter. The measurements and techniques are in [`docs/design-notes.md`](docs/design-notes.md).
 
 ## Licence and trademarks
 

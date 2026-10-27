@@ -4,6 +4,9 @@ build/
 # Local-only reference material (third-party logos are trademarks: never commit them)
 reference/
 
+# Local Claude Code settings
+.claude/settings.local.json
+
 # Python
 __pycache__/
 *.pyc
