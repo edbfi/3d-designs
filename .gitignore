@@ -1,7 +1,7 @@
 # Build scratch (tools/build.py): exported STLs, flattened presets, Bambu CLI work dirs
 build/
 
-# Local-only reference material (the real Netflix logo is a trademark: never commit it)
+# Local-only reference material (third-party logos are trademarks: never commit them)
 reference/
 
 # Python
