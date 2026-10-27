@@ -32,7 +32,7 @@ Finished sizes:
 | Plaque | 135 × 69 mm, 36 mm letters | 256 × 126 mm, 70 mm letters |
 | Loose letters | 75 mm tall, 252 mm wide on the wall | 120 mm tall, 390 mm wide on the wall |
 
-All files use Bambu PLA Matte, the 0.20 mm Standard profile and the textured PEI plate, with a few tweaks (see [Print settings](#print-settings)). Any PLA works; pick a strong red (the renders use `#E50914`) and a black or charcoal.
+All files use Bambu PLA Matte, the 0.20 mm Standard profile and the textured PEI plate, with a few tweaks (see [Print settings](#print-settings)). Nothing needs supports. Any PLA works; pick a strong red (the renders use `#E50914`) and a black or charcoal.
 
 ## Printing and assembly
 
@@ -54,7 +54,7 @@ Every no-AMS project has two plates, so both A1 minis can run at once: in Bambu 
 
 No manual swaps. Load red in the slot for filament 1 and black for filament 2. The plaque also uses grey as filament 3, for the bar's track.
 
-- **Stand**: prints upright in one piece, running along the bed's Y axis so the thin letters are stiff against the moving bed. Bambu's tree supports ("Tree Strong") hold up the arms of letters such as E, F and T and snap off their hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`; see the design notes for why the files don't.)
+- **Stand**: the same two plates as the single-colour set, so each plate is one colour; assemble it the same way. Printed upright in one piece, the arms of letters such as E, F and T would need supports.
 - **Plaque**: plate 1 is the plaque, plate 2 its stand. Printed together, the black stand would cost an extra colour change on every layer of the red letters.
 - **Loose letters**: printed face down: a red face, then a black body. The AMS changes colour once per plate.
 
@@ -71,7 +71,6 @@ The files start from Bambu's stock 0.20 mm Standard profile. What's changed, and
 | Painted seams | every part | Each layer's seam is painted onto a hidden side: the letters' backs, their bottom edges, the tabs, the edge that sits in the plaque stand. Stock seams landed on the stand letters' fronts. |
 | Face down | loose letters, stand letters (two-part), plaque inlays | The textured plate gives the visible face a crisp, even finish with no top-surface lines. |
 | Lightning infill | loose letters | Only the back needs holding up; the letters come out about 30 % lighter, which helps tape and putty hold them. |
-| Tree Strong supports | one-piece stand | Less support and a faster print than the default trees. |
 | No prime tower | every file | The A-series printers purge into their chute; on these parts a tower added time and filament for no visible gain. |
 
 Plinths and the plaque stand keep the stock 15 % infill: their weight keeps the display from tipping over.
@@ -99,7 +98,7 @@ To get your own text into Bambu Studio, you have two options:
 
 On **MakerWorld's Parametric Model Maker**, use [`makerworld/streaming-lettering-makerworld.scad`](makerworld/streaming-lettering-makerworld.scad), not the desktop file. It's generated from the desktop file and tested on MakerWorld.
 
-- **Plates:** its 3MF has two plates, one per printer, in the right colours: stand letters and plinth, plaque and its stand, or the loose letters split in two. Set `makerworld_stand = "one piece"` for the upright AMS stand.
+- **Plates:** its 3MF has two plates, one per printer, in the right colours: stand letters and plinth, plaque and its stand, or the loose letters split in two.
 - **Fonts:** you get MakerWorld's font picker with 500+ Google Fonts; Bebas Neue is among them.
 - **Before printing a MakerWorld 3MF:** switch the plate type to **Textured PEI Plate** in Bambu Studio. MakerWorld defaults to Cool Plate, which heats the bed to only 35 °C.
 - **No pauses:** MakerWorld can't add filament-swap pauses, so the plaque and loose letters need an AMS for two colours. For the no-AMS two-colour versions, use the files in `print-files/`.

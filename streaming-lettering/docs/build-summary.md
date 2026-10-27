@@ -12,10 +12,10 @@ plates the weight is the total for both colours.
 
 | Project | Printer | Plates | Print time | Filament | Purge |
 |---|---|---|---|---|---|
-| [`ams/a1-mini/serier-stand-ams-a1-mini.3mf`](../print-files/ams/a1-mini/serier-stand-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 1 | 2 h 22 min | red 23 g, black 24 g | 9 g |
+| [`ams/a1-mini/serier-stand-ams-a1-mini.3mf`](../print-files/ams/a1-mini/serier-stand-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 2 | 1 h 35 min | red 16 g, black 24 g | - |
 | [`ams/a1-mini/serier-plaque-ams-a1-mini.3mf`](../print-files/ams/a1-mini/serier-plaque-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 2 | 1 h 28 min | red 5 g, black 41 g, grey 1 g | 2 g |
 | [`ams/a1-mini/serier-letters-ams-a1-mini.3mf`](../print-files/ams/a1-mini/serier-letters-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 1 | 1 h 29 min | red 10 g, black 25 g | under 1 g |
-| [`ams/a2l-combo/serier-stand-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-stand-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 1 | 5 h 17 min | red 72 g, black 89 g | 15 g |
+| [`ams/a2l-combo/serier-stand-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-stand-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 2 | 4 h 07 min | red 57 g, black 89 g | - |
 | [`ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 2 | 3 h 33 min | red 18 g, black 137 g, grey 1 g | 2 g |
 | [`ams/a2l-combo/serier-letters-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-letters-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 1 | 3 h 14 min | red 25 g, black 64 g | under 1 g |
 | [`single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 35 min | red 16 g, black 24 g | - |
@@ -23,7 +23,7 @@ plates the weight is the total for both colours.
 | [`single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 35 min | red 35 g | - |
 | [`colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 35 min | red 16 g, black 24 g | - |
 | [`colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 19 min | 45 g red + black (manual swap) | - |
-| [`colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 35 min | 35 g red + black (manual swap) | - |
+| [`colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 36 min | 35 g red + black (manual swap) | - |
 
 Plates of one project can run on different printers at the same time,
 so the wall-clock time with two A1 minis is the longest plate, not the total.
@@ -32,11 +32,12 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 
 ### ams/a1-mini/serier-stand-ams-a1-mini.3mf
 
-- Printed upright in one piece; the AMS switches between red and black.
-- Tree supports hold up the arms of letters such as E, F and T; they snap off from the hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio flags model-built supports as a floating cantilever, so the files use its own.)
-- The word runs along the bed's Y axis so the thin letters are stiff against the moving bed.
+- Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
+- Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).
+- The AMS loads red for plate 1 and black for plate 2, so neither plate changes colour.
 
-- Plate 1: **1/1 One piece - red letters on black plinth (tree supports)**: 142 min, 29 AMS changes
+- Plate 1: **1/2 Letters - red - face down (printer A)**: 47 min
+- Plate 2: **2/2 Plinth - black (printer B)**: 48 min
 
 ### ams/a1-mini/serier-plaque-ams-a1-mini.3mf
 
@@ -56,11 +57,12 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 
 ### ams/a2l-combo/serier-stand-ams-a2l-combo.3mf
 
-- Printed upright in one piece; the AMS switches between red and black.
-- Tree supports hold up the arms of letters such as E, F and T; they snap off from the hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio flags model-built supports as a floating cantilever, so the files use its own.)
-- The word runs along the bed's Y axis so the thin letters are stiff against the moving bed.
+- Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
+- Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).
+- The AMS loads red for plate 1 and black for plate 2, so neither plate changes colour.
 
-- Plate 1: **1/1 One piece - red letters on black plinth (tree supports)**: 317 min, 51 AMS changes
+- Plate 1: **1/2 Letters - red - face down (printer A)**: 119 min
+- Plate 2: **2/2 Plinth - black (printer B)**: 128 min
 
 ### ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf
 
@@ -127,6 +129,6 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 - The letters are split over two plates so two printers can share the work.
 - Hang them with the paper template in templates/ so the arc lines up.
 
-- Plate 1: **1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black**: 51 min, pause at 3.2 mm
+- Plate 1: **1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black**: 52 min, pause at 3.2 mm
 - Plate 2: **2/2 Letters I E R - start red, PAUSE at 3.2 mm, load black**: 44 min, pause at 3.2 mm
 
