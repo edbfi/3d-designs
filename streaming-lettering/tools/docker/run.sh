@@ -1,8 +1,8 @@
 #!/bin/sh
 # Run a command in the toolchain image with streaming-lettering/ mounted as the working directory,
 # for example: tools/docker/run.sh python3 tools/build.py --only 'a1-mini$'
-# Builds the image first: a few minutes the first time (nothing is compiled), cached after
-# that. CPUS caps the container (default 3), which keeps small fanless boards from overheating.
+# Builds the image first: a few minutes the first time, cached after that.
+# CPUS caps the container (default 3), which keeps small fanless boards from overheating.
 set -eu
 IMAGE=${STREAMING_LETTERING_IMAGE:-streaming-lettering-tools}
 HERE=$(cd "$(dirname "$0")" && pwd)

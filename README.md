@@ -6,7 +6,7 @@ My parametric 3D-print designs. Each one is an OpenSCAD source you can customise
 
 | Design | What it is | Path |
 |--------|------------|------|
-| Streaming-style lettering | `SERIER` in streaming-style bent lettering for a school library display: a stand, a plaque and loose wall letters. Built for the Bambu Lab A1 mini (with or without AMS lite) and A2L Combo | [`streaming-lettering`](streaming-lettering) |
+| Streaming-style lettering | Bent streaming-style lettering for a library display: a stand, a plaque and loose wall letters | [`streaming-lettering`](streaming-lettering) |
 
 ## Layout
 
@@ -14,13 +14,14 @@ Every design has its own folder:
 
 ```
 <design>/
-├── README.md            # what it is, which file to print, how to customise
-├── <design>.scad        # the parametric source (OpenSCAD Customizer)
-├── fonts/               # bundled fonts with their licences, if any
-├── print-files/         # ready-to-print Bambu Studio projects, one folder per printer setup
-├── templates/           # paper templates, if any
-├── docs/                # design notes, build summary, images
-└── tools/               # the script that regenerates print-files/ and docs/
+├── README.md        # what to print, assembly, customising
+├── <design>.scad    # the parametric source (OpenSCAD Customizer)
+├── fonts/           # bundled fonts with their licences, if any
+├── docs/            # design notes; build summary and images (generated)
+├── print-files/     # ready-to-print Bambu Studio projects (generated)
+├── templates/       # paper templates, if any (generated)
+├── makerworld/      # MakerWorld edition of the .scad, if any (generated)
+└── tools/           # the build script that generates the rest
 ```
 
 ## Licence

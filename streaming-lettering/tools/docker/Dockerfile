@@ -1,11 +1,14 @@
-# Toolchain for tools/build.py on Linux, native on arm64 and amd64, with nothing to compile:
+# Toolchain for tools/build.py on Linux, native on arm64 and amd64, from prebuilt binaries:
 #   - OpenSCAD: the official image, a snapshot with the Manifold backend
 #   - Bambu Studio 02.08.02.61: Flathub's build, run straight from its files through its own
 #     runtime (the flatpak sandbox cannot start inside Docker); see the bambu-studio launcher
+#   - glfw-shim.c, the only thing compiled, so headless plate thumbnails render
 # Built by run.sh on first use: a few minutes, mostly a 1.5 GB download.
 FROM openscad/openscad:dev.2026-10-26@sha256:3268ba487a3b92e605f44431c890d71ed576d5cc71a249c24a4af489d88990c6
 
-# Flathub commits, per architecture: Bambu Studio 02.08.02.61 and the runtimes it runs on
+# Flathub commits, per architecture: Bambu Studio 02.08.02.61 and the runtimes it runs on.
+# To bump, find the new commits with `flatpak remote-info --log flathub <ref>` for each arch,
+# update them and the version check at the end, then rebuild and compare docs/build-summary.md.
 ARG BAMBU_COMMIT_aarch64=fa17d48b6e2a3bd367c8a534a651826a5b14b23477d69d823471a215aeda60da
 ARG BAMBU_COMMIT_x86_64=68a634d4d733ce7acf79009095db6f7ca76625f0eb810eef1e92dc7adeba7852
 ARG GNOME_COMMIT_aarch64=f4e7c6946a0a4555a5667366edeab61ebce9f4357eb6901f58ca0dbbaccdcb2d
