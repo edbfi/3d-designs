@@ -1,0 +1,16 @@
+#!/bin/sh
+# Bambu Studio from Flathub, outside the flatpak sandbox: start it through its runtime's dynamic
+# loader with the runtime's libraries. Thumbnails need an X display (run.sh starts Xvfb) and
+# libbambu-glfw-shim.so (see glfw-shim.c).
+set -eu
+R=/opt/bambu-runtime
+GL=/opt/bambu-gl
+arch=$(uname -m)
+case "$arch" in
+    aarch64) loader=$R/lib/ld-linux-aarch64.so.1 ;;
+    x86_64) loader=$R/lib/ld-linux-x86-64.so.2 ;;
+    *) echo "bambu-studio: unsupported architecture $arch" >&2; exit 1 ;;
+esac
+export LC_ALL=C.UTF-8 LIBGL_DRIVERS_PATH=$GL/lib/dri __GLX_VENDOR_LIBRARY_NAME=mesa
+exec "$loader" --preload /usr/local/lib/libbambu-glfw-shim.so \
+    --library-path "/app/lib:$R/lib/$arch-linux-gnu:$GL/lib" /app/bin/bambu-studio "$@"

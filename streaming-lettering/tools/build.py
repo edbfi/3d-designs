@@ -16,8 +16,9 @@ Usage:
   python3 tools/build.py --renders-only    # just the preview renders in docs/images/renders
   python3 tools/build.py --makerworld-only # just the MakerWorld edition in makerworld/
 
-Needs OpenSCAD (2021.01 or newer; a 2025+ snapshot with the Manifold backend is much faster)
-and Bambu Studio (tested with 02.08.02.61).
+Needs an OpenSCAD snapshot with the Manifold backend (2025 or newer) and Bambu Studio
+(tested with 02.08.02.61). On Linux, arm64 or amd64, tools/docker/ provides both in a
+container: `tools/docker/run.sh python3 tools/build.py`.
 """
 
 import argparse
@@ -45,9 +46,12 @@ MAKERWORLD = ROOT / "makerworld"                 # MakerWorld Parametric Model M
 PLATE_IMAGES = DOCS / "images" / "plates"
 RENDER_IMAGES = DOCS / "images" / "renders"
 
-OPENSCAD = shutil.which("openscad") or "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD"
-BAMBU = "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio"
-PROFILES = Path("/Applications/BambuStudio.app/Contents/Resources/profiles/BBL")
+# Tool locations: macOS app bundles by default; override with environment variables
+# (tools/docker/ sets them for the Linux toolchain image, native on arm64 and amd64).
+OPENSCAD = (os.environ.get("OPENSCAD") or shutil.which("openscad")
+            or "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD")
+BAMBU = os.environ.get("BAMBU_STUDIO", "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio")
+PROFILES = Path(os.environ.get("BAMBU_PROFILES", "/Applications/BambuStudio.app/Contents/Resources/profiles/BBL"))
 
 RED, BLACK, GREY = "#E50914", "#161616", "#5A5A5A"
 TEXTS = ["SERIER"]
@@ -104,6 +108,7 @@ class Part:
     name: str                 # file stem, also the part name shown in Bambu Studio
     params: dict              # OpenSCAD -D overrides for this part
     filament: int             # 1-based filament slot
+    seam_dir: tuple = None    # print-pose direction of the part's hidden side: seams are painted there
     stl: Path = None
     bbox: tuple = None        # ((xmin, ymin, zmin), (xmax, ymax, zmax))
 
@@ -113,7 +118,7 @@ class Group:
     """One object on a plate (several parts are merged into one multi-colour object)."""
     label: str
     parts: list
-    print_params: dict = field(default_factory=dict)
+    print_params: dict = field(default_factory=dict)   # Bambu object settings
 
 
 @dataclass
@@ -121,6 +126,7 @@ class PlateSpec:
     name: str
     groups: list
     pause_z: float = None     # top_z of the first layer after a manual filament swap
+    pause_colour: str = RED   # colour loaded at the pause (for Bambu Studio's preview)
 
 
 @dataclass
@@ -148,6 +154,12 @@ class Variant:
     @property
     def label(self):
         return f"{PRINTERS[self.printer]['name']}, {SETS[self.set]['label']}"
+
+
+# Hidden side of each part in its print pose, where seams are painted (display front is -Y):
+DOWN = (0, -1, 0)    # flat parts: the letters' bottom edge (in a pocket, in the stand slot, or underneath)
+BACK = (0, 1, 0)     # parts printed as displayed: the back
+BACK_ROT = (-1, 0, 0)  # one-piece stand, turned 90 degrees about Z to run along the bed's Y axis
 
 
 def scad_params(printer, design, text, **extra):
@@ -180,9 +192,9 @@ def split_balanced(items, n):
 def stand_two_part(text, p, notes_extra=()):
     plates = [
         PlateSpec("1/2 Letters - red - face down (printer A)",
-                  [Group("Letters", [Part(f"{text}-stand-letters", dict(p, part="letters"), 1)])]),
+                  [Group("Letters", [Part(f"{text}-stand-letters", dict(p, part="letters"), 1, DOWN)])]),
         PlateSpec("2/2 Plinth - black (printer B)",
-                  [Group("Plinth", [Part(f"{text}-stand-plinth", dict(p, part="base"), 2)])]),
+                  [Group("Plinth", [Part(f"{text}-stand-plinth", dict(p, part="base"), 2, BACK)])]),
     ]
     notes = ["Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
              "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
@@ -196,9 +208,12 @@ def stand_variant(text, set_, printer):
         rot = dict(print_rotate=90)
         plates = [PlateSpec("1/1 One piece - red letters on black plinth (tree supports)", [
             Group("Stand", [
-                Part(f"{text}-stand-plinth-onepiece", dict(p, part="onepiece_base", **rot), 2),
-                Part(f"{text}-stand-letters-onepiece", dict(p, part="onepiece_letters", **rot), 1)],
-                print_params={"enable_support": "1", "support_type": "tree(auto)"})])]
+                Part(f"{text}-stand-plinth-onepiece", dict(p, part="onepiece_base", **rot), 2, BACK_ROT),
+                Part(f"{text}-stand-letters-onepiece", dict(p, part="onepiece_letters", **rot), 1, BACK_ROT)],
+                # "Tree strong": classic branches, measured against the default (organic-style)
+                # trees on the A2L: 17 g less support and 45 min faster
+                print_params={"enable_support": "1", "support_type": "tree(auto)",
+                              "support_style": "tree_strong"})])]
         notes = ["Printed upright in one piece; the AMS switches between red and black.",
                  "Tree supports hold up the arms of letters such as E, F and T; they snap off from the hidden undersides. "
                  "(The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio "
@@ -216,22 +231,26 @@ def stand_variant(text, set_, printer):
 def plaque_variant(text, set_, printer):
     p = scad_params(printer, "plaque", text)
     t = p.get("plaque_thickness", 4)
+    stand = Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 2, BACK)])
     if set_ == "ams":
-        plates = [PlateSpec("1/1 Plaque (black, red, grey) + stand (black)", [
-            Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 2),
-                             Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1),
-                             Part(f"{text}-plaque-track", dict(p, part="plaque_track"), 3)]),
-            Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 2)])])]
+        # the stand gets its own plate: next to the plaque it is black on every layer of the red
+        # letters, which would cost an extra colour change per layer
+        plates = [PlateSpec("1/2 Plaque (black, red, grey)", [
+            Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 2, DOWN),
+                             Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1, DOWN),
+                             Part(f"{text}-plaque-track", dict(p, part="plaque_track"), 3, DOWN)])]),
+            PlateSpec("2/2 Stand (black)", [stand])]
         return Variant(text, "plaque", set_, printer, [RED, BLACK, GREY], plates, [
-            "One print: the AMS does the black plaque, red letters and bar, and the grey bar track.",
+            "Plate 1: the AMS does the black plaque, red letters and bar, and the grey bar track.",
+            "Plate 2: the black stand, on its own so the plaque needs no extra colour changes.",
             "Slide the plaque into the stand's leaning slot."])
     if set_ == "single-colour":
         plates = [
             PlateSpec("1/2 Red pieces - letters and bar, face down (printer A)",
-                      [Group("Red pieces", [Part(f"{text}-plaque-inlays", dict(p, part="plaque_inlays"), 1)])]),
+                      [Group("Red pieces", [Part(f"{text}-plaque-inlays", dict(p, part="plaque_inlays"), 1, DOWN)])]),
             PlateSpec("2/2 Plaque with pockets + stand - black (printer B)",
-                      [Group("Plaque", [Part(f"{text}-plaque-body-inlay", dict(p, part="plaque_body_inlay"), 2)]),
-                       Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 2)])]),
+                      [Group("Plaque", [Part(f"{text}-plaque-body-inlay", dict(p, part="plaque_body_inlay"), 2, DOWN)]),
+                       stand]),
         ]
         return Variant(text, "plaque", set_, printer, [RED, BLACK], plates, [
             "Plate 1 in red: the letters and the progress bar's fill as separate pieces, printed face down.",
@@ -240,11 +259,11 @@ def plaque_variant(text, set_, printer):
             "Slide the plaque into the stand's leaning slot."])
     plates = [
         PlateSpec(f"1/2 Plaque - start black, PAUSE at {t + LAYER:.1f} mm, load red (printer A)",
-                  [Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 1),
-                                    Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1)])],
+                  [Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 1, DOWN),
+                                    Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1, DOWN)])],
                   pause_z=round(t + LAYER, 2)),
         PlateSpec("2/2 Stand - black (printer B)",
-                  [Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 1)])]),
+                  [Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 1, BACK)])]),
     ]
     return Variant(text, "plaque", set_, printer, [BLACK], plates, [
         f"Plate 1 starts in black and pauses at {t + LAYER:.1f} mm: unload black, load red, resume.",
@@ -253,31 +272,39 @@ def plaque_variant(text, set_, printer):
 
 
 def letters_variant(text, set_, printer):
+    # Face down (letters_face_down in the .scad): the red face prints first, on the textured
+    # plate, and the black body on top of it. Lightning infill: only the back needs holding up,
+    # and lighter letters stay put on tape or putty.
     p = scad_params(printer, "letters", text)
-    depth = p.get("letters_depth", 10)
     face = p.get("letters_face_depth", 3)
     letters = letters_of(text)
+    light = {"sparse_infill_pattern": "lightning"}
     hang = "Hang them with the paper template in templates/ so the arc lines up."
     if set_ == "ams":
         groups = [Group(f"Letter {i + 1} {c}", [
-            Part(f"{text}-letter-{i + 1}-{c}-body", dict(p, part="letter_body", letter_index=i), 2),
-            Part(f"{text}-letter-{i + 1}-{c}-face", dict(p, part="letter_face", letter_index=i), 1)])
+            Part(f"{text}-letter-{i + 1}-{c}-face", dict(p, part="letter_face", letter_index=i), 1, DOWN),
+            Part(f"{text}-letter-{i + 1}-{c}-body", dict(p, part="letter_body", letter_index=i), 2, DOWN)],
+            print_params=light)
             for i, c in letters]
         return Variant(text, "letters", set_, printer, [RED, BLACK],
-                       [PlateSpec("Letters - black body, red face", groups)],
-                       ["Two-tone letters: the AMS changes from black to red once per plate.", hang])
+                       [PlateSpec("Letters - red face down, black body", groups)],
+                       ["Printed face down: the red face gets the textured plate's finish, then the AMS "
+                        "changes to black once for the body.", hang])
     groups = [Group(f"Letter {i + 1} {c}", [Part(f"{text}-letter-{i + 1}-{c}",
-                                            dict(p, part="letter", letter_index=i), 1)])
+                                            dict(p, part="letter", letter_index=i), 1, DOWN)],
+                    print_params=light)
               for i, c in letters]
     if set_ == "single-colour":
         return Variant(text, "letters", set_, printer, [RED],
                        [PlateSpec("Letters - red", groups)],
-                       ["All-red letters, split over two plates so two printers can share the work.", hang])
-    pz = round(depth - face + LAYER, 2)
-    return Variant(text, "letters", set_, printer, [BLACK],
-                   [PlateSpec(f"Letters - start black, PAUSE at {pz:.1f} mm, load red", groups, pause_z=pz)],
-                   [f"Each plate starts in black and pauses at {pz:.1f} mm: swap to red and resume, for black "
-                    "letters with a red face.",
+                       ["All-red letters, printed face down, split over two plates so two printers can "
+                        "share the work.", hang])
+    pz = round(face + LAYER, 2)
+    return Variant(text, "letters", set_, printer, [RED],
+                   [PlateSpec(f"Letters - start red, PAUSE at {pz:.1f} mm, load black", groups,
+                              pause_z=pz, pause_colour=BLACK)],
+                   [f"Each plate starts in red, face down, and pauses at {pz:.1f} mm: swap to black and "
+                    "resume, for black letters with a red face.",
                     "The letters are split over two plates so two printers can share the work.", hang])
 
 
@@ -322,7 +349,27 @@ def export_stl(part: Part, out_dir: Path):
     slivers = stl_slivers(part.stl)
     if slivers:
         raise RuntimeError(f"{part.name}: stray sliver pieces in the mesh (size, min corner): {slivers[:3]}")
+    open_edges = stl_bad_edges(part.stl)
+    if open_edges:
+        raise RuntimeError(f"{part.name}: {len(open_edges)} edges not shared by exactly two triangles "
+                           f"(not a closed solid), e.g. at {open_edges[:3]}")
     return part
+
+
+def stl_bad_edges(path: Path):
+    """Edges used by other than two triangles: holes, or zero-volume shells glued onto the solid.
+    Triangles that collapse when the STL rounds to single precision are skipped (slicers drop them)."""
+    data = path.read_bytes()
+    n = struct.unpack_from("<I", data, 80)[0]
+    count = {}
+    for rec in struct.iter_unpack("<12fH", data[84:84 + 50 * n]):
+        vs = [(round(rec[k], 4), round(rec[k + 1], 4), round(rec[k + 2], 4)) for k in (3, 6, 9)]
+        if len(set(vs)) < 3:
+            continue
+        for a, b in ((0, 1), (1, 2), (2, 0)):
+            e = (vs[a], vs[b]) if vs[a] < vs[b] else (vs[b], vs[a])
+            count[e] = count.get(e, 0) + 1
+    return [e[0] for e, c in count.items() if c != 2]
 
 
 def stl_slivers(path: Path, min_width=0.4):
@@ -400,14 +447,19 @@ def resolve_preset(kind, name):
     return out
 
 
-def flat_presets(printer, colours):
+def flat_presets(v: Variant):
     """Write fully resolved presets (the CLI does not resolve includes on its own)."""
-    pr = PRINTERS[printer]
-    d = BUILD / "presets" / printer
+    pr = PRINTERS[v.printer]
+    colours = v.filaments
+    d = BUILD / "presets" / v.key
     d.mkdir(parents=True, exist_ok=True)
     machine = resolve_preset("machine", pr["machine"])
     process = resolve_preset("process", pr["process"])
     process["curr_bed_type"] = "Textured PEI Plate"
+    # No prime tower: the A-series printers purge into their chute. Measured on the A2L stand
+    # (51 colour changes): a tower adds 16 min and 6 g, and flushing into infill (which needs
+    # the tower) saves less than the tower costs. A clean test print without one confirmed it.
+    process["enable_prime_tower"] = "0"
     (d / "machine.json").write_text(json.dumps(machine, indent=1))
     (d / "process.json").write_text(json.dumps(process, indent=1))
     fil = []
@@ -461,7 +513,7 @@ def pack(v: Variant):
                 name = f"{head} {' '.join(g.label.split()[-1] for g, _, _ in placed)} - {tail}"
             if n > 1:
                 name = f"{k + 1}/{n} {name}"
-            result.append((PlateSpec(name, spec.groups, spec.pause_z), placed, tower))
+            result.append((PlateSpec(name, spec.groups, spec.pause_z, spec.pause_colour), placed, tower))
     return result
 
 
@@ -566,6 +618,10 @@ def patch_project(src: Path, dst: Path, v: Variant, layout):
         set_meta(plate, "plater_name", spec.name)
     files["Metadata/model_settings.config"] = (
         '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root, encoding="unicode")).encode()
+    painted = paint_seams(files, root, by_part)
+    unpainted = sorted({part.name for _, part in by_part.values() if part.seam_dir} - painted)
+    if unpainted:
+        raise RuntimeError(f"{v.key}: seams not painted on {unpainted}")
 
     ps = json.loads(files["Metadata/project_settings.config"])
     towers = [t for _, _, t in layout]
@@ -575,12 +631,13 @@ def patch_project(src: Path, dst: Path, v: Variant, layout):
     ps["filament_colour"] = list(v.filaments)
     files["Metadata/project_settings.config"] = json.dumps(ps, indent=4).encode()
 
-    pauses = [(i + 1, spec.pause_z) for i, (spec, _, _) in enumerate(layout) if spec.pause_z]
+    pauses = [(i + 1, spec) for i, (spec, _, _) in enumerate(layout) if spec.pause_z]
     if pauses:
         xml = ['<?xml version="1.0" encoding="utf-8"?>', "<custom_gcodes_per_layer>"]
-        for pid, z in pauses:
+        for pid, spec in pauses:
             xml += ["<plate>", f'<plate_info id="{pid}"/>',
-                    f'<layer top_z="{z}" type="1" extruder="1" color="{RED}" extra="" gcode="M400 U1"/>',
+                    f'<layer top_z="{spec.pause_z}" type="1" extruder="1" color="{spec.pause_colour}" '
+                    'extra="" gcode="M400 U1"/>',
                     '<mode value="SingleExtruder"/>', "</plate>"]
         xml.append("</custom_gcodes_per_layer>")
         files["Metadata/custom_gcode_per_layer.xml"] = ("\n".join(xml) + "\n").encode()
@@ -588,6 +645,66 @@ def patch_project(src: Path, dst: Path, v: Variant, layout):
     with zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as zout:
         for n, b in files.items():
             zout.writestr(n, b)
+
+
+def part_names(root):
+    """(object id, part id) -> part name, from model_settings.config."""
+    return {(obj.get("id"), pt.get("id")): next((m.get("value") for m in pt.findall("metadata")
+                                                  if m.get("key") == "name"), None)
+            for obj in root.findall("object") for pt in obj.findall("part")}
+
+
+SEAM_ENFORCER = "4"  # Bambu's paint bits for an unsplit triangle in state 1 (enforcer)
+
+
+def paint_seams(files, root, by_part):
+    """Seam enforcers on every triangle that faces a part's hidden side (Part.seam_dir), so
+    each layer's seam lands where nobody looks. The 3MF text is edited in place: Bambu Studio
+    reads the object files with their original namespace prefixes. Returns the painted parts' names."""
+    names = part_names(root)
+    painted = set()
+    model = files["3D/3dmodel.model"].decode()
+    for oid, body in re.findall(r'<object id="(\d+)"[^>]*>(.*?)</object>', model, re.S):
+        for comp in re.findall(r"<component ([^>]*)/>", body):
+            a = dict(re.findall(r'([\w:]+)="([^"]*)"', comp))
+            hit = by_part.get(names.get((oid, a["objectid"])))
+            if not hit or not hit[1].seam_dir:
+                continue
+            rot = [float(x) for x in a.get("transform", "1 0 0 0 1 0 0 0 1 0 0 0").split()][:9]
+            if rot != [1, 0, 0, 0, 1, 0, 0, 0, 1]:
+                raise RuntimeError(f"{hit[1].name}: rotated in the project, cannot paint its seams")
+            path = a["p:path"].lstrip("/")
+            files[path] = paint_object(files[path].decode(), a["objectid"], hit[1].seam_dir).encode()
+            painted.add(hit[1].name)
+    return painted
+
+
+def paint_object(text, object_id, direction, min_cos=0.6):
+    """Mark the triangles of one mesh object whose outward normal is within ~53 degrees of direction."""
+    m = re.search(rf'<object id="{object_id}"[^>]*>.*?</object>', text, re.S)
+    if not m:
+        raise RuntimeError(f"mesh object {object_id} missing")
+    block = m.group(0)
+    verts = [tuple(float(v) for v in xyz) for xyz in
+             re.findall(r'<vertex x="([^"]+)" y="([^"]+)" z="([^"]+)"', block)]
+    painted = 0
+
+    def tri(t):
+        nonlocal painted
+        i, j, k = (int(t.group(n)) for n in (1, 2, 3))
+        a, b, c = verts[i], verts[j], verts[k]
+        u = [b[n] - a[n] for n in range(3)]
+        w = [c[n] - a[n] for n in range(3)]
+        nrm = (u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0])
+        length = sum(x * x for x in nrm) ** 0.5
+        if length == 0 or sum(nrm[n] * direction[n] for n in range(3)) < min_cos * length:
+            return t.group(0)
+        painted += 1
+        return f'<triangle v1="{i}" v2="{j}" v3="{k}" paint_seam="{SEAM_ENFORCER}"/>'
+    block = re.sub(r'<triangle v1="(\d+)" v2="(\d+)" v3="(\d+)"\s*/>', tri, block)
+    if not painted:
+        raise RuntimeError(f"mesh object {object_id}: no faces towards {direction} to paint seams on")
+    return text[:m.start()] + block + text[m.end():]
 
 
 def name_plates(path: Path, layout):
@@ -669,7 +786,7 @@ def build_variant(v: Variant, out_dir: Path, keep_unsliced: bool):
     layout = pack(v)
     asm = assemble_json(v, layout)
     (work / "assemble.json").write_text(json.dumps(asm, indent=1))
-    machine, process, fils = flat_presets(v.printer, v.filaments)
+    machine, process, fils = flat_presets(v)
     settings = f"{machine};{process}"
     filaments = ";".join(str(f) for f in fils)
 
@@ -681,7 +798,11 @@ def build_variant(v: Variant, out_dir: Path, keep_unsliced: bool):
     patch_project(work / "assembled.3mf", work / "project.3mf", v, layout)
 
     sliced = work / "sliced"
-    rc, info = run_bambu(["--load-settings", settings, "--load-filaments", filaments,
+    # Every slot uses the same filament preset; without the colours on the command line the
+    # CLI takes that for a single-filament print and quietly changes settings to match (it
+    # used to drop the prime tower that way).
+    colours = ["--filament-colour", ";".join(v.filaments)] if len(set(v.filaments)) > 1 else []
+    rc, info = run_bambu(["--load-settings", settings, "--load-filaments", filaments, *colours,
                           "--slice", "0", "--outputdir", sliced, "--export-3mf", "final.3mf",
                           work / "project.3mf"], sliced, "slice.log")
     final = sliced / "final.3mf"
@@ -705,9 +826,10 @@ def build_variant(v: Variant, out_dir: Path, keep_unsliced: bool):
                 (PLATE_IMAGES / f"{v.key}-plate-{i}.png").write_bytes(z.read(name))
 
     plates = []
-    for i, ((spec, placed, _), p) in enumerate(zip(layout, info["sliced_plates"]), start=1):
+    stats = plate_stats(final)
+    for i, ((spec, placed, _), p, (seconds, purge_g)) in enumerate(zip(layout, info["sliced_plates"], stats), start=1):
         plates.append(dict(
-            plate=i, name=spec.name, minutes=round(p["main_predication"] / 60),
+            plate=i, name=spec.name, minutes=round(seconds / 60), purge_g=purge_g,
             grams={f"{f['id']}": round(f["total_used_g"], 1) for f in p.get("filaments", [])},
             colour_changes=p.get("filament_change_times", 0), pause_z=spec.pause_z,
             objects=[g.label for g, _, _ in placed],
@@ -715,6 +837,24 @@ def build_variant(v: Variant, out_dir: Path, keep_unsliced: bool):
     return dict(key=v.key, text=v.text, design=v.design, set=v.set, printer=v.printer,
                 printer_label=v.label, filaments=v.filaments, notes=v.notes, plates=plates,
                 file=f"{v.folder}/{v.key}.3mf")
+
+
+PURGE_G_PER_MM = 3.14159 * 0.875 ** 2 * 1.32 / 1000  # 1.75 mm PLA at Bambu's 1.32 g/cm3
+
+
+def plate_stats(final: Path):
+    """Per plate: Bambu's estimate of the whole print in seconds (start sequence and colour
+    changes included, unlike the CLI's main_predication) and grams flushed at colour changes
+    (the flush length of every change, from the G-code)."""
+    out = []
+    with zipfile.ZipFile(final) as z:
+        info = ET.fromstring(z.read("Metadata/slice_info.config"))
+        for i, plate in enumerate(info.findall("plate"), start=1):
+            meta = {m.get("key"): m.get("value") for m in plate.findall("metadata")}
+            g = z.read(f"Metadata/plate_{i}.gcode").decode(errors="replace")
+            flush_mm = sum(float(x) for x in re.findall(r"^M620\.10 A1 .*?\bL([\d.]+)", g, re.M))
+            out.append((int(meta["prediction"]), round(flush_mm * PURGE_G_PER_MM, 1)))
+    return out
 
 
 def export_templates(texts):
@@ -821,15 +961,21 @@ def export_renders(texts):
 COLOUR_NAMES = {RED: "red", BLACK: "black", GREY: "grey"}
 
 
+def purge_text(grams):
+    return "-" if not grams else "under 1 g" if grams < 1 else f"{grams:.0f} g"
+
+
 def write_summary(results):
     lines = ["# Build summary", "",
              "Generated by `tools/build.py`. Every project was sliced with the stock Bambu Studio",
              "profiles (0.20 mm Standard, Bambu PLA Matte, textured PEI plate) and checked: real",
              "printer start G-code, the intended filament on every plate, pauses exactly where the",
-             "colour changes, and no stray sliver pieces in any part.", "",
-             "Times and weights are Bambu Studio's estimates. On pause plates the weight is the",
-             "total for both colours (black up to the pause, red after it).", "",
-             "| Project | Printer | Plates | Print time | Filament |", "|---|---|---|---|---|"]
+             "colour changes, no stray sliver pieces, and every part a closed solid.", "",
+             "Times and weights are Bambu Studio's estimates. The time is the whole print: the",
+             "printer's warm-up and calibration and every AMS colour change included. Filament is what",
+             "ends up in the print; purge is what the AMS flushes out at colour changes. On pause",
+             "plates the weight is the total for both colours.", "",
+             "| Project | Printer | Plates | Print time | Filament | Purge |", "|---|---|---|---|---|---|"]
     for r in results:
         mins = sum(p["minutes"] for p in r["plates"])
         grams = {}
@@ -840,9 +986,10 @@ def write_summary(results):
         fil = ", ".join(f"{COLOUR_NAMES.get(r['filaments'][int(k) - 1], r['filaments'][int(k) - 1])} {g:.0f} g"
                         for k, g in sorted(grams.items()) if g > 0)
         if paused:
-            fil = f"{sum(grams.values()):.0f} g black + red (manual swap)"
+            fil = f"{sum(grams.values()):.0f} g red + black (manual swap)"
+        purge = sum(p.get("purge_g", 0) for p in r["plates"])
         lines.append(f"| [`{r['file']}`](../print-files/{r['file']}) | {r['printer_label']} | {len(r['plates'])} | "
-                     f"{mins // 60} h {mins % 60:02d} min | {fil} |")
+                     f"{mins // 60} h {mins % 60:02d} min | {fil} | {purge_text(purge)} |")
     lines += ["", "Plates of one project can run on different printers at the same time,",
               "so the wall-clock time with two A1 minis is the longest plate, not the total.",
               "", "## Plates", ""]
