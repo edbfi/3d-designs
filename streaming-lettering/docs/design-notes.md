@@ -47,7 +47,7 @@ Everything else that has to meet the lettering is bent with the same strips, so 
 - the plinth's arched top,
 - the region under the arc used for tabs and pockets.
 
-The arc is anchored to the text's **baseline**, not its lowest point. Round letters (S, O) dip slightly below the baseline, and anchoring to them would leave the flat letters floating above the plinth. The dip is trimmed from the one-piece letters so the two colours never overlap in the slicer.
+The arc is anchored to the text's **baseline**, not its lowest point. Round letters (S, O) dip slightly below the baseline, and anchoring to them would leave the flat letters floating above the plinth. The dip is trimmed from the displayed letters so they meet the plinth without overlapping it.
 
 ## Parametric without measuring text
 

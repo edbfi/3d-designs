@@ -54,7 +54,7 @@ Every no-AMS project has two plates, so both A1 minis can run at once: in Bambu 
 
 No manual swaps. Load red in the slot for filament 1 and black for filament 2. The plaque also uses grey as filament 3, for the bar's track.
 
-- **Stand**: the same two plates as the single-colour set, so each plate is one colour; assemble it the same way. Printed upright in one piece, the arms of letters such as E, F and T would need supports.
+- **Stand**: the same two plates as the single-colour set, so each plate is one colour; assemble it the same way.
 - **Plaque**: plate 1 is the plaque, plate 2 its stand. Printed together, the black stand would cost an extra colour change on every layer of the red letters.
 - **Loose letters**: printed face down: a red face, then a black body. The AMS changes colour once per plate.
 
@@ -68,8 +68,8 @@ The files start from Bambu's stock 0.20 mm Standard profile. What's changed, and
 
 | Setting | Where | Why |
 |---|---|---|
-| Painted seams | every part | Each layer's seam is painted onto a hidden side: the letters' backs, their bottom edges, the tabs, the edge that sits in the plaque stand. Stock seams landed on the stand letters' fronts. |
-| Face down | loose letters, stand letters (two-part), plaque inlays | The textured plate gives the visible face a crisp, even finish with no top-surface lines. |
+| Painted seams | every part | Each layer's seam is painted onto a hidden side: the backs of the plinths and the plaque stand, the letters' bottom edges, the tabs, the edge that sits in the plaque stand. |
+| Face down | loose letters, stand letters, plaque inlays | The textured plate gives the visible face a crisp, even finish with no top-surface lines. |
 | Lightning infill | loose letters | Only the back needs holding up; the letters come out about 30 % lighter, which helps tape and putty hold them. |
 | No prime tower | every file | The A-series printers purge into their chute; on these parts a tower added time and filament for no visible gain. |
 
