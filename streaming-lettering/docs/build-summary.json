@@ -11,24 +11,38 @@
    "#161616"
   ],
   "notes": [
-   "Printed upright in one piece; the AMS switches between red and black.",
-   "Tree supports hold up the arms of letters such as E, F and T; they snap off from the hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio flags model-built supports as a floating cantilever, so the files use its own.)",
-   "The word runs along the bed's Y axis so the thin letters are stiff against the moving bed."
+   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
+   "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
+   "The AMS loads red for plate 1 and black for plate 2, so neither plate changes colour."
   ],
   "plates": [
    {
     "plate": 1,
-    "name": "1/1 One piece - red letters on black plinth (tree supports)",
-    "minutes": 142,
-    "purge_g": 8.6,
+    "name": "1/2 Letters - red - face down (printer A)",
+    "minutes": 47,
+    "purge_g": 0.0,
     "grams": {
-     "1": 23.4,
-     "2": 23.9
+     "1": 16.2
     },
-    "colour_changes": 29,
+    "colour_changes": 0,
     "pause_z": null,
     "objects": [
-     "Stand"
+     "Letters"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Plinth - black (printer B)",
+    "minutes": 48,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 24.1
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Plinth"
     ],
     "warning": ""
    }
@@ -140,24 +154,38 @@
    "#161616"
   ],
   "notes": [
-   "Printed upright in one piece; the AMS switches between red and black.",
-   "Tree supports hold up the arms of letters such as E, F and T; they snap off from the hidden undersides. (The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio flags model-built supports as a floating cantilever, so the files use its own.)",
-   "The word runs along the bed's Y axis so the thin letters are stiff against the moving bed."
+   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
+   "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
+   "The AMS loads red for plate 1 and black for plate 2, so neither plate changes colour."
   ],
   "plates": [
    {
     "plate": 1,
-    "name": "1/1 One piece - red letters on black plinth (tree supports)",
-    "minutes": 317,
-    "purge_g": 14.9,
+    "name": "1/2 Letters - red - face down (printer A)",
+    "minutes": 119,
+    "purge_g": 0.0,
     "grams": {
-     "1": 72.1,
-     "2": 88.8
+     "1": 57.2
     },
-    "colour_changes": 51,
+    "colour_changes": 0,
     "pause_z": null,
     "objects": [
-     "Stand"
+     "Letters"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Plinth - black (printer B)",
+    "minutes": 128,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 88.9
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Plinth"
     ],
     "warning": ""
    }
@@ -527,7 +555,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 51,
+    "minutes": 52,
     "purge_g": 0.0,
     "grams": {
      "1": 18.7

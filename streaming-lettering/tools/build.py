@@ -159,7 +159,6 @@ class Variant:
 # Hidden side of each part in its print pose, where seams are painted (display front is -Y):
 DOWN = (0, -1, 0)    # flat parts: the letters' bottom edge (in a pocket, in the stand slot, or underneath)
 BACK = (0, 1, 0)     # parts printed as displayed: the back
-BACK_ROT = (-1, 0, 0)  # one-piece stand, turned 90 degrees about Z to run along the bed's Y axis
 
 
 def scad_params(printer, design, text, **extra):
@@ -203,22 +202,11 @@ def stand_two_part(text, p, notes_extra=()):
 
 
 def stand_variant(text, set_, printer):
+    # Always two parts: upright in one piece, the arms of E, F and T would need supports
     p = scad_params(printer, "stand", text)
     if set_ == "ams":
-        rot = dict(print_rotate=90)
-        plates = [PlateSpec("1/1 One piece - red letters on black plinth (tree supports)", [
-            Group("Stand", [
-                Part(f"{text}-stand-plinth-onepiece", dict(p, part="onepiece_base", **rot), 2, BACK_ROT),
-                Part(f"{text}-stand-letters-onepiece", dict(p, part="onepiece_letters", **rot), 1, BACK_ROT)],
-                # "Tree strong": classic branches, measured against the default (organic-style)
-                # trees on the A2L: 17 g less support and 45 min faster
-                print_params={"enable_support": "1", "support_type": "tree(auto)",
-                              "support_style": "tree_strong"})])]
-        notes = ["Printed upright in one piece; the AMS switches between red and black.",
-                 "Tree supports hold up the arms of letters such as E, F and T; they snap off from the hidden undersides. "
-                 "(The model can build breakaway fins instead, `stand_fins = true`, but Bambu Studio "
-                 "flags model-built supports as a floating cantilever, so the files use its own.)",
-                 "The word runs along the bed's Y axis so the thin letters are stiff against the moving bed."]
+        plates, notes = stand_two_part(text, p, (
+            "The AMS loads red for plate 1 and black for plate 2, so neither plate changes colour.",))
     elif set_ == "single-colour":
         plates, notes = stand_two_part(text, p)
     else:
@@ -877,7 +865,7 @@ def export_templates(texts):
 
 
 # Desktop-only settings, hidden in the MakerWorld edition (its plates replace them).
-DESKTOP_ONLY = ("part", "letter_index", "print_rotate")
+DESKTOP_ONLY = ("part", "letter_index")
 
 
 def export_makerworld_edition():
