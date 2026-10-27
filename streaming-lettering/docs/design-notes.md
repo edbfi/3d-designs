@@ -40,7 +40,7 @@ Bebas Neue matches every letter within about 0.02 of the letter height. The only
 
 ## Bending text in plain OpenSCAD
 
-OpenSCAD can't warp geometry, so `warp2d` cuts the word into vertical strips and scales each one vertically about the top edge, by `1 − arc_depth · (1 − u²)` (u = −1…1 across the word). Neighbouring strips abut exactly. There are enough strips that neighbours step less than 0.1 mm along the bottom edge, well below what a 0.4 mm nozzle can show.
+OpenSCAD can't warp geometry, so `warp2d` cuts the word into vertical strips and scales each one vertically about the top edge, by `1 − arc_depth · (1 − u²)` (u = −1…1 across the word). Neighbouring strips abut exactly. There are enough strips that neighbours step about 0.1 mm along the bottom edge, well below what a 0.4 mm nozzle can show (the count is capped at 800 strips).
 
 Everything else that has to meet the lettering is bent with the same strips, so the surfaces match to within 0.01 mm:
 
@@ -65,7 +65,7 @@ Tested on MakerWorld (unpublished draft):
 
 - **Backend:** MakerWorld runs OpenSCAD with the Manifold backend and a render limit of about 10 s. The first upload timed out; after the speedups above it generates in about 13–20 s wall-clock, including MakerWorld's own overhead.
 - **Plates:** MakerWorld builds a multi-plate, multi-colour 3MF from `mw_plate_N()` modules and `color()`, and previews `mw_assembly_view()`. It also adds any top-level geometry to every plate. So `tools/build.py` generates `makerworld/streaming-lettering-makerworld.scad` with the desktop output switched off, the local font includes dropped, `font_name` marked `// font` (MakerWorld's Google Fonts picker) and the desktop-only settings hidden. The build checks that the edition has no top-level geometry and that every plate renders.
-- **Its 3MF:** two plates with the right filaments, and the fully resolved A1 mini profile with real start G-code. But the bed type is Cool Plate (35 °C bed) and supports are on, and MakerWorld can only preset profile options from a model's upload page. It can't add filament-swap pauses, and multi-plate scripts can't offer STL download. The README tells users what to change.
+- **Its 3MF:** two plates with the right filaments, and the fully resolved A1 mini profile with real start G-code. But the bed type is Cool Plate (35 °C bed) and supports are on (harmless: none are generated), and MakerWorld can only preset profile options from a model's upload page. It can't add filament-swap pauses, and multi-plate scripts can't offer STL download. The README tells users what to change.
 
 ## Printability decisions
 
@@ -95,7 +95,7 @@ Checked by hand for these designs:
 - **Two-part fit**: letter tabs clear the plinth pockets by 0.146 mm.
 - **Customisation stress test**: lowercase text, a space (`LES MER`), Norwegian `Ø`, Anton and League Gothic, `arc_depth` 0 and 0.25, and letter heights from 36 to 120 mm.
 
-Every build also runs the automatic checks listed in [`build-summary.md`](build-summary.md).
+Every build also runs the automatic checks in `tools/build.py`, summarised in [`build-summary.md`](build-summary.md).
 
 ## Known limits
 

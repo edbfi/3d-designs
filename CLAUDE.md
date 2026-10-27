@@ -12,10 +12,11 @@ print, how to assemble it, intent, trade-offs and measured results.
   - `<design>/README.md`: which file to print, assembly, print settings, customising,
     rebuilding, MakerWorld and licence notes. Written for someone printing, not for agents.
   - `<design>/docs/design-notes.md`: measurements, experiments and decisions, with numbers.
-  - `<design>/docs/build-summary.*`: generated. Owns every time, gram and plate count.
+  - `<design>/docs/build-summary.*`: generated. Owns the current times, grams and plate counts.
   - Source comments and docstrings: how the code works and why.
 - Don't restate code, list functions or options, or copy defaults into Markdown.
-- Don't put figures a rebuild can change (times, grams, counts) in hand-written prose.
+- Don't copy current build figures (times, grams, counts) into READMEs. Design notes may
+  keep a measured comparison that backs a decision, but not the current totals.
 - No machine-specific notes (host paths, plugin installs, board specs) in the repo.
 - No new doc files, changelogs, status reports or AGENTS.md unless asked.
 - Change the owning doc in the same commit as the behaviour, and delete what it replaces.
@@ -32,7 +33,8 @@ print, how to assemble it, intent, trade-offs and measured results.
   `CPUS=2` caps it lower on a fanless board. Don't run two builds in one checkout.
 - Check the exit status: successful variants are written even when others fail.
 - Never hand-edit generated files. Commit regenerated `print-files/`, `templates/`,
-  `makerworld/` and `docs/` together with the source change that caused them.
+  `makerworld/`, `docs/build-summary.*` and `docs/images/` together with the source change
+  that caused them.
 - `build/` and `reference/` stay out of git; third-party logos never go in.
 
 ## Commits

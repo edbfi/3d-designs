@@ -15,7 +15,7 @@ Open the `.3mf` in Bambu Studio. The printer, plates, filaments, colours and any
 The files come in three sets, each with all three designs:
 
 - **`single-colour/`**: no AMS; every plate prints in one colour. The colours come from separate parts that go together afterwards. This is the simplest option for the two A1 minis.
-- **`colour-swap/`**: no AMS; some plates pause once so you can swap black for red by hand, which gives two-tone parts from one plate.
+- **`colour-swap/`**: no AMS; some plates pause once so you can swap between red and black by hand, which gives two-tone parts from one plate.
 - **`ams/`**: the AMS lite switches colours by itself, on the A1 mini with an AMS lite or on the A2L Combo (bigger versions).
 
 | Design | Single colour (A1 mini) | Colour swap (A1 mini) | AMS (A1 mini + AMS lite) | AMS (A2L Combo) |
@@ -72,7 +72,7 @@ The files start from Bambu's stock 0.20 mm Standard profile. What's changed, and
 | Face down | loose letters, stand letters (two-part), plaque inlays | The textured plate gives the visible face a crisp, even finish with no top-surface lines. |
 | Lightning infill | loose letters | Only the back needs holding up; the letters come out about 30 % lighter, which helps tape and putty hold them. |
 | Tree Strong supports | one-piece stand | Less support and a faster print than the default trees. |
-| No prime tower | every file | The A-series printers purge into their chute; a tower only adds time and filament. |
+| No prime tower | every file | The A-series printers purge into their chute; on these parts a tower added time and filament for no visible gain. |
 
 Plinths and the plaque stand keep the stock 15 % infill: their weight keeps the display from tipping over.
 
@@ -120,7 +120,7 @@ Needs an OpenSCAD snapshot with the Manifold backend (2025 or newer) and Bambu S
 tools/docker/run.sh python3 tools/build.py --jobs 2   # CPUS=2 to cap the container lower (default 3)
 ```
 
-The script exports the parts, lays out and slices every plate with the stock Bambu profiles, and refuses to write a project that fails its checks (listed in [`docs/build-summary.md`](docs/build-summary.md)). It also regenerates `templates/`, `makerworld/` and the images and summary in `docs/`. A failed variant leaves its logs in `build/work/<variant>/`.
+The script exports the parts, lays out and slices every plate with the stock Bambu profiles, and refuses to write a project that fails its checks. It also regenerates `templates/`, `makerworld/` and the images and [build summary](docs/build-summary.md) in `docs/`. When a Bambu Studio step fails, its log is in `build/work/<variant>/`.
 
 ## How the streaming look is made
 
