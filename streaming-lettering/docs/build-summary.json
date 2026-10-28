@@ -143,6 +143,148 @@
   "file": "ams/a1-mini/serier-letters-ams-a1-mini.3mf"
  },
  {
+  "key": "serier-frame-ams-a1-mini",
+  "text": "SERIER",
+  "design": "frame",
+  "set": "ams",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, with AMS lite",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
+   "The frame is black, in 2 sections that dovetail together, one per plate.",
+   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Letters S E R I E R - red face down, black body",
+    "minutes": 89,
+    "purge_g": 0.1,
+    "grams": {
+     "1": 9.9,
+     "2": 23.5
+    },
+    "colour_changes": 1,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 S",
+     "Letter 2 E",
+     "Letter 3 R",
+     "Letter 4 I",
+     "Letter 5 E",
+     "Letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "Frame 1/2 - black",
+    "minutes": 70,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 41.1
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 2/2 - black",
+    "minutes": 70,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 40.8
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 2"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "ams/a1-mini/serier-frame-ams-a1-mini.3mf"
+ },
+ {
+  "key": "serier-open-frame-ams-a1-mini",
+  "text": "SERIER",
+  "design": "open-frame",
+  "set": "ams",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, with AMS lite",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
+   "The frame is black, in 2 sections that dovetail together, one per plate.",
+   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Letters S E R I E R - red face down, black body",
+    "minutes": 89,
+    "purge_g": 0.1,
+    "grams": {
+     "1": 9.9,
+     "2": 23.5
+    },
+    "colour_changes": 1,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 S",
+     "Letter 2 E",
+     "Letter 3 R",
+     "Letter 4 I",
+     "Letter 5 E",
+     "Letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "Frame 1/2 - black",
+    "minutes": 40,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 16.6
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 2/2 - black",
+    "minutes": 40,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 16.2
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 2"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "ams/a1-mini/serier-open-frame-ams-a1-mini.3mf"
+ },
+ {
   "key": "serier-stand-ams-a2l-combo",
   "text": "SERIER",
   "design": "stand",
@@ -230,7 +372,7 @@
    {
     "plate": 2,
     "name": "2/2 Stand (black)",
-    "minutes": 68,
+    "minutes": 67,
     "purge_g": 0.0,
     "grams": {
      "2": 48.2
@@ -268,7 +410,7 @@
     "purge_g": 0.1,
     "grams": {
      "1": 23.8,
-     "2": 61.3
+     "2": 61.4
     },
     "colour_changes": 1,
     "pause_z": null,
@@ -284,6 +426,148 @@
    }
   ],
   "file": "ams/a2l-combo/serier-letters-ams-a2l-combo.3mf"
+ },
+ {
+  "key": "serier-frame-ams-a2l-combo",
+  "text": "SERIER",
+  "design": "frame",
+  "set": "ams",
+  "printer": "a2l-combo",
+  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
+   "The frame is black, in 2 sections that dovetail together, one per plate.",
+   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Letters S E R I E R - red face down, black body",
+    "minutes": 194,
+    "purge_g": 0.1,
+    "grams": {
+     "1": 23.8,
+     "2": 61.3
+    },
+    "colour_changes": 1,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 S",
+     "Letter 2 E",
+     "Letter 3 R",
+     "Letter 4 I",
+     "Letter 5 E",
+     "Letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "Frame 1/2 - black",
+    "minutes": 135,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 91.2
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 2/2 - black",
+    "minutes": 135,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 90.6
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 2"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "ams/a2l-combo/serier-frame-ams-a2l-combo.3mf"
+ },
+ {
+  "key": "serier-open-frame-ams-a2l-combo",
+  "text": "SERIER",
+  "design": "open-frame",
+  "set": "ams",
+  "printer": "a2l-combo",
+  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
+   "The frame is black, in 2 sections that dovetail together, one per plate.",
+   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Letters S E R I E R - red face down, black body",
+    "minutes": 194,
+    "purge_g": 0.1,
+    "grams": {
+     "1": 23.8,
+     "2": 61.4
+    },
+    "colour_changes": 1,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 S",
+     "Letter 2 E",
+     "Letter 3 R",
+     "Letter 4 I",
+     "Letter 5 E",
+     "Letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "Frame 1/2 - black",
+    "minutes": 70,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 34.4
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 2/2 - black",
+    "minutes": 69,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 33.6
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 2"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "ams/a2l-combo/serier-open-frame-ams-a2l-combo.3mf"
  },
  {
   "key": "serier-stand-single-colour-a1-mini",
@@ -403,7 +687,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters S E R - red",
-    "minutes": 52,
+    "minutes": 51,
     "purge_g": 0.0,
     "grams": {
      "1": 17.8
@@ -436,6 +720,174 @@
    }
   ],
   "file": "single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf"
+ },
+ {
+  "key": "serier-frame-single-colour-a1-mini",
+  "text": "SERIER",
+  "design": "frame",
+  "set": "single-colour",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "All-red letters, printed face down, split over two plates so two printers can share the work.",
+   "The frame is black, in 2 sections that dovetail together, one per plate.",
+   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Letters S E R - red",
+    "minutes": 51,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 17.8
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 S",
+     "Letter 2 E",
+     "Letter 3 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Letters I E R - red",
+    "minutes": 44,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 15.4
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Letter 4 I",
+     "Letter 5 E",
+     "Letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 1/2 - black",
+    "minutes": 70,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 41.1
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "Frame 2/2 - black",
+    "minutes": 70,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 40.8
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 2"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "single-colour/a1-mini/serier-frame-single-colour-a1-mini.3mf"
+ },
+ {
+  "key": "serier-open-frame-single-colour-a1-mini",
+  "text": "SERIER",
+  "design": "open-frame",
+  "set": "single-colour",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "All-red letters, printed face down, split over two plates so two printers can share the work.",
+   "The frame is black, in 2 sections that dovetail together, one per plate.",
+   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Letters S E R - red",
+    "minutes": 52,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 17.8
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 S",
+     "Letter 2 E",
+     "Letter 3 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Letters I E R - red",
+    "minutes": 44,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 15.4
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Letter 4 I",
+     "Letter 5 E",
+     "Letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 1/2 - black",
+    "minutes": 40,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 16.6
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "Frame 2/2 - black",
+    "minutes": 40,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 16.2
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 2"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "single-colour/a1-mini/serier-open-frame-single-colour-a1-mini.3mf"
  },
  {
   "key": "serier-stand-colour-swap-a1-mini",
@@ -588,5 +1040,175 @@
    }
   ],
   "file": "colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf"
+ },
+ {
+  "key": "serier-frame-colour-swap-a1-mini",
+  "text": "SERIER",
+  "design": "frame",
+  "set": "colour-swap",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Each plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
+   "The letters are split over two plates so two printers can share the work.",
+   "The frame is black, in 2 sections that dovetail together, one per plate.",
+   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black",
+    "minutes": 52,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 17.8
+    },
+    "colour_changes": 0,
+    "pause_z": 3.2,
+    "objects": [
+     "Letter 1 S",
+     "Letter 2 E",
+     "Letter 3 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Letters I E R - start red, PAUSE at 3.2 mm, load black",
+    "minutes": 44,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 15.4
+    },
+    "colour_changes": 0,
+    "pause_z": 3.2,
+    "objects": [
+     "Letter 4 I",
+     "Letter 5 E",
+     "Letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 1/2 - black",
+    "minutes": 70,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 41.1
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "Frame 2/2 - black",
+    "minutes": 70,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 40.8
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 2"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "colour-swap/a1-mini/serier-frame-colour-swap-a1-mini.3mf"
+ },
+ {
+  "key": "serier-open-frame-colour-swap-a1-mini",
+  "text": "SERIER",
+  "design": "open-frame",
+  "set": "colour-swap",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Each plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
+   "The letters are split over two plates so two printers can share the work.",
+   "The frame is black, in 2 sections that dovetail together, one per plate.",
+   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black",
+    "minutes": 51,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 17.8
+    },
+    "colour_changes": 0,
+    "pause_z": 3.2,
+    "objects": [
+     "Letter 1 S",
+     "Letter 2 E",
+     "Letter 3 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Letters I E R - start red, PAUSE at 3.2 mm, load black",
+    "minutes": 44,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 15.4
+    },
+    "colour_changes": 0,
+    "pause_z": 3.2,
+    "objects": [
+     "Letter 4 I",
+     "Letter 5 E",
+     "Letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 1/2 - black",
+    "minutes": 40,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 16.6
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "Frame 2/2 - black",
+    "minutes": 40,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 16.2
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 2"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "colour-swap/a1-mini/serier-open-frame-colour-swap-a1-mini.3mf"
  }
 ]
