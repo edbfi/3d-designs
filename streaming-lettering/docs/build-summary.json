@@ -555,7 +555,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 52,
+    "minutes": 51,
     "purge_g": 0.0,
     "grams": {
      "1": 18.7
