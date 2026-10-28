@@ -201,7 +201,7 @@ assert(!(design == "frame" || design == "open-frame") || frame_sections <= 2
        || frame_sections <= len([for (c = txt) if (frame_glyph(c)) c]) / 2,
        "with 3 or more frame_sections, each section needs at least two letters");
 assert(design != "open-frame" || len([for (c = txt) if (!open_frame_takes(c)) c]) == 0,
-       "the open frame holds letters, digits, spaces, full stops and commas, and no accents but Å: use the frame");
+       "the open frame holds letters, digits, spaces, full stops and commas, and of the accented letters only Å, Æ and Ø: use the frame");
 assert(plaque_inlay_depth < plaque_thickness - 0.8, "plaque_inlay_depth must leave at least 0.8 mm of plaque under the pockets");
 assert(plaque_margin_bottom - plaque_bar_gap - plaque_bar_width > (plaque_stand_height - 3) / cos(plaque_tilt) + 1,
        "progress bar would be hidden by the stand: raise plaque_margin_bottom or lower plaque_stand_height");
@@ -776,7 +776,6 @@ module frame_marks_ink2d() {
         for (i = [0 : n_letters - 1]) if (ord(txt[i]) == 197) letter_column(i);
     }
 }
-
 
 // Each cut between two sections runs through the middle of a letter or digit, so a
 // glued letter, one rigid piece, splices the joint: on the open frame it is all that joins
