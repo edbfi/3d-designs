@@ -26,6 +26,21 @@ print, how to assemble it, intent, trade-offs and measured results.
   Prefer deleting to rewording.
 - Keep the MakerWorld listing, licence and trademark notes.
 
+## Printing
+
+- Design every part to print without supports in PLA and PETG: pick the print pose, keep
+  overhangs within 45° of vertical (chamfers, teardrops), or split it into parts that fit together.
+  Measure the overhangs of new or reshaped parts in their print pose (the
+  `text-to-cad:dfam-check` skill does this: `measure`, `orientations`); bridges and 0.2 mm
+  stepped chamfers are fine.
+- If a support can't be avoided, use [Support Fins](https://github.com/gittrahan/support-fins)
+  and nothing else: no slicer supports, no home-made fins. Run its CLI with bun
+  (`bun support-fins.mjs`; it isn't on npm), pinned by commit or checksum in the design's
+  Docker image. Record why in the design notes, with the test-print result.
+- A design's build must fail on slicer supports and on Bambu Studio's overhang warnings. Don't
+  weaken those checks: if a part with Support Fins trips one, add a narrow exemption to that
+  check in the same change, with the reason in a code comment.
+
 ## Building
 
 - From the design folder: `tools/docker/run.sh python3 tools/build.py --jobs 2`.
