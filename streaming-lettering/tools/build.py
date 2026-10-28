@@ -295,7 +295,7 @@ def letter_plates(text, set_, p):
     pz = round(face + LAYER, 2)
     return ([PlateSpec(f"Letters - start red, PAUSE at {pz:.1f} mm, load black", groups,
                        pause_z=pz, pause_colour=BLACK, split=2, list_letters=True)], [RED],
-            [f"Each plate starts in red, face down, and pauses at {pz:.1f} mm: swap to black and "
+            [f"Each letter plate starts in red, face down, and pauses at {pz:.1f} mm: swap to black and "
              "resume, for black letters with a red face.",
              "The letters are split over two plates so two printers can share the work."])
 
@@ -935,7 +935,7 @@ def export_templates(texts, workers):
 
 
 # Desktop-only settings, hidden in the MakerWorld edition (its plates replace them).
-DESKTOP_ONLY = ("part", "letter_index", "frame_sections", "frame_index")
+DESKTOP_ONLY = ("part", "letter_index", "frame_sections", "frame_index", "color_board")
 
 
 def export_makerworld_edition():

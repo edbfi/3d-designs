@@ -198,8 +198,11 @@ assert(frame_radius <= frame_border, "frame_radius must not exceed frame_border,
 assert(!(design == "frame" || design == "open-frame") || (force_caps && !letters_flat_bottom),
        "the frames need capitals (force_caps) and letters without flat bottoms");
 assert(!(design == "frame" || design == "open-frame") || frame_sections <= 2
-       || frame_sections <= len([for (c = txt) if (c != " ") c]) / 2,
+       || frame_sections <= len([for (c = txt) if (frame_glyph(c)) c]) / 2,
        "with 3 or more frame_sections, each section needs at least two letters");
+assert(design != "open-frame" || len([for (c = txt) if (c == "-" || (ord(c) > 127 && ord(c) != 197
+       && ord(c) != 198 && ord(c) != 216)) c]) == 0,
+       "the open frame holds no hyphens and no accents but Å (they'd miss its rails): use the frame");
 assert(plaque_inlay_depth < plaque_thickness - 0.8, "plaque_inlay_depth must leave at least 0.8 mm of plaque under the pockets");
 assert(plaque_margin_bottom - plaque_bar_gap - plaque_bar_width > (plaque_stand_height - 3) / cos(plaque_tilt) + 1,
        "progress bar would be hidden by the stand: raise plaque_margin_bottom or lower plaque_stand_height");
@@ -209,6 +212,9 @@ echo(str("Text '", txt, "', font ", font_name, ", outer letters ", H, " mm, desi
 
 function upper(s) = chr([for (c = s) let(o = ord(c))
     (o >= 97 && o <= 122) || (o >= 224 && o <= 254 && o != 247) ? o - 32 : o]);
+
+// Letters and digits: the frame's section cuts run through these.
+function frame_glyph(c) = let(o = ord(c)) (o >= 48 && o <= 57) || (o >= 65 && o <= 90) || o >= 192;
 
 function prefix(s, n) = n <= 0 ? "" : chr([for (k = [0 : n - 1]) ord(s[k])]);
 
@@ -238,6 +244,13 @@ module raw_text_left(s = txt) {
     if (len(s) > 0)
         text(s, size = 10, font = font_name, spacing = letter_spacing,
              halign = "left", valign = "top");
+}
+
+// The same, on the baseline (y = 0).
+module raw_text_base(s) {
+    if (len(s) > 0)
+        text(s, size = 10, font = font_name, spacing = letter_spacing,
+             halign = "left", valign = "baseline");
 }
 
 // A tiny square at minus the centre of the word's ink x-range. A Minkowski sum with it
@@ -344,7 +357,7 @@ module to_final() {
     intersection() {
         resize([0, 3 * H], auto = true) union() {
             children();
-            translate([2000, 0]) scale([1, 3]) norm_box();
+            translate([100 * BIG, 0]) scale([1, 3]) norm_box();  // far enough to be cut off for any text
         }
         translate([-BIG, -1.9 * H]) square([BIG + 900, BIG]);
     }
@@ -388,9 +401,11 @@ module word_xband_wide(d) { offset(delta = d) word_xband(); }
 module letter_column(i) {
     xband2d() to_final() intersection() {
         to_norm() intersection() {
+            // baseline-aligned: top-aligned, a letter taller than all before it (O after B,
+            // Å after P) would shift them down, and the two prefixes would no longer cancel
             offset(delta = 0.2) xband2d() centred2d() difference() {
-                raw_text_left(prefix(txt, i + 1));
-                raw_text_left(prefix(txt, i));
+                raw_text_base(prefix(txt, i + 1));
+                raw_text_base(prefix(txt, i));
             }
             bbox2d() raw_text();
         }
@@ -727,22 +742,24 @@ module frame2d() {
     } else frame_outline2d();
 }
 
-// Open frame: a pad behind each mark above the capitals (an Å's ring), so it has a pocket to
-// sit in, tied down to the top rail by a 2 mm strip through the middle of its letter. Only
-// letters past ASCII can carry such marks, and the pads double the frame's memory, so plain
-// text skips them.
-frame_has_marks = len([for (c = txt) if (ord(c) > 127) c]) > 0;
+// Open frame: a pad behind an Å's ring, for it to be glued onto, tied down to the top rail by a
+// 2 mm strip through the middle of its letter. The ring sits centred over the A; marks off the
+// middle (Ä, É) are refused by an assert. Only ink starting 3 % of a capital above the cap line
+// counts, so the overshoot of round letters (O, Ø) isn't taken for a mark. The pads double the
+// frame's memory, so text without an Å skips them.
+frame_has_marks = len([for (c = txt) if (ord(c) == 197) c]) > 0;
 module frame_marks2d() {
     frame_marks_ink2d();
-    // the strip starts below the mark, so it doesn't show through a ring's hole
+    // the strip starts 0.3 mm up in the ring's bottom stroke (so the two merge solidly) and not
+    // higher, so it doesn't show through the ring's hole
     difference() {
         smear_down(0.15 * H) frame_marks_mid2d();
-        minkowski() { frame_marks_mid2d(); square([eps, 0.15 * H]); }
+        minkowski() { frame_marks_mid2d(); translate([-eps / 2, 0.3]) square([eps, 0.15 * H]); }
     }
 }
 
 module frame_marks_ink2d() {
-    intersection() { word2d(); to_final() warp2d(rail_strips) render() cap_band_norm(1, 3); }
+    intersection() { word2d(); to_final() warp2d(rail_strips) render() cap_band_norm(1.03, 3); }
 }
 
 // The marks where they cross the 2 mm strips through the middle of each letter.
@@ -753,12 +770,12 @@ module frame_marks_mid2d() {
     }
 }
 
-// Each cut between two sections runs through the middle of a letter (spaces skipped), so a
+// Each cut between two sections runs through the middle of a letter or digit, so a
 // glued letter, one rigid piece, splices the joint: on the open frame it is all that joins
 // the rails. Cut j goes through the letter whose share of the word (counting every letter
 // as equally wide) holds the point (j + 1) / frame_sections of the way along; on a tie, the
 // left one.
-frame_letters = [for (i = [0 : n_letters - 1]) if (txt[i] != " ") i];
+frame_letters = [for (i = [0 : n_letters - 1]) if (frame_glyph(txt[i])) i];
 frame_cut_letters = frame_sections < 2 ? [] :
     [for (j = [0 : frame_sections - 2]) frame_letters[ceil((j + 1) * len(frame_letters) / frame_sections) - 1]];
 

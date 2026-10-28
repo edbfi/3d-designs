@@ -406,7 +406,7 @@
    {
     "plate": 1,
     "name": "Letters S E R I E R - red face down, black body",
-    "minutes": 195,
+    "minutes": 194,
     "purge_g": 0.1,
     "grams": {
      "1": 23.8,
@@ -447,7 +447,7 @@
    {
     "plate": 1,
     "name": "Letters S E R I E R - red face down, black body",
-    "minutes": 194,
+    "minutes": 195,
     "purge_g": 0.1,
     "grams": {
      "1": 23.8,
@@ -687,7 +687,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters S E R - red",
-    "minutes": 52,
+    "minutes": 51,
     "purge_g": 0.0,
     "grams": {
      "1": 17.8
@@ -825,7 +825,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters S E R - red",
-    "minutes": 52,
+    "minutes": 51,
     "purge_g": 0.0,
     "grams": {
      "1": 17.8
@@ -999,7 +999,7 @@
    "#E50914"
   ],
   "notes": [
-   "Each plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
+   "Each letter plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
    "The letters are split over two plates so two printers can share the work.",
    "Hang them with the paper template in templates/ so the arc lines up."
   ],
@@ -1053,7 +1053,7 @@
    "#161616"
   ],
   "notes": [
-   "Each plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
+   "Each letter plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
    "The letters are split over two plates so two printers can share the work.",
    "The frame is black, in 2 sections that dovetail together, one per plate.",
    "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
@@ -1062,7 +1062,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 51,
+    "minutes": 52,
     "purge_g": 0.0,
     "grams": {
      "1": 17.8
@@ -1138,7 +1138,7 @@
    "#161616"
   ],
   "notes": [
-   "Each plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
+   "Each letter plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
    "The letters are split over two plates so two printers can share the work.",
    "The frame is black, in 2 sections that dovetail together, one per plate.",
    "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
