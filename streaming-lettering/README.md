@@ -32,7 +32,7 @@ Finished sizes:
 | Plaque | 135 × 69 mm, 36 mm letters | 256 × 126 mm, 70 mm letters |
 | Loose letters | 75 mm tall, 252 mm wide on the wall | 120 mm tall, 390 mm wide on the wall |
 
-All files use Bambu PLA Matte, the 0.20 mm Standard profile and the textured PEI plate, with a few tweaks (see [Print settings](#print-settings)). Nothing needs supports. Any PLA works; pick a strong red (the renders use `#E50914`) and a black or charcoal.
+All files use Bambu PLA Basic, the 0.20 mm Standard profile and the textured PEI plate, with a few tweaks (see [Print settings](#print-settings)). Nothing needs supports. Any PLA works; pick a strong red (the renders use `#E50914`) and a black or charcoal.
 
 ## Printing and assembly
 
