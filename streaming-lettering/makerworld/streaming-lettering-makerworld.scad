@@ -193,6 +193,10 @@ assert(letters_face_depth < letters_depth, "letters_face_depth must be less than
 assert(frame_index >= 0 && frame_index < frame_sections, "frame_index is past the last frame section");
 assert(frame_pocket_depth < frame_thickness - 0.8, "frame_pocket_depth must leave at least 0.8 mm of frame under the pockets");
 assert(frame_rail_inset + frame_rail < 0.45, "frame_rail_inset + frame_rail must stay under 0.45 so the two rails stay apart");
+assert(frame_chamfer < frame_thickness, "frame_chamfer must be less than frame_thickness");
+assert(frame_radius <= frame_border, "frame_radius must not exceed frame_border, or the corner pin holes break out");
+assert(!(design == "frame" || design == "open-frame") || !letters_flat_bottom,
+       "letters_flat_bottom doesn't fit the frames' pockets: turn it off");
 assert(plaque_inlay_depth < plaque_thickness - 0.8, "plaque_inlay_depth must leave at least 0.8 mm of plaque under the pockets");
 assert(plaque_margin_bottom - plaque_bar_gap - plaque_bar_width > (plaque_stand_height - 3) / cos(plaque_tilt) + 1,
        "progress bar would be hidden by the stand: raise plaque_margin_bottom or lower plaque_stand_height");
@@ -305,15 +309,15 @@ module norm_box() {
 
 // Bend normalised-frame children strip by strip (y scales about the top edge y = 0).
 // Strips abut exactly (no overlap), so the union has no slivers.
-module warp2d() {
+module warp2d(strips = warp_strips) {
     if (arc_depth == 0) children();
-    else warp2d_strips() children();
+    else warp2d_strips(strips) children();
 }
 
-module warp2d_strips() {
+module warp2d_strips(strips) {
     x_start = -NORM_W / 2 - 2;
-    dx = (NORM_W + 4) / warp_strips;
-    for (i = [0 : warp_strips - 1]) {
+    dx = (NORM_W + 4) / strips;
+    for (i = [0 : strips - 1]) {
         x0 = x_start + i * dx;
         x1 = x_start + (i + 1) * dx;
         scale([1, arc_scale((x0 + x1) / NORM_W)])
@@ -321,6 +325,11 @@ module warp2d_strips() {
                 translate([x0, -BIG]) square([x1 - x0, 2 * BIG]);
                 children();
             }
+    }
+    // beyond the word the arc has ended (scale 1): anything there passes through unbent
+    for (s = [-1, 1]) intersection() {
+        translate([s < 0 ? -BIG : -x_start, -BIG]) square([BIG + x_start, 2 * BIG]);
+        children();
     }
 }
 
@@ -663,27 +672,52 @@ module frame_outline2d() {
 
 module frame_window2d() { offset(delta = -frame_border) frame_outline2d(); }
 
-// Bands between fractions [a, b] of the letter height below the top edge (one band per
-// pair in ab), bent with the letters so they keep their place in every letter, and straight
-// beyond the word, where the arc ends at full height.
-module rail_bands2d(ab) {
-    to_final() warp2d() for (r = ab) difference() { scale([1, r[1]]) norm_box(); scale([1, r[0]]) norm_box(); }
-    difference() {
-        for (r = ab) translate([-BIG, -r[1] * H]) square([2 * BIG, (r[1] - r[0]) * H]);
-        offset(delta = -eps) xband2d() to_final() norm_box();
+// A capital "H" in the raw frame, from the baseline (y = 0) up.
+module cap_h_raw() {
+    intersection() {
+        bbox2d() text("H", size = 10, font = font_name, valign = "baseline");
+        above2d(0);
     }
 }
 
-// The open frame's rails: behind the letters' top and bottom strokes, so they show only
-// between the letters. Their centre lines place the rail dovetails.
-frame_rails = [[frame_rail_inset, frame_rail_inset + frame_rail],
-               [1 - frame_rail_inset - frame_rail, 1 - frame_rail_inset]];
-frame_rail_mids = [for (r = frame_rails) (r[0] + r[1]) / 2];
+// Band between fractions [a, b] of a capital's height above the baseline, normalised frame,
+// right across. Measured on an "H" rather than the whole text, so accents and ascenders
+// that reach above the capitals (Å, lower case) don't move it. Built like norm_box() (the
+// band rides on the baseline of cap_box_raw() and gets the word's scale from its x-range):
+// the bend instantiates it once per strip, and the centred text would cost far more memory.
+module cap_band_norm(a, b) {
+    intersection() {
+        translate([-BIG, -BIG]) square([2 * BIG, 2 * BIG]);
+        hull() for (s = [-1, 1]) translate([s * BIG, 0]) resize([NORM_W, 0], auto = true) intersection() {
+            xband2d() cap_box_raw();
+            minkowski() {
+                hull() for (s = [-1, 1]) translate([s * BIG, 0]) difference() {
+                    scale([1, b]) cap_h_raw();
+                    if (a > 0) scale([1, a]) cap_h_raw();
+                }
+                difference() { cap_box_raw(); translate([0, eps]) cap_box_raw(); }  // the baseline
+            }
+        }
+    }
+}
+
+// The open frame's rails behind the letters' top and bottom strokes, so they show only
+// between the letters: bent with the letters, so they keep their place in every letter, and
+// straight beyond the word, where the arc has ended.
+// They bend in coarser strips than the letters (0.3 mm steps along their edges, finer than an
+// extrusion line): every strip instantiates the band, and the rails are used several times.
+rail_strips = min(warp_strips, max(60, ceil(4.2 * letter_height * arc_depth / 0.3)));
+module frame_rails2d() {
+    to_final() warp2d(rail_strips) render() {
+        cap_band_norm(frame_rail_inset, frame_rail_inset + frame_rail);
+        cap_band_norm(1 - frame_rail_inset - frame_rail, 1 - frame_rail_inset);
+    }
+}
 
 module frame2d() {
     if (frame_open) {
         difference() { frame_outline2d(); frame_window2d(); }
-        intersection() { rail_bands2d(frame_rails); offset(delta = eps) frame_window2d(); }
+        intersection() { frame_rails2d(); offset(delta = eps) frame_window2d(); }
     } else frame_outline2d();
 }
 
@@ -720,12 +754,24 @@ module frame_tongues2d(j) {
     f = (j + 1) / frame_sections;
     for (y = [frame_top_y, frame_bottom_y])
         minkowski() { frame_seed2d(f, y); dovetail2d(0.4 * frame_border, 0.55 * frame_border, frame_tongue_len); }
-    if (frame_open) for (m = frame_rail_mids)
-        minkowski() {
-            intersection() { frame_cut2d(f); rail_bands2d([[m - 0.002, m + 0.002]]); }
-            dovetail2d(0.32 * frame_rail * H, 0.48 * frame_rail * H, 0.5 * frame_rail * H);
-        }
+    if (frame_open) {
+        frame_rail_neck2d(f);
+        intersection() { offset(delta = 0.8) frame_rail_neck2d(f); frame_cut_band2d(f, 2, 5); }
+    }
 }
+
+// The rail tongue is a T that follows the rail's curve: a neck inset from the rail's edges
+// by 1 mm of socket wall, the clearance and 0.8 mm, then a head 1.6 mm wider. It grows out
+// of the neck, so a rail too thin for a neck gets no joint at all (its letters hold it).
+module frame_rail_neck2d(f) {
+    intersection() {
+        offset(delta = -(1 + frame_joint_clearance + 0.8)) frame_rails2d();
+        frame_cut_band2d(f, -1, 5);
+    }
+}
+
+// Vertical band from x0 to x1 past the cut at fraction f.
+module frame_cut_band2d(f, x0, x1) { minkowski() { frame_cut2d(f); translate([x0, 0]) square([x1 - x0, eps]); } }
 
 // Section k's share of the plane: its band plus its tongues, minus sockets for the tongues
 // of the section to its left.
@@ -759,14 +805,22 @@ module frame_holes2d(k) {
     }
 }
 
+// Frame body: only the outer edge is chamfered, so the rails keep their full width.
+module frame_body(k = -1) {
+    intersection() {
+        chamfer_extrude(frame_thickness, frame_chamfer) frame_outline2d();
+        translate([0, 0, -1]) linear_extrude(frame_thickness + 2) intersection() {
+            frame2d();
+            if (k >= 0) frame_section2d(k);
+        }
+    }
+}
+
 // One section, print pose: back down, so the pockets open upwards and nothing overhangs.
 module frame_section(k) {
     t = frame_thickness;
     difference() {
-        intersection() {
-            chamfer_extrude(t, frame_chamfer) frame2d();
-            translate([0, 0, -1]) linear_extrude(t + 2) frame_section2d(k);
-        }
+        frame_body(k);
         translate([0, 0, t - frame_pocket_depth]) linear_extrude(frame_pocket_depth + 1)
             offset(delta = clearance) word2d();
         translate([0, 0, -1]) linear_extrude(t + 2) frame_holes2d(k);
@@ -786,7 +840,7 @@ module frame_display() {
         if (desktop_output)
             color(color_board) translate([0, 0, -2]) linear_extrude(2) offset(delta = board) frame_outline2d();
         color(color_base) difference() {
-            chamfer_extrude(frame_thickness, frame_chamfer) frame2d();
+            frame_body();
             if (!frame_open) translate([0, 0, frame_thickness - 0.6]) linear_extrude(1) frame_groove2d();
         }
         translate([0, 0, frame_thickness - frame_pocket_depth]) {

@@ -34,7 +34,7 @@ Finished sizes:
 |---|---|---|
 | Stand | 143 × 30 mm plinth, 42 mm letters, 51 mm tall | 258 × 50 mm plinth, 76 mm letters, 90 mm tall |
 | Plaque | 135 × 69 mm, 36 mm letters | 256 × 126 mm, 70 mm letters |
-| Loose letters | 75 mm tall, 252 mm wide on the wall | 120 mm tall, 390 mm wide on the wall |
+| Loose letters | 75 mm tall, 231 mm wide on the wall | 120 mm tall, 370 mm wide on the wall |
 | Frame, open frame | 275 × 119 mm, 75 mm letters | 426 × 176 mm, 120 mm letters |
 
 All files use Bambu PLA Basic, the 0.20 mm Standard profile and the textured PEI plate, with a few tweaks (see [Print settings](#print-settings)). Nothing needs supports. Any PLA works; pick a strong red (the renders use `#E50914`) and a black or charcoal.
@@ -69,7 +69,7 @@ A frame project has the loose letters of its set (the same plates and colours as
 
 1. Push the sections together at their dovetails, on a table. A drop of glue makes a joint permanent.
 2. Glue each letter into its pocket (superglue works on PLA). The pockets place the letters, so you don't need a template.
-3. Hold the frame on the pinboard and push a thumbtack or push pin through every hole in the border. The holes take shanks up to about 1.5 mm, and the 3 mm frame leaves 5 mm of an 8 mm pin in the board.
+3. Hold the frame on the pinboard and push a thumbtack or push pin through every hole in the border. The frame is thin there, so a standard pin still reaches well into the board.
 
 On the open frame, two rails hidden behind the letters' top and bottom strokes carry the letters. For long words, the middle sections have no side border, so they come as separate strips; the dovetails and the glued letters hold them together.
 

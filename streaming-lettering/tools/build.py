@@ -34,7 +34,7 @@ import time
 import zipfile
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field, replace
-from functools import cache
+from functools import cache, partial
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -87,8 +87,6 @@ SIZES = {
         "stand": dict(letter_height=42),
         "plaque": dict(letter_height=36),
         "letters": dict(letter_height=75),
-        "frame": dict(letter_height=75),
-        "open-frame": dict(letter_height=75),
     },
     "large": {
         "stand": dict(letter_height=76, stand_letter_depth=12, stand_base_height=14,
@@ -104,8 +102,9 @@ SIZES = {
     },
 }
 # The pinboard frames hold the loose letters, so they share their settings.
-SIZES["large"]["frame"] = SIZES["large"]["open-frame"] = dict(
-    SIZES["large"]["letters"], frame_border=18, frame_gap=10, frame_radius=6, frame_edge_pins=3)
+FRAMES = {"small": {}, "large": dict(frame_border=18, frame_gap=10, frame_radius=6, frame_edge_pins=3)}
+for _size, _extra in FRAMES.items():
+    SIZES[_size]["frame"] = SIZES[_size]["open-frame"] = dict(SIZES[_size]["letters"], **_extra)
 
 # ----------------------------------------------------------------------------- model
 
@@ -149,7 +148,7 @@ class Variant:
 
     @property
     def key(self):
-        return f"{self.text.lower()}-{self.design}-{self.set}-{self.printer}"
+        return variant_key(self.text, self.design, self.set, self.printer)
 
     @property
     def ams(self):
@@ -308,20 +307,28 @@ def letters_variant(text, set_, printer):
 
 
 @cache
+def frame_width(text, size, sections):
+    """Width of the first of this many frame sections (the whole frame for one): measured on an
+    exported section, so its dovetail tongues count. Both frames share the outline, and the
+    backing panel's border tongues are the longest, so it stands in for both."""
+    p = dict(SIZES[size]["frame"], design="frame", text_string=text, part="frame_section",
+             frame_sections=sections, frame_index=0)
+    part = export_stl(Part(f"{text}-{size}-frame-{sections}", p, 1), BUILD / "measure")
+    return part.bbox[1][0] - part.bbox[0][0], part.bbox[1][1] - part.bbox[0][1]
+
+
 def frame_sections(text, size):
-    """Fewest frame sections that each fit the smallest bed of this size class: measured on the
-    whole frame, exported as one section (both frames share the outline)."""
-    p = dict(SIZES[size]["frame"], design="frame", text_string=text, part="frame_section", frame_sections=1)
-    part = export_stl(Part(f"{text}-{size}-frame-whole", p, 1), BUILD / "measure")
-    width = part.bbox[1][0] - part.bbox[0][0]
-    depth = part.bbox[1][1] - part.bbox[0][1]
-    fit = min((PRINTERS[k]["bed"][0] - 2 * PRINTERS[k]["margin"], PRINTERS[k]["bed"][1] - 2 * PRINTERS[k]["margin"])
-              for k in PRINTERS if PRINTERS[k]["size"] == size)
-    if depth > fit[1]:
+    """Fewest frame sections that each fit the smallest bed of this size class."""
+    fit_x, fit_y = min((PRINTERS[k]["bed"][0] - 2 * PRINTERS[k]["margin"], PRINTERS[k]["bed"][1] - 2 * PRINTERS[k]["margin"])
+                       for k in PRINTERS if PRINTERS[k]["size"] == size)
+    width, depth = frame_width(text, size, 1)
+    if depth > fit_y:
         raise RuntimeError(f"{text}: the {size} frame is {depth:.0f} mm tall, more than the bed takes")
-    tongue = 0.45 * p.get("frame_border", 14) + 1  # a section also carries its dovetail tongues
-    n = 1
-    while width / n + tongue > fit[0]:
+    if width <= fit_x:
+        return 1
+    tongue = frame_width(text, size, 2)[0] - width / 2  # a section also carries its tongues
+    n = 2
+    while width / n + tongue > fit_x:
         n += 1
     return n
 
@@ -343,15 +350,21 @@ def frame_variant(text, set_, printer, design):
         "in its border."])
 
 
-def make_variants():
-    vs = []
-    for text in TEXTS:
-        for set_, st in SETS.items():
-            for printer in st["printers"]:
-                vs += [stand_variant(text, set_, printer), plaque_variant(text, set_, printer),
-                       letters_variant(text, set_, printer), frame_variant(text, set_, printer, "frame"),
-                       frame_variant(text, set_, printer, "open-frame")]
-    return vs
+DESIGNS = {"stand": stand_variant, "plaque": plaque_variant, "letters": letters_variant,
+           "frame": partial(frame_variant, design="frame"),
+           "open-frame": partial(frame_variant, design="open-frame")}
+
+
+def variant_key(text, design, set_, printer):
+    return f"{text.lower()}-{design}-{set_}-{printer}"
+
+
+def variant_makers():
+    """(key, maker) for every variant, in build order. The makers run only for the variants
+    that are built: a frame's maker measures the frame with OpenSCAD."""
+    return [(variant_key(text, design, set_, printer), partial(make, text, set_, printer))
+            for text in TEXTS for set_, st in SETS.items() for printer in st["printers"]
+            for design, make in DESIGNS.items()]
 
 
 # ----------------------------------------------------------------------------- helpers
@@ -1073,13 +1086,14 @@ def main():
         log(f"MakerWorld edition: {export_makerworld_edition().relative_to(ROOT)}")
         return
 
-    variants = [v for v in make_variants() if all(re.search(o, v.key) for o in a.only)]
+    makers = [(k, m) for k, m in variant_makers() if all(re.search(o, k) for o in a.only)]
     if a.list:
-        for v in variants:
-            print(v.key)
+        for k, _ in makers:
+            print(k)
         return
-    if not variants:
+    if not makers:
         sys.exit("no variant matches")
+    variants = [m() for _, m in makers]
 
     # 1. export all parts in parallel
     parts = [(v, part) for v in variants for s in v.plates for g in s.groups for part in g.parts]
@@ -1109,7 +1123,7 @@ def main():
         old = DOCS / "build-summary.json"
         merged = {r["key"]: r for r in (json.loads(old.read_text()) if old.exists() else [])}
         merged.update({r["key"]: r for r in results})
-        order = [v.key for v in make_variants()]
+        order = [k for k, _ in variant_makers()]
         write_summary([merged[k] for k in order if k in merged])
     if failed:
         sys.exit(f"{len(failed)} variant(s) failed")
