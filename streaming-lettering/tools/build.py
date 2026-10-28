@@ -175,6 +175,16 @@ def scad_params(printer, design, text, **extra):
     return p
 
 
+def frame_glyphs(text):
+    """Letters and digits, which the frame's cuts run through (frame_glyph in the .scad)."""
+    return [c for c in text.upper() if (c.isascii() and c.isalnum()) or ord(c) >= 192]
+
+
+def open_frame_takes(text):
+    """Whether the open frame can hold the text (open_frame_takes in the .scad)."""
+    return all(c in " .," or (c.isalnum() and (c.isascii() or c in "ÅÆØ")) for c in text.upper())
+
+
 def letters_of(text):
     """(index in the text, character) for every printable letter (spaces are skipped)."""
     return [(i, c) for i, c in enumerate(text) if not c.isspace()]
@@ -325,7 +335,7 @@ def frame_sections(text, size):
     fit_x, fit_y = min((PRINTERS[k]["bed"][0] - 2 * PRINTERS[k]["margin"], PRINTERS[k]["bed"][1] - 2 * PRINTERS[k]["margin"])
                        for k in PRINTERS if PRINTERS[k]["size"] == size)
     # two sections take any text; from three on, every section needs two letters (see the .scad)
-    for n in [1, 2] + list(range(3, len(letters_of(text)) // 2 + 1)):
+    for n in [1, 2] + list(range(3, len(frame_glyphs(text)) // 2 + 1)):
         sizes = frame_section_sizes(text, size, n)
         if max(d for _, d in sizes) > fit_y:
             raise RuntimeError(f"{text}: the {size} frame is taller than the bed takes")
@@ -362,10 +372,11 @@ def variant_key(text, design, set_, printer):
 
 def variant_makers():
     """(key, maker) for every variant, in build order. The makers run only for the variants
-    that are built: a frame's maker measures the frame with OpenSCAD."""
+    that are built: a frame's maker measures the frame with OpenSCAD. Texts the open frame
+    can't hold (hyphens, most accents) get no open frame."""
     return [(variant_key(text, design, set_, printer), partial(make, text, set_, printer))
             for text in TEXTS for set_, st in SETS.items() for printer in st["printers"]
-            for design, make in DESIGNS.items()]
+            for design, make in DESIGNS.items() if design != "open-frame" or open_frame_takes(text)]
 
 
 # ----------------------------------------------------------------------------- helpers
@@ -1005,6 +1016,8 @@ def export_renders(texts, workers):
     jobs = []
     for text in texts:
         for design, cam in RENDER_CAMERAS.items():
+            if design == "open-frame" and not open_frame_takes(text):
+                continue
             p = dict(SIZES["small"][design], design=design, text_string=text, part="display")
             out = RENDER_IMAGES / f"{text.lower()}-{design}.png"
             args = [OPENSCAD, "--backend=manifold", "--render", "--imgsize=1600,1000",

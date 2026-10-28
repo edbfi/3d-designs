@@ -200,9 +200,8 @@ assert(!(design == "frame" || design == "open-frame") || (force_caps && !letters
 assert(!(design == "frame" || design == "open-frame") || frame_sections <= 2
        || frame_sections <= len([for (c = txt) if (frame_glyph(c)) c]) / 2,
        "with 3 or more frame_sections, each section needs at least two letters");
-assert(design != "open-frame" || len([for (c = txt) if (c == "-" || (ord(c) > 127 && ord(c) != 197
-       && ord(c) != 198 && ord(c) != 216)) c]) == 0,
-       "the open frame holds no hyphens and no accents but Å (they'd miss its rails): use the frame");
+assert(design != "open-frame" || len([for (c = txt) if (!open_frame_takes(c)) c]) == 0,
+       "the open frame holds letters, digits, spaces, full stops and commas, and no accents but Å: use the frame");
 assert(plaque_inlay_depth < plaque_thickness - 0.8, "plaque_inlay_depth must leave at least 0.8 mm of plaque under the pockets");
 assert(plaque_margin_bottom - plaque_bar_gap - plaque_bar_width > (plaque_stand_height - 3) / cos(plaque_tilt) + 1,
        "progress bar would be hidden by the stand: raise plaque_margin_bottom or lower plaque_stand_height");
@@ -215,6 +214,11 @@ function upper(s) = chr([for (c = s) let(o = ord(c))
 
 // Letters and digits: the frame's section cuts run through these.
 function frame_glyph(c) = let(o = ord(c)) (o >= 48 && o <= 57) || (o >= 65 && o <= 90) || o >= 192;
+
+// What the open frame can hold: anything else (a hyphen, a colon's upper dot, an accent but Å's
+// ring) would miss both rails.
+function open_frame_takes(c) = let(o = ord(c)) c == " " || c == "." || c == ","
+    || (frame_glyph(c) && (o < 128 || o == 197 || o == 198 || o == 216));
 
 function prefix(s, n) = n <= 0 ? "" : chr([for (k = [0 : n - 1]) ord(s[k])]);
 
@@ -750,25 +754,29 @@ module frame2d() {
 frame_has_marks = len([for (c = txt) if (ord(c) == 197) c]) > 0;
 module frame_marks2d() {
     frame_marks_ink2d();
-    // the strip starts 0.3 mm up in the ring's bottom stroke (so the two merge solidly) and not
-    // higher, so it doesn't show through the ring's hole
+    // The strip runs from half-way into the top rail (so it can't reach into the A's counter)
+    // up to 0.3 mm into the ring's bottom stroke (so the two merge solidly), not higher, so it
+    // doesn't show through the ring's hole.
     difference() {
-        smear_down(0.15 * H) frame_marks_mid2d();
-        minkowski() { frame_marks_mid2d(); translate([-eps / 2, 0.3]) square([eps, 0.15 * H]); }
+        intersection() {
+            for (i = [0 : n_letters - 1]) if (ord(txt[i]) == 197) offset(delta = 1) frame_mid2d(i);
+            to_final() warp2d(rail_strips) render() cap_band_norm(1 - frame_rail_inset - frame_rail / 2, 3);
+        }
+        minkowski() { frame_marks_ink2d(); translate([-eps / 2, 0.3]) square([eps, H]); }
     }
 }
 
+// Only the Å letters' own columns count: an Ø's slash can also reach that far up. Bent in the
+// rails' coarser strips, which is about 0.05 mm off this close to the top edge (the bend scales
+// from it), and far cheaper than the letters' own bend.
 module frame_marks_ink2d() {
-    intersection() { word2d(); to_final() warp2d(rail_strips) render() cap_band_norm(1.03, 3); }
-}
-
-// The marks where they cross the 2 mm strips through the middle of each letter.
-module frame_marks_mid2d() {
     intersection() {
-        frame_marks_ink2d();
-        for (j = [0 : len(frame_letters) - 1]) offset(delta = 1) frame_mid2d(frame_letters[j]);
+        offset(delta = stroke_weight) to_final() warp2d(rail_strips) render()
+            intersection() { norm_text(); cap_band_norm(1.03, 3); }
+        for (i = [0 : n_letters - 1]) if (ord(txt[i]) == 197) letter_column(i);
     }
 }
+
 
 // Each cut between two sections runs through the middle of a letter or digit, so a
 // glued letter, one rigid piece, splices the joint: on the open frame it is all that joins
