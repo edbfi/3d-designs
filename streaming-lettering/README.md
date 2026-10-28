@@ -71,7 +71,7 @@ A frame project has the loose letters of its set (the same plates and colours as
 2. Glue each letter into its pocket (superglue works on PLA). The pockets place the letters, so you don't need a template. Every joint runs through a letter: glued across it, that letter holds the sections together.
 3. Hold the frame on the pinboard and push a thumbtack or push pin through every hole in the border. The frame is thin there, so a standard pin still reaches well into the board.
 
-On the open frame, two rails hidden behind the letters' top and bottom strokes carry the letters. For long words, the middle sections have no side border, so they come as separate strips; the border dovetails and the glued letters hold them together. An Å's ring sits on a small pad, tied to the top rail by a thin strip. The open frame takes letters, digits, spaces, full stops and commas, and Æ, Ø and Å; anything else would miss its rails, so for that use the frame with the backing panel. The frames need capital letters (the default).
+On the open frame, two rails hidden behind the letters' top and bottom strokes carry the letters. For long words, the middle sections have no side border, so they come as separate strips; the border dovetails and the glued letters hold them together. It takes letters (Æ, Ø and Å too), digits, spaces, full stops and commas; for other text, use the frame with the backing panel ([why](docs/design-notes.md#printability-decisions)).
 
 ### Hanging the loose letters
 
