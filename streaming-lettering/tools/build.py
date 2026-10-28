@@ -324,13 +324,14 @@ def frame_sections(text, size):
     """Fewest frame sections that each fit the smallest bed of this size class."""
     fit_x, fit_y = min((PRINTERS[k]["bed"][0] - 2 * PRINTERS[k]["margin"], PRINTERS[k]["bed"][1] - 2 * PRINTERS[k]["margin"])
                        for k in PRINTERS if PRINTERS[k]["size"] == size)
-    for n in range(1, len(letters_of(text)) + 1):
+    # two sections take any text; from three on, every section needs two letters (see the .scad)
+    for n in [1, 2] + list(range(3, len(letters_of(text)) // 2 + 1)):
         sizes = frame_section_sizes(text, size, n)
         if max(d for _, d in sizes) > fit_y:
             raise RuntimeError(f"{text}: the {size} frame is taller than the bed takes")
         if max(w for w, _ in sizes) <= fit_x:
             return n
-    raise RuntimeError(f"{text}: the {size} frame doesn't fit the bed even with a cut through every letter")
+    raise RuntimeError(f"{text}: the {size} frame doesn't fit the bed in as many sections as its letters allow")
 
 
 def frame_variant(text, set_, printer, design):

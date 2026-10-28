@@ -447,7 +447,7 @@
    {
     "plate": 1,
     "name": "Letters S E R I E R - red face down, black body",
-    "minutes": 195,
+    "minutes": 194,
     "purge_g": 0.1,
     "grams": {
      "1": 23.8,
@@ -522,7 +522,7 @@
     "purge_g": 0.1,
     "grams": {
      "1": 23.8,
-     "2": 61.3
+     "2": 61.4
     },
     "colour_changes": 1,
     "pause_z": null,
@@ -554,7 +554,7 @@
    {
     "plate": 3,
     "name": "Frame 2/2 - black",
-    "minutes": 73,
+    "minutes": 72,
     "purge_g": 0.0,
     "grams": {
      "2": 36.5
@@ -825,7 +825,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters S E R - red",
-    "minutes": 51,
+    "minutes": 52,
     "purge_g": 0.0,
     "grams": {
      "1": 17.8
@@ -1062,7 +1062,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 52,
+    "minutes": 51,
     "purge_g": 0.0,
     "grams": {
      "1": 17.8

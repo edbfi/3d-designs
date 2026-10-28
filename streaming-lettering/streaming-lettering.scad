@@ -197,8 +197,9 @@ assert(frame_chamfer < frame_thickness, "frame_chamfer must be less than frame_t
 assert(frame_radius <= frame_border, "frame_radius must not exceed frame_border, or the corner pin holes break out");
 assert(!(design == "frame" || design == "open-frame") || (force_caps && !letters_flat_bottom),
        "the frames need capitals (force_caps) and letters without flat bottoms");
-assert(frame_sections <= max(1, len([for (c = txt) if (c != " ") c])),
-       "frame_sections can't exceed the number of letters: each cut runs through a letter");
+assert(!(design == "frame" || design == "open-frame") || frame_sections <= 2
+       || frame_sections <= len([for (c = txt) if (c != " ") c]) / 2,
+       "with 3 or more frame_sections, each section needs at least two letters");
 assert(plaque_inlay_depth < plaque_thickness - 0.8, "plaque_inlay_depth must leave at least 0.8 mm of plaque under the pockets");
 assert(plaque_margin_bottom - plaque_bar_gap - plaque_bar_width > (plaque_stand_height - 3) / cos(plaque_tilt) + 1,
        "progress bar would be hidden by the stand: raise plaque_margin_bottom or lower plaque_stand_height");
@@ -719,8 +720,37 @@ module frame_rails2d() {
 module frame2d() {
     if (frame_open) {
         difference() { frame_outline2d(); frame_window2d(); }
-        intersection() { frame_rails2d(); offset(delta = eps) frame_window2d(); }
+        intersection() {
+            union() { frame_rails2d(); if (frame_has_marks) frame_marks2d(); }
+            offset(delta = eps) frame_window2d();
+        }
     } else frame_outline2d();
+}
+
+// Open frame: a pad behind each mark above the capitals (an Å's ring), so it has a pocket to
+// sit in, tied down to the top rail by a 2 mm strip through the middle of its letter. Only
+// letters past ASCII can carry such marks, and the pads double the frame's memory, so plain
+// text skips them.
+frame_has_marks = len([for (c = txt) if (ord(c) > 127) c]) > 0;
+module frame_marks2d() {
+    frame_marks_ink2d();
+    // the strip starts below the mark, so it doesn't show through a ring's hole
+    difference() {
+        smear_down(0.15 * H) frame_marks_mid2d();
+        minkowski() { frame_marks_mid2d(); square([eps, 0.15 * H]); }
+    }
+}
+
+module frame_marks_ink2d() {
+    intersection() { word2d(); to_final() warp2d(rail_strips) render() cap_band_norm(1, 3); }
+}
+
+// The marks where they cross the 2 mm strips through the middle of each letter.
+module frame_marks_mid2d() {
+    intersection() {
+        frame_marks_ink2d();
+        for (j = [0 : len(frame_letters) - 1]) offset(delta = 1) frame_mid2d(frame_letters[j]);
+    }
 }
 
 // Each cut between two sections runs through the middle of a letter (spaces skipped), so a
@@ -732,10 +762,12 @@ frame_letters = [for (i = [0 : n_letters - 1]) if (txt[i] != " ") i];
 frame_cut_letters = frame_sections < 2 ? [] :
     [for (j = [0 : frame_sections - 2]) frame_letters[ceil((j + 1) * len(frame_letters) / frame_sections) - 1]];
 
-// Vertical sliver through the middle of cut j's letter: the mean of its column's edges,
-// as a Minkowski sum of both edge slivers scaled by 1/2.
-module frame_cut2d(j) {
-    i = frame_cut_letters[j];
+// Vertical sliver through the middle of cut j's letter.
+module frame_cut2d(j) { frame_mid2d(frame_cut_letters[j]); }
+
+// Vertical sliver through the middle of letter i: the mean of its column's edges, as a
+// Minkowski sum of both edge slivers scaled by 1/2.
+module frame_mid2d(i) {
     minkowski() {
         scale([0.5, 1]) difference() { letter_column(i); translate([eps, 0]) letter_column(i); }
         scale([0.5, 1]) difference() { letter_column(i); translate([-eps, 0]) letter_column(i); }
@@ -786,13 +818,15 @@ module frame_section2d(k) {
 module frame_holes2d(k) {
     N = frame_sections;
     socket = frame_tongue_len + frame_joint_clearance;
+    left = k == 0 ? frame_border / 2 : socket + 3;
+    right = k == N - 1 ? -frame_border / 2 : -3;
     for (y = [frame_top_y, frame_bottom_y]) minkowski() {
         union() {
-            translate([k == 0 ? frame_border / 2 : socket + 3, 0]) frame_seed2d(y) frame_end2d(k, -1);
-            translate([k == N - 1 ? -frame_border / 2 : -3, 0]) frame_seed2d(y) frame_end2d(k, 1);
-            if (frame_edge_pins == 3) frame_seed2d(y) minkowski() {
-                scale([0.5, 1]) frame_end2d(k, -1);
-                scale([0.5, 1]) frame_end2d(k, 1);
+            translate([left, 0]) frame_seed2d(y) frame_end2d(k, -1);
+            translate([right, 0]) frame_seed2d(y) frame_end2d(k, 1);
+            if (frame_edge_pins == 3) frame_seed2d(y) minkowski() {  // half-way between those two
+                scale([0.5, 1]) translate([left, 0]) frame_end2d(k, -1);
+                scale([0.5, 1]) translate([right, 0]) frame_end2d(k, 1);
             }
         }
         circle(d = frame_pin_d - eps);
