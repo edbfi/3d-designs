@@ -307,30 +307,30 @@ def letters_variant(text, set_, printer):
 
 
 @cache
-def frame_width(text, size, sections):
-    """Width of the first of this many frame sections (the whole frame for one): measured on an
-    exported section, so its dovetail tongues count. Both frames share the outline, and the
-    backing panel's border tongues are the longest, so it stands in for both."""
-    p = dict(SIZES[size]["frame"], design="frame", text_string=text, part="frame_section",
-             frame_sections=sections, frame_index=0)
-    part = export_stl(Part(f"{text}-{size}-frame-{sections}", p, 1), BUILD / "measure")
-    return part.bbox[1][0] - part.bbox[0][0], part.bbox[1][1] - part.bbox[0][1]
+def frame_section_sizes(text, size, sections):
+    """(width, depth) of each of this many frame sections, measured on exported sections so
+    their dovetail tongues count. The cuts run through letters, so the sections differ.
+    Both frames share the outline and the cuts, so the backing panel stands in for both."""
+    sizes = []
+    for k in range(sections):
+        p = dict(SIZES[size]["frame"], design="frame", text_string=text, part="frame_section",
+                 frame_sections=sections, frame_index=k)
+        part = export_stl(Part(f"{text}-{size}-frame-{k + 1}-of-{sections}", p, 1), BUILD / "measure")
+        sizes.append((part.bbox[1][0] - part.bbox[0][0], part.bbox[1][1] - part.bbox[0][1]))
+    return sizes
 
 
 def frame_sections(text, size):
     """Fewest frame sections that each fit the smallest bed of this size class."""
     fit_x, fit_y = min((PRINTERS[k]["bed"][0] - 2 * PRINTERS[k]["margin"], PRINTERS[k]["bed"][1] - 2 * PRINTERS[k]["margin"])
                        for k in PRINTERS if PRINTERS[k]["size"] == size)
-    width, depth = frame_width(text, size, 1)
-    if depth > fit_y:
-        raise RuntimeError(f"{text}: the {size} frame is {depth:.0f} mm tall, more than the bed takes")
-    if width <= fit_x:
-        return 1
-    tongue = frame_width(text, size, 2)[0] - width / 2  # a section also carries its tongues
-    n = 2
-    while width / n + tongue > fit_x:
-        n += 1
-    return n
+    for n in range(1, len(letters_of(text)) + 1):
+        sizes = frame_section_sizes(text, size, n)
+        if max(d for _, d in sizes) > fit_y:
+            raise RuntimeError(f"{text}: the {size} frame is taller than the bed takes")
+        if max(w for w, _ in sizes) <= fit_x:
+            return n
+    raise RuntimeError(f"{text}: the {size} frame doesn't fit the bed even with a cut through every letter")
 
 
 def frame_variant(text, set_, printer, design):
@@ -338,7 +338,7 @@ def frame_variant(text, set_, printer, design):
     # section per plate, printed back down.
     n = frame_sections(text, PRINTERS[printer]["size"])
     p = scad_params(printer, design, text, frame_sections=n)
-    plates, filaments, notes = letter_plates(text, set_, p)
+    plates, _, notes = letter_plates(text, set_, p)
     plates += [PlateSpec(f"Frame {k + 1}/{n} - black" if n > 1 else "Frame - black",
                          [Group(f"Frame section {k + 1}", [Part(f"{text}-{design}-section-{k + 1}",
                                                               dict(p, part="frame_section", frame_index=k), 2, DOWN)])])
@@ -914,7 +914,7 @@ def plate_stats(final: Path):
     return out
 
 
-def export_templates(texts):
+def export_templates(texts, workers):
     """1:1 paper placement templates for the loose letters (SVG, mm units)."""
     TEMPLATES.mkdir(parents=True, exist_ok=True)
     jobs = []
@@ -924,7 +924,7 @@ def export_templates(texts):
             out = TEMPLATES / f"{text.lower()}-letters-template-{label}.svg"
             args = [OPENSCAD, "-o", str(out)] + sum((["-D", f"{k}={fmt_param(v)}"] for k, v in p.items()), []) + [str(SCAD)]
             jobs.append((args, out))
-    with cf.ThreadPoolExecutor(4) as ex:
+    with cf.ThreadPoolExecutor(workers) as ex:
         for (args, out), r in zip(jobs, ex.map(lambda j: subprocess.run(j[0], capture_output=True, text=True), jobs)):
             if r.returncode != 0:
                 raise RuntimeError(f"template {out.name}: {r.stderr[-800:]}")
@@ -998,7 +998,7 @@ RENDER_CAMERAS = {"stand": "0,0,0,74,0,-22,0", "plaque": "0,0,0,80,0,-20,0", "le
                   "frame": "0,0,0,82,0,-16,0", "open-frame": "0,0,0,82,0,-16,0"}
 
 
-def export_renders(texts):
+def export_renders(texts, workers):
     """Coloured display renders (A1 mini sizes) for the docs."""
     RENDER_IMAGES.mkdir(parents=True, exist_ok=True)
     jobs = []
@@ -1010,7 +1010,7 @@ def export_renders(texts):
                     "--colorscheme=Tomorrow", "--autocenter", "--viewall", f"--camera={cam}",
                     "-o", str(out)] + sum((["-D", f"{k}={fmt_param(v)}"] for k, v in p.items()), []) + [str(SCAD)]
             jobs.append((args, out))
-    with cf.ThreadPoolExecutor(4) as ex:
+    with cf.ThreadPoolExecutor(workers) as ex:
         for (args, out), r in zip(jobs, ex.map(lambda j: subprocess.run(j[0], capture_output=True, text=True), jobs)):
             if r.returncode != 0 or not out.exists():
                 raise RuntimeError(f"render {out.name}: {r.stderr[-800:]}")
@@ -1080,7 +1080,7 @@ def main():
     ap.add_argument("--makerworld-only", action="store_true", help="only write makerworld/ (the MakerWorld edition)")
     a = ap.parse_args()
     if a.renders_only:
-        export_renders(TEXTS)
+        export_renders(TEXTS, a.jobs)
         return
     if a.makerworld_only:
         log(f"MakerWorld edition: {export_makerworld_edition().relative_to(ROOT)}")
@@ -1103,11 +1103,11 @@ def main():
         for f in cf.as_completed(futs):
             f.result()
     log("templates")
-    export_templates(sorted({v.text for v in variants if v.design == "letters"}))
+    export_templates(sorted({v.text for v in variants if v.design == "letters"}), a.jobs)
     log(f"MakerWorld edition: {export_makerworld_edition().relative_to(ROOT)}")
     if not a.no_renders:
         log("preview renders")
-        export_renders(sorted({v.text for v in variants}))
+        export_renders(sorted({v.text for v in variants}), a.jobs)
 
     # 2. Bambu projects (sequential: the CLI shares its data directory)
     results, failed = [], []

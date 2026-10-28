@@ -132,7 +132,7 @@ frame_thickness = 3; // [2:0.2:6]
 // Width of the border the pins go through (a thumbtack head is about 10 mm across)
 frame_border = 14; // [10:0.5:40]
 // Space between the letters and the border
-frame_gap = 8; // [2:0.5:40]
+frame_gap = 8; // [4:0.5:40]
 // Corner radius
 frame_radius = 4; // [0:0.5:20]
 // Chamfer on the front edges
@@ -195,8 +195,10 @@ assert(frame_pocket_depth < frame_thickness - 0.8, "frame_pocket_depth must leav
 assert(frame_rail_inset + frame_rail < 0.45, "frame_rail_inset + frame_rail must stay under 0.45 so the two rails stay apart");
 assert(frame_chamfer < frame_thickness, "frame_chamfer must be less than frame_thickness");
 assert(frame_radius <= frame_border, "frame_radius must not exceed frame_border, or the corner pin holes break out");
-assert(!(design == "frame" || design == "open-frame") || !letters_flat_bottom,
-       "letters_flat_bottom doesn't fit the frames' pockets: turn it off");
+assert(!(design == "frame" || design == "open-frame") || (force_caps && !letters_flat_bottom),
+       "the frames need capitals (force_caps) and letters without flat bottoms");
+assert(frame_sections <= max(1, len([for (c = txt) if (c != " ") c])),
+       "frame_sections can't exceed the number of letters: each cut runs through a letter");
 assert(plaque_inlay_depth < plaque_thickness - 0.8, "plaque_inlay_depth must leave at least 0.8 mm of plaque under the pockets");
 assert(plaque_margin_bottom - plaque_bar_gap - plaque_bar_width > (plaque_stand_height - 3) / cos(plaque_tilt) + 1,
        "progress bar would be hidden by the stand: raise plaque_margin_bottom or lower plaque_stand_height");
@@ -654,7 +656,7 @@ module loose_word(zone, half = "all") {
 // The frame prints back down in frame_sections sections that dovetail together; each
 // section is pinned to the board through its border, and the loose letters (printed as in
 // the letters design) are glued into word-shaped pockets. Nothing here measures the text:
-// section cuts sit at fractions of the frame's width, built from its edge slivers.
+// the section cuts are placed from the letters' own columns.
 
 frame_open = design == "open-frame";
 frame_out = frame_gap + frame_border;                // word box -> outer edge
@@ -681,13 +683,13 @@ module cap_h_raw() {
 }
 
 // Band between fractions [a, b] of a capital's height above the baseline, normalised frame,
-// right across. Measured on an "H" rather than the whole text, so accents and ascenders
-// that reach above the capitals (Å, lower case) don't move it. Built like norm_box() (the
+// right across. Measured on an "H" rather than the whole text, so accents that reach above
+// the capitals (Å) don't move it. Built like norm_box() (the
 // band rides on the baseline of cap_box_raw() and gets the word's scale from its x-range):
 // the bend instantiates it once per strip, and the centred text would cost far more memory.
 module cap_band_norm(a, b) {
     intersection() {
-        translate([-BIG, -BIG]) square([2 * BIG, 2 * BIG]);
+        translate([-BIG, -BIG]) square([2 * BIG, BIG]);  // below the top edge, which to_final() scales from
         hull() for (s = [-1, 1]) translate([s * BIG, 0]) resize([NORM_W, 0], auto = true) intersection() {
             xband2d() cap_box_raw();
             minkowski() {
@@ -705,7 +707,7 @@ module cap_band_norm(a, b) {
 // between the letters: bent with the letters, so they keep their place in every letter, and
 // straight beyond the word, where the arc has ended.
 // They bend in coarser strips than the letters (0.3 mm steps along their edges, finer than an
-// extrusion line): every strip instantiates the band, and the rails are used several times.
+// extrusion line): every strip instantiates the band, which costs memory.
 rail_strips = min(warp_strips, max(60, ceil(4.2 * letter_height * arc_depth / 0.3)));
 module frame_rails2d() {
     to_final() warp2d(rail_strips) render() {
@@ -721,26 +723,35 @@ module frame2d() {
     } else frame_outline2d();
 }
 
-// The frame's x-range from its left edge to fraction f (0 < f < 1) of its width. The frame
-// is centred on x = 0, so that is the band scaled by f, moved left by (1 - f) x its
-// half-width: a Minkowski sum with its left edge sliver scaled by (1 - f).
-module frame_upto2d(f) {
+// Each cut between two sections runs through the middle of a letter (spaces skipped), so a
+// glued letter, one rigid piece, splices the joint: on the open frame it is all that joins
+// the rails. Cut j goes through the letter whose share of the word (counting every letter
+// as equally wide) holds the point (j + 1) / frame_sections of the way along; on a tie, the
+// left one.
+frame_letters = [for (i = [0 : n_letters - 1]) if (txt[i] != " ") i];
+frame_cut_letters = frame_sections < 2 ? [] :
+    [for (j = [0 : frame_sections - 2]) frame_letters[ceil((j + 1) * len(frame_letters) / frame_sections) - 1]];
+
+// Vertical sliver through the middle of cut j's letter: the mean of its column's edges,
+// as a Minkowski sum of both edge slivers scaled by 1/2.
+module frame_cut2d(j) {
+    i = frame_cut_letters[j];
     minkowski() {
-        scale([f, 1]) frame_xband();
-        scale([1 - f, 1]) difference() { frame_xband(); translate([eps, 0]) frame_xband(); }
+        scale([0.5, 1]) difference() { letter_column(i); translate([eps, 0]) letter_column(i); }
+        scale([0.5, 1]) difference() { letter_column(i); translate([-eps, 0]) letter_column(i); }
     }
 }
 
-// Vertical sliver at fraction f of the frame's width (0 = left edge, 1 = right edge).
-module frame_cut2d(f) {
-    if (f <= 0) difference() { frame_xband(); translate([eps, 0]) frame_xband(); }
-    else if (f >= 1) difference() { frame_xband(); translate([-eps, 0]) frame_xband(); }
-    else difference() { frame_upto2d(f); translate([-eps, 0]) frame_upto2d(f); }
+// Left (s = -1) or right (s = 1) end of section k: the frame's edge or a cut.
+module frame_end2d(k, s) {
+    if (s < 0 && k > 0) frame_cut2d(k - 1);
+    else if (s > 0 && k < frame_sections - 1) frame_cut2d(k);
+    else difference() { frame_xband(); translate([-s * eps, 0]) frame_xband(); }
 }
 
-// Seed (eps square) at fraction f of the width and height y: a Minkowski sum with it puts a
-// shape drawn around the origin there.
-module frame_seed2d(f, y) { intersection() { frame_cut2d(f); translate([-BIG, y]) square([2 * BIG, eps]); } }
+// Seed (eps square) on a vertical sliver at height y: a Minkowski sum with it puts a shape
+// drawn around the origin there.
+module frame_seed2d(y) { intersection() { children(); translate([-BIG, y]) square([2 * BIG, eps]); } }
 
 // Dovetail tongue pointing +x: neck at x = 0, head at x = len, and 1 mm of root.
 module dovetail2d(neck, head, len) {
@@ -749,42 +760,22 @@ module dovetail2d(neck, head, len) {
 
 frame_tongue_len = 0.45 * frame_border;
 
-// Tongues of section j into section j + 1: in the top and bottom border, and in each rail.
+// Tongues of section j into section j + 1, in the top and bottom border.
 module frame_tongues2d(j) {
-    f = (j + 1) / frame_sections;
     for (y = [frame_top_y, frame_bottom_y])
-        minkowski() { frame_seed2d(f, y); dovetail2d(0.4 * frame_border, 0.55 * frame_border, frame_tongue_len); }
-    if (frame_open) {
-        frame_rail_neck2d(f);
-        intersection() { offset(delta = 0.8) frame_rail_neck2d(f); frame_cut_band2d(f, 2, 5); }
-    }
+        minkowski() {
+            frame_seed2d(y) frame_cut2d(j);
+            dovetail2d(0.4 * frame_border, 0.55 * frame_border, frame_tongue_len);
+        }
 }
 
-// The rail tongue is a T that follows the rail's curve: a neck inset from the rail's edges
-// by 1 mm of socket wall, the clearance and 0.8 mm, then a head 1.6 mm wider. It grows out
-// of the neck, so a rail too thin for a neck gets no joint at all (its letters hold it).
-module frame_rail_neck2d(f) {
-    intersection() {
-        offset(delta = -(1 + frame_joint_clearance + 0.8)) frame_rails2d();
-        frame_cut_band2d(f, -1, 5);
-    }
-}
-
-// Vertical band from x0 to x1 past the cut at fraction f.
-module frame_cut_band2d(f, x0, x1) { minkowski() { frame_cut2d(f); translate([x0, 0]) square([x1 - x0, eps]); } }
-
-// Section k's share of the plane: its band plus its tongues, minus sockets for the tongues
-// of the section to its left.
+// Section k's share of the plane: between its ends, plus its tongues, minus sockets for
+// the tongues of the section to its left.
 module frame_section2d(k) {
-    N = frame_sections;
     difference() {
         union() {
-            intersection() {
-                frame_xband();
-                if (k > 0) difference() { frame_xband(); frame_upto2d(k / N); }
-                if (k < N - 1) frame_upto2d((k + 1) / N);
-            }
-            if (k < N - 1) frame_tongues2d(k);
+            hull() { frame_end2d(k, -1); frame_end2d(k, 1); }
+            if (k < frame_sections - 1) frame_tongues2d(k);
         }
         if (k > 0) offset(delta = frame_joint_clearance) frame_tongues2d(k - 1);
     }
@@ -797,9 +788,12 @@ module frame_holes2d(k) {
     socket = frame_tongue_len + frame_joint_clearance;
     for (y = [frame_top_y, frame_bottom_y]) minkowski() {
         union() {
-            translate([k == 0 ? frame_border / 2 : socket + 3, 0]) frame_seed2d(k / N, y);
-            translate([k == N - 1 ? -frame_border / 2 : -3, 0]) frame_seed2d((k + 1) / N, y);
-            if (frame_edge_pins == 3) frame_seed2d((k + 0.5) / N, y);
+            translate([k == 0 ? frame_border / 2 : socket + 3, 0]) frame_seed2d(y) frame_end2d(k, -1);
+            translate([k == N - 1 ? -frame_border / 2 : -3, 0]) frame_seed2d(y) frame_end2d(k, 1);
+            if (frame_edge_pins == 3) frame_seed2d(y) minkowski() {
+                scale([0.5, 1]) frame_end2d(k, -1);
+                scale([0.5, 1]) frame_end2d(k, 1);
+            }
         }
         circle(d = frame_pin_d - eps);
     }

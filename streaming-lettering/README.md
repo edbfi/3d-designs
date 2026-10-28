@@ -68,10 +68,10 @@ No manual swaps. Load red in the slot for filament 1 and black for filament 2. T
 A frame project has the loose letters of its set (the same plates and colours as above) and the black frame, printed back down in sections that dovetail together, one per plate.
 
 1. Push the sections together at their dovetails, on a table. A drop of glue makes a joint permanent.
-2. Glue each letter into its pocket (superglue works on PLA). The pockets place the letters, so you don't need a template.
+2. Glue each letter into its pocket (superglue works on PLA). The pockets place the letters, so you don't need a template. Every joint runs through a letter: glued across it, that letter holds the sections together.
 3. Hold the frame on the pinboard and push a thumbtack or push pin through every hole in the border. The frame is thin there, so a standard pin still reaches well into the board.
 
-On the open frame, two rails hidden behind the letters' top and bottom strokes carry the letters. For long words, the middle sections have no side border, so they come as separate strips; the dovetails and the glued letters hold them together.
+On the open frame, two rails hidden behind the letters' top and bottom strokes carry the letters. For long words, the middle sections have no side border, so they come as separate strips; the border dovetails and the glued letters hold them together. The frames need capital letters (the default).
 
 ### Hanging the loose letters
 
@@ -83,7 +83,7 @@ The files start from Bambu's stock 0.20 mm Standard profile. What's changed, and
 
 | Setting | Where | Why |
 |---|---|---|
-| Painted seams | every part | Each layer's seam is painted onto a hidden side: the backs of the plinths and the plaque stand, the letters' bottom edges, the tabs, the edge that sits in the plaque stand. |
+| Painted seams | every part | Each layer's seam is painted onto the part's hidden side. |
 | Face down | loose letters, stand letters, plaque inlays | The textured plate gives the visible face a crisp, even finish with no top-surface lines. |
 | Lightning infill | loose letters | Only the back needs holding up; the letters come out about 30 % lighter, which helps tape and putty hold them. |
 | No prime tower | every file | The A-series printers purge into their chute; on these parts a tower added time and filament for no visible gain. |

@@ -183,10 +183,10 @@
    {
     "plate": 2,
     "name": "Frame 1/2 - black",
-    "minutes": 70,
+    "minutes": 66,
     "purge_g": 0.0,
     "grams": {
-     "2": 41.1
+     "2": 37.7
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -198,10 +198,10 @@
    {
     "plate": 3,
     "name": "Frame 2/2 - black",
-    "minutes": 70,
+    "minutes": 75,
     "purge_g": 0.0,
     "grams": {
-     "2": 40.8
+     "2": 44.3
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -254,10 +254,10 @@
    {
     "plate": 2,
     "name": "Frame 1/2 - black",
-    "minutes": 40,
+    "minutes": 38,
     "purge_g": 0.0,
     "grams": {
-     "2": 16.9
+     "2": 15.6
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -269,10 +269,10 @@
    {
     "plate": 3,
     "name": "Frame 2/2 - black",
-    "minutes": 40,
+    "minutes": 42,
     "purge_g": 0.0,
     "grams": {
-     "2": 16.4
+     "2": 17.6
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -406,7 +406,7 @@
    {
     "plate": 1,
     "name": "Letters S E R I E R - red face down, black body",
-    "minutes": 194,
+    "minutes": 195,
     "purge_g": 0.1,
     "grams": {
      "1": 23.8,
@@ -468,10 +468,10 @@
    {
     "plate": 2,
     "name": "Frame 1/2 - black",
-    "minutes": 135,
+    "minutes": 124,
     "purge_g": 0.0,
     "grams": {
-     "2": 91.2
+     "2": 83.2
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -483,10 +483,10 @@
    {
     "plate": 3,
     "name": "Frame 2/2 - black",
-    "minutes": 135,
+    "minutes": 145,
     "purge_g": 0.0,
     "grams": {
-     "2": 90.6
+     "2": 98.4
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -518,11 +518,11 @@
    {
     "plate": 1,
     "name": "Letters S E R I E R - red face down, black body",
-    "minutes": 195,
+    "minutes": 194,
     "purge_g": 0.1,
     "grams": {
      "1": 23.8,
-     "2": 61.4
+     "2": 61.3
     },
     "colour_changes": 1,
     "pause_z": null,
@@ -539,10 +539,10 @@
    {
     "plate": 2,
     "name": "Frame 1/2 - black",
-    "minutes": 69,
+    "minutes": 64,
     "purge_g": 0.0,
     "grams": {
-     "2": 34.7
+     "2": 32.0
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -554,10 +554,10 @@
    {
     "plate": 3,
     "name": "Frame 2/2 - black",
-    "minutes": 68,
+    "minutes": 73,
     "purge_g": 0.0,
     "grams": {
-     "2": 33.9
+     "2": 36.5
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -775,10 +775,10 @@
    {
     "plate": 3,
     "name": "Frame 1/2 - black",
-    "minutes": 70,
+    "minutes": 66,
     "purge_g": 0.0,
     "grams": {
-     "2": 41.1
+     "2": 37.7
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -790,10 +790,10 @@
    {
     "plate": 4,
     "name": "Frame 2/2 - black",
-    "minutes": 70,
+    "minutes": 75,
     "purge_g": 0.0,
     "grams": {
-     "2": 40.8
+     "2": 44.3
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -825,7 +825,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters S E R - red",
-    "minutes": 52,
+    "minutes": 51,
     "purge_g": 0.0,
     "grams": {
      "1": 17.8
@@ -859,10 +859,10 @@
    {
     "plate": 3,
     "name": "Frame 1/2 - black",
-    "minutes": 40,
+    "minutes": 38,
     "purge_g": 0.0,
     "grams": {
-     "2": 16.9
+     "2": 15.6
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -874,10 +874,10 @@
    {
     "plate": 4,
     "name": "Frame 2/2 - black",
-    "minutes": 40,
+    "minutes": 42,
     "purge_g": 0.0,
     "grams": {
-     "2": 16.4
+     "2": 17.6
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -1096,10 +1096,10 @@
    {
     "plate": 3,
     "name": "Frame 1/2 - black",
-    "minutes": 70,
+    "minutes": 66,
     "purge_g": 0.0,
     "grams": {
-     "2": 41.1
+     "2": 37.7
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -1111,10 +1111,10 @@
    {
     "plate": 4,
     "name": "Frame 2/2 - black",
-    "minutes": 70,
+    "minutes": 75,
     "purge_g": 0.0,
     "grams": {
-     "2": 40.8
+     "2": 44.3
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -1147,7 +1147,7 @@
    {
     "plate": 1,
     "name": "1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 51,
+    "minutes": 52,
     "purge_g": 0.0,
     "grams": {
      "1": 17.8
@@ -1181,10 +1181,10 @@
    {
     "plate": 3,
     "name": "Frame 1/2 - black",
-    "minutes": 40,
+    "minutes": 38,
     "purge_g": 0.0,
     "grams": {
-     "2": 16.9
+     "2": 15.6
     },
     "colour_changes": 0,
     "pause_z": null,
@@ -1196,10 +1196,10 @@
    {
     "plate": 4,
     "name": "Frame 2/2 - black",
-    "minutes": 40,
+    "minutes": 42,
     "purge_g": 0.0,
     "grams": {
-     "2": 16.4
+     "2": 17.6
     },
     "colour_changes": 0,
     "pause_z": null,
