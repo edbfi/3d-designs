@@ -33,7 +33,8 @@ import sys
 import time
 import zipfile
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
+from functools import cache, partial
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -100,6 +101,10 @@ SIZES = {
                         letters_face_depth=4),
     },
 }
+# The pinboard frames hold the loose letters, so they share their settings.
+FRAMES = {"small": {}, "large": dict(frame_border=18, frame_gap=10, frame_radius=6, frame_edge_pins=3)}
+for _size, _extra in FRAMES.items():
+    SIZES[_size]["frame"] = SIZES[_size]["open-frame"] = dict(SIZES[_size]["letters"], **_extra)
 
 # ----------------------------------------------------------------------------- model
 
@@ -127,6 +132,8 @@ class PlateSpec:
     groups: list
     pause_z: float = None     # top_z of the first layer after a manual filament swap
     pause_colour: str = RED   # colour loaded at the pause (for Bambu Studio's preview)
+    split: int = 1            # spread the groups over this many plates, so printers can share the work
+    list_letters: bool = False  # name each plate after the letters on it
 
 
 @dataclass
@@ -141,7 +148,7 @@ class Variant:
 
     @property
     def key(self):
-        return f"{self.text.lower()}-{self.design}-{self.set}-{self.printer}"
+        return variant_key(self.text, self.design, self.set, self.printer)
 
     @property
     def ams(self):
@@ -166,6 +173,16 @@ def scad_params(printer, design, text, **extra):
     p.update(design=design, text_string=text)
     p.update(extra)
     return p
+
+
+def frame_glyphs(text):
+    """Letters and digits, which the frame's cuts run through (frame_glyph in the .scad)."""
+    return [c for c in text.upper() if (c.isascii() and c.isalnum()) or ord(c) >= 192]
+
+
+def open_frame_takes(text):
+    """Whether the open frame can hold the text (open_frame_takes in the .scad)."""
+    return all(c in " .," or (c.isalnum() and (c.isascii() or c in "ÅÆØ")) for c in text.upper())
 
 
 def letters_of(text):
@@ -259,51 +276,107 @@ def plaque_variant(text, set_, printer):
         "Slide the plaque into the stand's leaning slot."])
 
 
-def letters_variant(text, set_, printer):
-    # Face down (letters_face_down in the .scad): the red face prints first, on the textured
-    # plate, and the black body on top of it. Lightning infill: only the back needs holding up,
-    # and lighter letters stay put on tape or putty.
-    p = scad_params(printer, "letters", text)
+def letter_plates(text, set_, p):
+    """Loose-letter plates, shared by the letters and frame designs: (plates, filaments, notes).
+
+    Face down (letters_face_down in the .scad): the red face prints first, on the textured
+    plate, and the black body on top of it. Lightning infill: only the back needs holding up,
+    and lighter letters stay put on tape or putty."""
     face = p.get("letters_face_depth", 3)
     letters = letters_of(text)
     light = {"sparse_infill_pattern": "lightning"}
-    hang = "Hang them with the paper template in templates/ so the arc lines up."
     if set_ == "ams":
         groups = [Group(f"Letter {i + 1} {c}", [
             Part(f"{text}-letter-{i + 1}-{c}-face", dict(p, part="letter_face", letter_index=i), 1, DOWN),
             Part(f"{text}-letter-{i + 1}-{c}-body", dict(p, part="letter_body", letter_index=i), 2, DOWN)],
             print_params=light)
             for i, c in letters]
-        return Variant(text, "letters", set_, printer, [RED, BLACK],
-                       [PlateSpec("Letters - red face down, black body", groups)],
-                       ["Printed face down: the red face gets the textured plate's finish, then the AMS "
-                        "changes to black once for the body.", hang])
+        return ([PlateSpec("Letters - red face down, black body", groups, list_letters=True)], [RED, BLACK],
+                ["Printed face down: the red face gets the textured plate's finish, then the AMS "
+                 "changes to black once for the body."])
     groups = [Group(f"Letter {i + 1} {c}", [Part(f"{text}-letter-{i + 1}-{c}",
                                             dict(p, part="letter", letter_index=i), 1, DOWN)],
                     print_params=light)
               for i, c in letters]
     if set_ == "single-colour":
-        return Variant(text, "letters", set_, printer, [RED],
-                       [PlateSpec("Letters - red", groups)],
-                       ["All-red letters, printed face down, split over two plates so two printers can "
-                        "share the work.", hang])
+        return ([PlateSpec("Letters - red", groups, split=2, list_letters=True)], [RED],
+                ["All-red letters, printed face down, split over two plates so two printers can "
+                 "share the work."])
     pz = round(face + LAYER, 2)
-    return Variant(text, "letters", set_, printer, [RED],
-                   [PlateSpec(f"Letters - start red, PAUSE at {pz:.1f} mm, load black", groups,
-                              pause_z=pz, pause_colour=BLACK)],
-                   [f"Each plate starts in red, face down, and pauses at {pz:.1f} mm: swap to black and "
-                    "resume, for black letters with a red face.",
-                    "The letters are split over two plates so two printers can share the work.", hang])
+    return ([PlateSpec(f"Letters - start red, PAUSE at {pz:.1f} mm, load black", groups,
+                       pause_z=pz, pause_colour=BLACK, split=2, list_letters=True)], [RED],
+            [f"Each letter plate starts in red, face down, and pauses at {pz:.1f} mm: swap to black and "
+             "resume, for black letters with a red face.",
+             "The letters are split over two plates so two printers can share the work."])
 
 
-def make_variants():
-    vs = []
-    for text in TEXTS:
-        for set_, st in SETS.items():
-            for printer in st["printers"]:
-                vs += [stand_variant(text, set_, printer), plaque_variant(text, set_, printer),
-                       letters_variant(text, set_, printer)]
-    return vs
+def letters_variant(text, set_, printer):
+    plates, filaments, notes = letter_plates(text, set_, scad_params(printer, "letters", text))
+    hang = "Hang them with the paper template in templates/ so the arc lines up."
+    return Variant(text, "letters", set_, printer, filaments, plates, notes + [hang])
+
+
+@cache
+def frame_section_sizes(text, size, sections):
+    """(width, depth) of each of this many frame sections, measured on exported sections so
+    their dovetail tongues count. The cuts run through letters, so the sections differ.
+    Both frames share the outline and the cuts, so the backing panel stands in for both."""
+    sizes = []
+    for k in range(sections):
+        p = dict(SIZES[size]["frame"], design="frame", text_string=text, part="frame_section",
+                 frame_sections=sections, frame_index=k)
+        part = export_stl(Part(f"{text}-{size}-frame-{k + 1}-of-{sections}", p, 1), BUILD / "measure")
+        sizes.append((part.bbox[1][0] - part.bbox[0][0], part.bbox[1][1] - part.bbox[0][1]))
+    return sizes
+
+
+def frame_sections(text, size):
+    """Fewest frame sections that each fit the smallest bed of this size class."""
+    fit_x, fit_y = min((PRINTERS[k]["bed"][0] - 2 * PRINTERS[k]["margin"], PRINTERS[k]["bed"][1] - 2 * PRINTERS[k]["margin"])
+                       for k in PRINTERS if PRINTERS[k]["size"] == size)
+    # two sections take any text; from three on, every section needs two letters (see the .scad)
+    for n in [1, 2] + list(range(3, len(frame_glyphs(text)) // 2 + 1)):
+        sizes = frame_section_sizes(text, size, n)
+        if max(d for _, d in sizes) > fit_y:
+            raise RuntimeError(f"{text}: the {size} frame is taller than the bed takes")
+        if max(w for w, _ in sizes) <= fit_x:
+            return n
+    raise RuntimeError(f"{text}: the {size} frame doesn't fit the bed in as many sections as its letters allow")
+
+
+def frame_variant(text, set_, printer, design):
+    # The letters print exactly as in the letters design; the frame is plain black, one
+    # section per plate, printed back down.
+    n = frame_sections(text, PRINTERS[printer]["size"])
+    p = scad_params(printer, design, text, frame_sections=n)
+    plates, _, notes = letter_plates(text, set_, p)
+    plates += [PlateSpec(f"Frame {k + 1}/{n} - black" if n > 1 else "Frame - black",
+                         [Group(f"Frame section {k + 1}", [Part(f"{text}-{design}-section-{k + 1}",
+                                                              dict(p, part="frame_section", frame_index=k), 2, DOWN)])])
+               for k in range(n)]
+    return Variant(text, design, set_, printer, [RED, BLACK], plates, notes + [
+        f"The frame is black, in {n} sections that dovetail together, one per plate." if n > 1
+        else "The frame is black, in one piece.",
+        "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes "
+        "in its border."])
+
+
+DESIGNS = {"stand": stand_variant, "plaque": plaque_variant, "letters": letters_variant,
+           "frame": partial(frame_variant, design="frame"),
+           "open-frame": partial(frame_variant, design="open-frame")}
+
+
+def variant_key(text, design, set_, printer):
+    return f"{text.lower()}-{design}-{set_}-{printer}"
+
+
+def variant_makers():
+    """(key, maker) for every variant, in build order. The makers run only for the variants
+    that are built: a frame's maker measures the frame with OpenSCAD. Texts the open frame
+    can't hold (hyphens, most accents) get no open frame."""
+    return [(variant_key(text, design, set_, printer), partial(make, text, set_, printer))
+            for text in TEXTS for set_, st in SETS.items() for printer in st["printers"]
+            for design, make in DESIGNS.items() if design != "open-frame" or open_frame_takes(text)]
 
 
 # ----------------------------------------------------------------------------- helpers
@@ -463,7 +536,7 @@ def flat_presets(v: Variant):
 
 # ----------------------------------------------------------------------------- layout
 
-TOWER = (45, 55)  # reserved prime-tower corner (x, y) on AMS plates
+TOWER = (45, 55)  # reserved prime-tower corner (x, y) on AMS plates that change colour
 
 
 def pack(v: Variant):
@@ -473,18 +546,18 @@ def pack(v: Variant):
     W, D = pr["bed"]
     m = pr["margin"]
     gap = 8
-    reserve = v.ams and len(v.filaments) > 1
-    tower = (W - m - TOWER[0] + 5, D - m - TOWER[1] + 5) if reserve else None
     result = []
     for spec in v.plates:
+        # only plates that change colour could need the tower
+        colours = {part.filament for g in spec.groups for part in g.parts}
+        tower = (W - m - TOWER[0] + 5, D - m - TOWER[1] + 5) if v.ams and len(colours) > 1 else None
         items = []
         for g in spec.groups:
             lo, hi = group_bbox(g)
             items.append((g, hi[0] - lo[0], hi[1] - lo[1]))
-        # no-AMS loose letters: always two plates so two printers can share the work
         chunks = [items]
-        if v.design == "letters" and not v.ams:
-            chunks = [[it for it, _ in c] for c in split_balanced([(it, it[1]) for it in items], 2)]
+        if spec.split > 1:
+            chunks = [[it for it, _ in c] for c in split_balanced([(it, it[1]) for it in items], spec.split)]
         pending = list(chunks)
         plate_sets = []
         while pending:
@@ -498,12 +571,12 @@ def pack(v: Variant):
         n = len(plate_sets)
         for k, placed in enumerate(plate_sets):
             name = spec.name
-            if v.design == "letters":  # "Letters - ..." -> "Letters S E R - ..."
+            if spec.list_letters:  # "Letters - ..." -> "Letters S E R - ..."
                 head, _, tail = name.partition(" - ")
                 name = f"{head} {' '.join(g.label.split()[-1] for g, _, _ in placed)} - {tail}"
             if n > 1:
                 name = f"{k + 1}/{n} {name}"
-            result.append((PlateSpec(name, spec.groups, spec.pause_z, spec.pause_colour), placed, tower))
+            result.append((replace(spec, name=name), placed, tower))
     return result
 
 
@@ -853,7 +926,7 @@ def plate_stats(final: Path):
     return out
 
 
-def export_templates(texts):
+def export_templates(texts, workers):
     """1:1 paper placement templates for the loose letters (SVG, mm units)."""
     TEMPLATES.mkdir(parents=True, exist_ok=True)
     jobs = []
@@ -863,7 +936,7 @@ def export_templates(texts):
             out = TEMPLATES / f"{text.lower()}-letters-template-{label}.svg"
             args = [OPENSCAD, "-o", str(out)] + sum((["-D", f"{k}={fmt_param(v)}"] for k, v in p.items()), []) + [str(SCAD)]
             jobs.append((args, out))
-    with cf.ThreadPoolExecutor(4) as ex:
+    with cf.ThreadPoolExecutor(workers) as ex:
         for (args, out), r in zip(jobs, ex.map(lambda j: subprocess.run(j[0], capture_output=True, text=True), jobs)):
             if r.returncode != 0:
                 raise RuntimeError(f"template {out.name}: {r.stderr[-800:]}")
@@ -873,7 +946,7 @@ def export_templates(texts):
 
 
 # Desktop-only settings, hidden in the MakerWorld edition (its plates replace them).
-DESKTOP_ONLY = ("part", "letter_index")
+DESKTOP_ONLY = ("part", "letter_index", "frame_sections", "frame_index", "color_board")
 
 
 def export_makerworld_edition():
@@ -915,7 +988,7 @@ def export_makerworld_edition():
     edition.write_text("\n".join(header + out) + "\n")
 
     # the edition must have no top-level geometry, and every plate must render cleanly
-    for design in ("stand", "plaque", "letters"):
+    for design in ("stand", "plaque", "letters", "frame", "open-frame"):
         for plate in ("", "mw_plate_1();", "mw_plate_2();"):
             probe = BUILD / "makerworld" / f"probe-{design}-{plate[:10] or 'top'}.scad"
             probe.parent.mkdir(parents=True, exist_ok=True)
@@ -933,22 +1006,25 @@ def export_makerworld_edition():
 
 
 # Camera per design for the preview renders: OpenSCAD gimbal "tx,ty,tz,rx,ry,rz,dist".
-RENDER_CAMERAS = {"stand": "0,0,0,74,0,-22,0", "plaque": "0,0,0,80,0,-20,0", "letters": "0,0,0,82,0,-16,0"}
+RENDER_CAMERAS = {"stand": "0,0,0,74,0,-22,0", "plaque": "0,0,0,80,0,-20,0", "letters": "0,0,0,82,0,-16,0",
+                  "frame": "0,0,0,82,0,-16,0", "open-frame": "0,0,0,82,0,-16,0"}
 
 
-def export_renders(texts):
+def export_renders(texts, workers):
     """Coloured display renders (A1 mini sizes) for the docs."""
     RENDER_IMAGES.mkdir(parents=True, exist_ok=True)
     jobs = []
     for text in texts:
         for design, cam in RENDER_CAMERAS.items():
+            if design == "open-frame" and not open_frame_takes(text):
+                continue
             p = dict(SIZES["small"][design], design=design, text_string=text, part="display")
             out = RENDER_IMAGES / f"{text.lower()}-{design}.png"
             args = [OPENSCAD, "--backend=manifold", "--render", "--imgsize=1600,1000",
                     "--colorscheme=Tomorrow", "--autocenter", "--viewall", f"--camera={cam}",
                     "-o", str(out)] + sum((["-D", f"{k}={fmt_param(v)}"] for k, v in p.items()), []) + [str(SCAD)]
             jobs.append((args, out))
-    with cf.ThreadPoolExecutor(4) as ex:
+    with cf.ThreadPoolExecutor(workers) as ex:
         for (args, out), r in zip(jobs, ex.map(lambda j: subprocess.run(j[0], capture_output=True, text=True), jobs)):
             if r.returncode != 0 or not out.exists():
                 raise RuntimeError(f"render {out.name}: {r.stderr[-800:]}")
@@ -1018,19 +1094,20 @@ def main():
     ap.add_argument("--makerworld-only", action="store_true", help="only write makerworld/ (the MakerWorld edition)")
     a = ap.parse_args()
     if a.renders_only:
-        export_renders(TEXTS)
+        export_renders(TEXTS, a.jobs)
         return
     if a.makerworld_only:
         log(f"MakerWorld edition: {export_makerworld_edition().relative_to(ROOT)}")
         return
 
-    variants = [v for v in make_variants() if all(re.search(o, v.key) for o in a.only)]
+    makers = [(k, m) for k, m in variant_makers() if all(re.search(o, k) for o in a.only)]
     if a.list:
-        for v in variants:
-            print(v.key)
+        for k, _ in makers:
+            print(k)
         return
-    if not variants:
+    if not makers:
         sys.exit("no variant matches")
+    variants = [m() for _, m in makers]
 
     # 1. export all parts in parallel
     parts = [(v, part) for v in variants for s in v.plates for g in s.groups for part in g.parts]
@@ -1040,11 +1117,11 @@ def main():
         for f in cf.as_completed(futs):
             f.result()
     log("templates")
-    export_templates(sorted({v.text for v in variants if v.design == "letters"}))
+    export_templates(sorted({v.text for v in variants if v.design == "letters"}), a.jobs)
     log(f"MakerWorld edition: {export_makerworld_edition().relative_to(ROOT)}")
     if not a.no_renders:
         log("preview renders")
-        export_renders(sorted({v.text for v in variants}))
+        export_renders(sorted({v.text for v in variants}), a.jobs)
 
     # 2. Bambu projects (sequential: the CLI shares its data directory)
     results, failed = [], []
@@ -1060,7 +1137,7 @@ def main():
         old = DOCS / "build-summary.json"
         merged = {r["key"]: r for r in (json.loads(old.read_text()) if old.exists() else [])}
         merged.update({r["key"]: r for r in results})
-        order = [v.key for v in make_variants()]
+        order = [k for k, _ in variant_makers()]
         write_summary([merged[k] for k in order if k in merged])
     if failed:
         sys.exit(f"{len(failed)} variant(s) failed")

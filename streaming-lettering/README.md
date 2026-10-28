@@ -1,18 +1,20 @@
 # Streaming-style lettering
 
-An exhibition piece for a school library: `SERIER` in streaming-style bent lettering. It comes in three designs, and every file is ready to print on a Bambu Lab A1 mini (with or without an AMS lite) or an A2L Combo. Everything is parametric, so a new word, font or size is one setting away.
+An exhibition piece for a school library: `SERIER` in streaming-style bent lettering. It comes in five designs, and every file is ready to print on a Bambu Lab A1 mini (with or without an AMS lite) or an A2L Combo. Everything is parametric, so a new word, font or size is one setting away.
 
 | | SERIER |
 |---|---|
 | **Stand**: red letters on a black plinth that follows the arc | ![](docs/images/renders/serier-stand.png) |
 | **Plaque**: black screen with raised letters and a progress bar, in a leaning stand | ![](docs/images/renders/serier-plaque.png) |
 | **Loose letters**: chunky two-tone letters for a wall or pinboard | ![](docs/images/renders/serier-letters.png) |
+| **Frame**: the loose letters on a black backing panel with a border, pinned to a pinboard | ![](docs/images/renders/serier-frame.png) |
+| **Open frame**: the same frame without the panel, so the board shows through around and between the letters | ![](docs/images/renders/serier-open-frame.png) |
 
 ## Pick a file
 
 Open the `.3mf` in Bambu Studio. The printer, plates, filaments, colours and any filament-swap pauses are already set, and every plate is sliced. For the plates, times and grams of each file, see [`docs/build-summary.md`](docs/build-summary.md).
 
-The files come in three sets, each with all three designs:
+The files come in three sets, each with all five designs:
 
 - **`single-colour/`**: no AMS; every plate prints in one colour. The colours come from separate parts that go together afterwards. This is the simplest option for the two A1 minis.
 - **`colour-swap/`**: no AMS; some plates pause once so you can swap between red and black by hand, which gives two-tone parts from one plate.
@@ -23,6 +25,8 @@ The files come in three sets, each with all three designs:
 | Stand | [serier](print-files/single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-stand-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-stand-ams-a2l-combo.3mf) |
 | Plaque | [serier](print-files/single-colour/a1-mini/serier-plaque-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-plaque-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf) |
 | Loose letters | [serier](print-files/single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-letters-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-letters-ams-a2l-combo.3mf) |
+| Frame | [serier](print-files/single-colour/a1-mini/serier-frame-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-frame-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-frame-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-frame-ams-a2l-combo.3mf) |
+| Open frame | [serier](print-files/single-colour/a1-mini/serier-open-frame-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-open-frame-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-open-frame-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-open-frame-ams-a2l-combo.3mf) |
 
 Finished sizes:
 
@@ -30,13 +34,14 @@ Finished sizes:
 |---|---|---|
 | Stand | 143 × 30 mm plinth, 42 mm letters, 51 mm tall | 258 × 50 mm plinth, 76 mm letters, 90 mm tall |
 | Plaque | 135 × 69 mm, 36 mm letters | 256 × 126 mm, 70 mm letters |
-| Loose letters | 75 mm tall, 252 mm wide on the wall | 120 mm tall, 390 mm wide on the wall |
+| Loose letters | 75 mm tall, 231 mm wide on the wall | 120 mm tall, 370 mm wide on the wall |
+| Frame, open frame | 275 × 119 mm, 75 mm letters | 426 × 176 mm, 120 mm letters |
 
 All files use Bambu PLA Basic, the 0.20 mm Standard profile and the textured PEI plate, with a few tweaks (see [Print settings](#print-settings)). Nothing needs supports. Any PLA works; pick a strong red (the renders use `#E50914`) and a black or charcoal.
 
 ## Printing and assembly
 
-Every no-AMS project has two plates, so both A1 minis can run at once: in Bambu Studio, send plate 1 to one printer and plate 2 to the other. With one printer, print them one after the other.
+Every no-AMS project has at least two plates, so both A1 minis can run at once: in Bambu Studio, send each plate to whichever printer is free. With one printer, print them one after the other.
 
 ### Single colour (no AMS)
 
@@ -58,6 +63,16 @@ No manual swaps. Load red in the slot for filament 1 and black for filament 2. T
 - **Plaque**: plate 1 is the plaque, plate 2 its stand. Printed together, the black stand would cost an extra colour change on every layer of the red letters.
 - **Loose letters**: printed face down: a red face, then a black body. The AMS changes colour once per plate.
 
+### Frames
+
+A frame project has the loose letters of its set (the same plates and colours as above) and the black frame, printed back down in sections that dovetail together, one per plate.
+
+1. Push the sections together at their dovetails, on a table. A drop of glue makes a joint permanent.
+2. Glue each letter into its pocket (superglue works on PLA). The pockets place the letters, so you don't need a template. Every joint runs through a letter: glued across it, that letter holds the sections together.
+3. Hold the frame on the pinboard and push a thumbtack or push pin through every hole in the border. The frame is thin there, so a standard pin still reaches well into the board.
+
+On the open frame, two rails hidden behind the letters' top and bottom strokes carry the letters. For long words, the middle sections have no side border, so they come as separate strips; the border dovetails and the glued letters hold them together. It takes letters (Æ, Ø and Å too), digits, spaces, full stops and commas; for other text, use the frame with the backing panel ([why](docs/design-notes.md#printability-decisions)).
+
 ### Hanging the loose letters
 
 Print the matching template from [`templates/`](templates) at 100 % scale (no "fit to page"). The A1 mini ones need A3, or A4 tiled; the A2L ones need tiling. Tape it to the wall, then place each letter on its outline. The line above the letters is the flat top edge; keep it level. Double-sided foam tape or poster putty holds the letters well. The model can also add a back recess for tape or magnet sheet (`letters_mount = "recess"`).
@@ -68,7 +83,7 @@ The files start from Bambu's stock 0.20 mm Standard profile. What's changed, and
 
 | Setting | Where | Why |
 |---|---|---|
-| Painted seams | every part | Each layer's seam is painted onto a hidden side: the backs of the plinths and the plaque stand, the letters' bottom edges, the tabs, the edge that sits in the plaque stand. |
+| Painted seams | every part | Each layer's seam is painted onto the part's hidden side. |
 | Face down | loose letters, stand letters, plaque inlays | The textured plate gives the visible face a crisp, even finish with no top-surface lines. |
 | Lightning infill | loose letters | Only the back needs holding up; the letters come out about 30 % lighter, which helps tape and putty hold them. |
 | No prime tower | every file | The A-series printers purge into their chute; on these parts a tower added time and filament for no visible gain. |
@@ -86,10 +101,10 @@ Open `streaming-lettering.scad` in [OpenSCAD](https://openscad.org) and show **W
 | `letter_height` | Height of the outer letters in mm; the width follows from the text |
 | `arc_depth` | How much shorter the middle letters are (0 = straight, 0.134 = reference wordmark) |
 | `letter_spacing`, `stroke_weight` | Tighter or looser spacing; bolder or thinner strokes |
-| `design` | `stand`, `plaque` or `letters` |
+| `design` | `stand`, `plaque`, `letters`, `frame` or `open-frame` |
 | `part` | `display` for the coloured preview; the other values output one print part laid out for printing |
 
-Each design has its own group of settings: plinth size, chamfers, letter depth, plaque margins, progress-bar fill, stand tilt, mounting recess and so on. Every setting has a comment in the file.
+Each design has its own group of settings: plinth size, chamfers, letter depth, plaque margins, progress-bar fill, stand tilt, mounting recess, frame border and pin holes, and so on. The frames take their letters from the loose-letters settings. Every setting has a comment in the file.
 
 To get your own text into Bambu Studio, you have two options:
 
@@ -98,7 +113,7 @@ To get your own text into Bambu Studio, you have two options:
 
 On **MakerWorld's Parametric Model Maker**, use [`makerworld/streaming-lettering-makerworld.scad`](makerworld/streaming-lettering-makerworld.scad), not the desktop file. It's generated from the desktop file and tested on MakerWorld.
 
-- **Plates:** its 3MF has two plates, one per printer, in the right colours: stand letters and plinth, plaque and its stand, or the loose letters split in two.
+- **Plates:** its 3MF has two plates, one per printer, in the right colours: stand letters and plinth, plaque and its stand, the loose letters split in two, or a frame's two halves. For a frame, make its letters with `design` set to `letters` and the same text and size.
 - **Fonts:** you get MakerWorld's font picker with 500+ Google Fonts; Bebas Neue is among them.
 - **Before printing a MakerWorld 3MF:** switch the plate type to **Textured PEI Plate** in Bambu Studio. MakerWorld defaults to Cool Plate, which heats the bed to only 35 °C.
 - **No pauses:** MakerWorld can't add filament-swap pauses, so the plaque and loose letters need an AMS for two colours. For the no-AMS two-colour versions, use the files in `print-files/`.

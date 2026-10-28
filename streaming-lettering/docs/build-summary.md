@@ -16,15 +16,23 @@ plates the weight is the total for both colours.
 | [`ams/a1-mini/serier-stand-ams-a1-mini.3mf`](../print-files/ams/a1-mini/serier-stand-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 2 | 1 h 35 min | red 16 g, black 23 g | - |
 | [`ams/a1-mini/serier-plaque-ams-a1-mini.3mf`](../print-files/ams/a1-mini/serier-plaque-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 2 | 1 h 28 min | red 4 g, black 39 g, grey 1 g | 1 g |
 | [`ams/a1-mini/serier-letters-ams-a1-mini.3mf`](../print-files/ams/a1-mini/serier-letters-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 1 | 1 h 29 min | red 10 g, black 24 g | under 1 g |
+| [`ams/a1-mini/serier-frame-ams-a1-mini.3mf`](../print-files/ams/a1-mini/serier-frame-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 3 | 3 h 50 min | red 10 g, black 106 g | under 1 g |
+| [`ams/a1-mini/serier-open-frame-ams-a1-mini.3mf`](../print-files/ams/a1-mini/serier-open-frame-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 3 | 2 h 49 min | red 10 g, black 57 g | under 1 g |
 | [`ams/a2l-combo/serier-stand-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-stand-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 2 | 4 h 07 min | red 55 g, black 85 g | - |
-| [`ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 2 | 3 h 34 min | red 17 g, black 130 g, grey 1 g | 2 g |
+| [`ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 2 | 3 h 33 min | red 17 g, black 130 g, grey 1 g | 2 g |
 | [`ams/a2l-combo/serier-letters-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-letters-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 1 | 3 h 14 min | red 24 g, black 61 g | under 1 g |
+| [`ams/a2l-combo/serier-frame-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-frame-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 3 | 7 h 44 min | red 24 g, black 243 g | under 1 g |
+| [`ams/a2l-combo/serier-open-frame-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/serier-open-frame-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 3 | 5 h 30 min | red 24 g, black 130 g | under 1 g |
 | [`single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 35 min | red 16 g, black 23 g | - |
 | [`single-colour/a1-mini/serier-plaque-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/serier-plaque-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 35 min | red 6 g, black 42 g | - |
-| [`single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 36 min | red 33 g | - |
+| [`single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 35 min | red 33 g | - |
+| [`single-colour/a1-mini/serier-frame-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/serier-frame-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 4 | 3 h 57 min | red 33 g, black 82 g | - |
+| [`single-colour/a1-mini/serier-open-frame-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/serier-open-frame-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 4 | 2 h 55 min | red 33 g, black 33 g | - |
 | [`colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 35 min | red 16 g, black 23 g | - |
 | [`colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 19 min | 43 g red + black (manual swap) | - |
-| [`colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 35 min | 33 g red + black (manual swap) | - |
+| [`colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 36 min | 33 g red + black (manual swap) | - |
+| [`colour-swap/a1-mini/serier-frame-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-frame-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 4 | 3 h 57 min | 115 g red + black (manual swap) | - |
+| [`colour-swap/a1-mini/serier-open-frame-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-open-frame-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 4 | 2 h 56 min | 66 g red + black (manual swap) | - |
 
 Plates of one project can run on different printers at the same time,
 so the wall-clock time with two A1 minis is the longest plate, not the total.
@@ -56,6 +64,26 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 
 - Plate 1: **Letters S E R I E R - red face down, black body**: 89 min, 1 AMS changes
 
+### ams/a1-mini/serier-frame-ams-a1-mini.3mf
+
+- Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.
+- The frame is black, in 2 sections that dovetail together, one per plate.
+- Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border.
+
+- Plate 1: **Letters S E R I E R - red face down, black body**: 89 min, 1 AMS changes
+- Plate 2: **Frame 1/2 - black**: 66 min
+- Plate 3: **Frame 2/2 - black**: 75 min
+
+### ams/a1-mini/serier-open-frame-ams-a1-mini.3mf
+
+- Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.
+- The frame is black, in 2 sections that dovetail together, one per plate.
+- Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border.
+
+- Plate 1: **Letters S E R I E R - red face down, black body**: 89 min, 1 AMS changes
+- Plate 2: **Frame 1/2 - black**: 38 min
+- Plate 3: **Frame 2/2 - black**: 42 min
+
 ### ams/a2l-combo/serier-stand-ams-a2l-combo.3mf
 
 - Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
@@ -72,7 +100,7 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 - Slide the plaque into the stand's leaning slot.
 
 - Plate 1: **1/2 Plaque (black, red, grey)**: 146 min, 8 AMS changes
-- Plate 2: **2/2 Stand (black)**: 68 min
+- Plate 2: **2/2 Stand (black)**: 67 min
 
 ### ams/a2l-combo/serier-letters-ams-a2l-combo.3mf
 
@@ -80,6 +108,26 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 - Hang them with the paper template in templates/ so the arc lines up.
 
 - Plate 1: **Letters S E R I E R - red face down, black body**: 194 min, 1 AMS changes
+
+### ams/a2l-combo/serier-frame-ams-a2l-combo.3mf
+
+- Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.
+- The frame is black, in 2 sections that dovetail together, one per plate.
+- Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border.
+
+- Plate 1: **Letters S E R I E R - red face down, black body**: 195 min, 1 AMS changes
+- Plate 2: **Frame 1/2 - black**: 124 min
+- Plate 3: **Frame 2/2 - black**: 145 min
+
+### ams/a2l-combo/serier-open-frame-ams-a2l-combo.3mf
+
+- Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.
+- The frame is black, in 2 sections that dovetail together, one per plate.
+- Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border.
+
+- Plate 1: **Letters S E R I E R - red face down, black body**: 194 min, 1 AMS changes
+- Plate 2: **Frame 1/2 - black**: 64 min
+- Plate 3: **Frame 2/2 - black**: 72 min
 
 ### single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf
 
@@ -103,8 +151,30 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 - All-red letters, printed face down, split over two plates so two printers can share the work.
 - Hang them with the paper template in templates/ so the arc lines up.
 
+- Plate 1: **1/2 Letters S E R - red**: 51 min
+- Plate 2: **2/2 Letters I E R - red**: 44 min
+
+### single-colour/a1-mini/serier-frame-single-colour-a1-mini.3mf
+
+- All-red letters, printed face down, split over two plates so two printers can share the work.
+- The frame is black, in 2 sections that dovetail together, one per plate.
+- Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border.
+
 - Plate 1: **1/2 Letters S E R - red**: 52 min
 - Plate 2: **2/2 Letters I E R - red**: 44 min
+- Plate 3: **Frame 1/2 - black**: 66 min
+- Plate 4: **Frame 2/2 - black**: 75 min
+
+### single-colour/a1-mini/serier-open-frame-single-colour-a1-mini.3mf
+
+- All-red letters, printed face down, split over two plates so two printers can share the work.
+- The frame is black, in 2 sections that dovetail together, one per plate.
+- Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border.
+
+- Plate 1: **1/2 Letters S E R - red**: 51 min
+- Plate 2: **2/2 Letters I E R - red**: 44 min
+- Plate 3: **Frame 1/2 - black**: 38 min
+- Plate 4: **Frame 2/2 - black**: 42 min
 
 ### colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf
 
@@ -126,10 +196,34 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 
 ### colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf
 
-- Each plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.
+- Each letter plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.
 - The letters are split over two plates so two printers can share the work.
 - Hang them with the paper template in templates/ so the arc lines up.
 
-- Plate 1: **1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black**: 51 min, pause at 3.2 mm
+- Plate 1: **1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black**: 52 min, pause at 3.2 mm
 - Plate 2: **2/2 Letters I E R - start red, PAUSE at 3.2 mm, load black**: 44 min, pause at 3.2 mm
+
+### colour-swap/a1-mini/serier-frame-colour-swap-a1-mini.3mf
+
+- Each letter plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.
+- The letters are split over two plates so two printers can share the work.
+- The frame is black, in 2 sections that dovetail together, one per plate.
+- Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border.
+
+- Plate 1: **1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black**: 52 min, pause at 3.2 mm
+- Plate 2: **2/2 Letters I E R - start red, PAUSE at 3.2 mm, load black**: 44 min, pause at 3.2 mm
+- Plate 3: **Frame 1/2 - black**: 66 min
+- Plate 4: **Frame 2/2 - black**: 75 min
+
+### colour-swap/a1-mini/serier-open-frame-colour-swap-a1-mini.3mf
+
+- Each letter plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.
+- The letters are split over two plates so two printers can share the work.
+- The frame is black, in 2 sections that dovetail together, one per plate.
+- Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border.
+
+- Plate 1: **1/2 Letters S E R - start red, PAUSE at 3.2 mm, load black**: 52 min, pause at 3.2 mm
+- Plate 2: **2/2 Letters I E R - start red, PAUSE at 3.2 mm, load black**: 44 min, pause at 3.2 mm
+- Plate 3: **Frame 1/2 - black**: 38 min
+- Plate 4: **Frame 2/2 - black**: 42 min
 

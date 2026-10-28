@@ -3,10 +3,14 @@
 
 // Streaming-style lettering display (parametric, OpenSCAD Customizer / MakerWorld style)
 //
-// Three designs share one lettering core:
-//   "stand"   red letters standing on a black plinth whose top follows the arc
-//   "plaque"  black screen-style plaque, raised red letters, progress bar, ledge stand
-//   "letters" loose chunky letters for a wall, pinboard or shelf
+// Five designs share one lettering core:
+//   "stand"      red letters standing on a black plinth whose top follows the arc
+//   "plaque"     black screen-style plaque, raised red letters, progress bar, ledge stand
+//   "letters"    loose chunky letters for a wall, pinboard or shelf
+//   "frame"      the loose letters glued onto a black backing panel with a border, pinned to
+//                a pinboard through the border; printed in sections that dovetail together
+//   "open-frame" the same frame without the panel: two rails hidden behind the letters'
+//                top and bottom strokes carry them, and the board shows through
 //
 // Units mm, Z up. Display datum: centred in X and Y on the text, base at Z = 0.
 // Print parts ("part" = anything except "display") sit on Z = 0 in print pose. Every part
@@ -45,7 +49,7 @@ letter_height = 42; // [15:1:150]
 
 /* [Design] */
 // Which display to build
-design = "stand"; // [stand, plaque, letters]
+design = "stand"; // [stand, plaque, letters, frame, open-frame]
 
 /* [Stand] */
 // Letter thickness, front to back
@@ -121,6 +125,30 @@ letters_face_down = true;
 letters_recess_depth = 3; // [1:0.5:10]
 letters_recess_wall = 2.4; // [1.2:0.2:6]
 
+/* [Pinboard frames] */
+// The frames hold the loose letters (see above); these settings shape the frame itself.
+// Frame thickness: the pins go through it, so keep it thin (3 mm leaves 5 mm of an 8 mm pin)
+frame_thickness = 3; // [2:0.2:6]
+// Width of the border the pins go through (a thumbtack head is about 10 mm across)
+frame_border = 14; // [10:0.5:40]
+// Space between the letters and the border
+frame_gap = 8; // [4:0.5:40]
+// Corner radius
+frame_radius = 4; // [0:0.5:20]
+// Chamfer on the front edges
+frame_chamfer = 1; // [0:0.2:3]
+// Depth of the pockets the letters sit in
+frame_pocket_depth = 1.2; // [0.4:0.2:3]
+// Pin hole diameter (a thumbtack shank is about 1 mm, a push pin's 1.2-1.5 mm)
+frame_pin_d = 1.8; // [1:0.1:3]
+// Pin holes along the top and along the bottom of each section (2 = at its ends, 3 = also mid-way)
+frame_edge_pins = 2; // [2:1:3]
+// Open frame: rail height, and its inset from the letters' top and bottom edges (x letter height)
+frame_rail = 0.09; // [0.04:0.01:0.2]
+frame_rail_inset = 0.03; // [0:0.01:0.1]
+// Clearance per side in the dovetails between sections
+frame_joint_clearance = 0.2; // [0:0.05:0.5]
+
 /* [Fit and print] */
 // Clearance per side for push-fit joints
 clearance = 0.15; // [0:0.05:0.5]
@@ -137,6 +165,11 @@ color_track   = "#5A5A5A"; // color
 part = "display";
 // Which letter for the single-letter parts (0 = first)
 letter_index = 0;
+// Number of sections the frame is printed in (each must fit the bed)
+frame_sections = 2;
+// Which section the frame_section part is (0 = leftmost)
+frame_index = 0;
+color_board   = "#B8B0A0";
 desktop_output = false;  // false in the MakerWorld edition
 $fn = 48;
 eps = 0.01;          // overlap for coplanar booleans
@@ -157,6 +190,18 @@ assert(letter_index >= 0 && letter_index < n_letters, "letter_index is past the 
 assert(stand_tab_depth < stand_base_height, "stand_tab_depth must be less than stand_base_height");
 assert(stand_base_height < 0.85 * letter_height && plaque_margin_bottom < 0.85 * letter_height, "base height and plaque bottom margin must stay under 0.85 x letter_height");
 assert(letters_face_depth < letters_depth, "letters_face_depth must be less than letters_depth");
+assert(frame_index >= 0 && frame_index < frame_sections, "frame_index is past the last frame section");
+assert(frame_pocket_depth < frame_thickness - 0.8, "frame_pocket_depth must leave at least 0.8 mm of frame under the pockets");
+assert(frame_rail_inset + frame_rail < 0.45, "frame_rail_inset + frame_rail must stay under 0.45 so the two rails stay apart");
+assert(frame_chamfer < frame_thickness, "frame_chamfer must be less than frame_thickness");
+assert(frame_radius <= frame_border, "frame_radius must not exceed frame_border, or the corner pin holes break out");
+assert(!(design == "frame" || design == "open-frame") || (force_caps && !letters_flat_bottom),
+       "the frames need capitals (force_caps) and letters without flat bottoms");
+assert(!(design == "frame" || design == "open-frame") || frame_sections <= 2
+       || frame_sections <= len([for (c = txt) if (frame_glyph(c)) c]) / 2,
+       "with 3 or more frame_sections, each section needs at least two letters");
+assert(design != "open-frame" || len([for (c = txt) if (!open_frame_takes(c)) c]) == 0,
+       "the open frame holds letters, digits, spaces, full stops and commas, and of the accented letters only Å, Æ and Ø: use the frame");
 assert(plaque_inlay_depth < plaque_thickness - 0.8, "plaque_inlay_depth must leave at least 0.8 mm of plaque under the pockets");
 assert(plaque_margin_bottom - plaque_bar_gap - plaque_bar_width > (plaque_stand_height - 3) / cos(plaque_tilt) + 1,
        "progress bar would be hidden by the stand: raise plaque_margin_bottom or lower plaque_stand_height");
@@ -166,6 +211,14 @@ echo(str("Text '", txt, "', font ", font_name, ", outer letters ", H, " mm, desi
 
 function upper(s) = chr([for (c = s) let(o = ord(c))
     (o >= 97 && o <= 122) || (o >= 224 && o <= 254 && o != 247) ? o - 32 : o]);
+
+// Letters and digits: the frame's section cuts run through these.
+function frame_glyph(c) = let(o = ord(c)) (o >= 48 && o <= 57) || (o >= 65 && o <= 90) || o >= 192;
+
+// What the open frame can hold: anything else (a hyphen, a colon's upper dot, an accent but Å's
+// ring) would miss both rails.
+function open_frame_takes(c) = let(o = ord(c)) c == " " || c == "." || c == ","
+    || (frame_glyph(c) && (o < 128 || o == 197 || o == 198 || o == 216));
 
 function prefix(s, n) = n <= 0 ? "" : chr([for (k = [0 : n - 1]) ord(s[k])]);
 
@@ -195,6 +248,13 @@ module raw_text_left(s = txt) {
     if (len(s) > 0)
         text(s, size = 10, font = font_name, spacing = letter_spacing,
              halign = "left", valign = "top");
+}
+
+// The same, on the baseline (y = 0).
+module raw_text_base(s) {
+    if (len(s) > 0)
+        text(s, size = 10, font = font_name, spacing = letter_spacing,
+             halign = "left", valign = "baseline");
 }
 
 // A tiny square at minus the centre of the word's ink x-range. A Minkowski sum with it
@@ -269,15 +329,15 @@ module norm_box() {
 
 // Bend normalised-frame children strip by strip (y scales about the top edge y = 0).
 // Strips abut exactly (no overlap), so the union has no slivers.
-module warp2d() {
+module warp2d(strips = warp_strips) {
     if (arc_depth == 0) children();
-    else warp2d_strips() children();
+    else warp2d_strips(strips) children();
 }
 
-module warp2d_strips() {
+module warp2d_strips(strips) {
     x_start = -NORM_W / 2 - 2;
-    dx = (NORM_W + 4) / warp_strips;
-    for (i = [0 : warp_strips - 1]) {
+    dx = (NORM_W + 4) / strips;
+    for (i = [0 : strips - 1]) {
         x0 = x_start + i * dx;
         x1 = x_start + (i + 1) * dx;
         scale([1, arc_scale((x0 + x1) / NORM_W)])
@@ -285,6 +345,11 @@ module warp2d_strips() {
                 translate([x0, -BIG]) square([x1 - x0, 2 * BIG]);
                 children();
             }
+    }
+    // beyond the word the arc has ended (scale 1): anything there passes through unbent
+    for (s = [-1, 1]) intersection() {
+        translate([s < 0 ? -BIG : -x_start, -BIG]) square([BIG + x_start, 2 * BIG]);
+        children();
     }
 }
 
@@ -296,7 +361,7 @@ module to_final() {
     intersection() {
         resize([0, 3 * H], auto = true) union() {
             children();
-            translate([2000, 0]) scale([1, 3]) norm_box();
+            translate([100 * BIG, 0]) scale([1, 3]) norm_box();  // far enough to be cut off for any text
         }
         translate([-BIG, -1.9 * H]) square([BIG + 900, BIG]);
     }
@@ -340,9 +405,11 @@ module word_xband_wide(d) { offset(delta = d) word_xband(); }
 module letter_column(i) {
     xband2d() to_final() intersection() {
         to_norm() intersection() {
+            // baseline-aligned: top-aligned, a letter taller than all before it (O after B,
+            // Å after P) would shift them down, and the two prefixes would no longer cancel
             offset(delta = 0.2) xband2d() centred2d() difference() {
-                raw_text_left(prefix(txt, i + 1));
-                raw_text_left(prefix(txt, i));
+                raw_text_base(prefix(txt, i + 1));
+                raw_text_base(prefix(txt, i));
             }
             bbox2d() raw_text();
         }
@@ -605,6 +672,236 @@ module loose_word(zone, half = "all") {
     }
 }
 
+// ------------------------------------------------------------------ design: pinboard frames
+// The frame prints back down in frame_sections sections that dovetail together; each
+// section is pinned to the board through its border, and the loose letters (printed as in
+// the letters design) are glued into word-shaped pockets. Nothing here measures the text:
+// the section cuts are placed from the letters' own columns.
+
+frame_open = design == "open-frame";
+frame_out = frame_gap + frame_border;                // word box -> outer edge
+frame_top_y = frame_gap + frame_border / 2;          // centre lines of the top and bottom border
+frame_bottom_y = -H - frame_gap - frame_border / 2;
+
+module frame_xband() { word_xband_wide(frame_out); }
+
+module frame_outline2d() {
+    rounded_box(frame_radius) intersection() {
+        frame_xband();
+        translate([-BIG, -H - frame_out]) square([2 * BIG, H + 2 * frame_out]);
+    }
+}
+
+module frame_window2d() { offset(delta = -frame_border) frame_outline2d(); }
+
+// A capital "H" in the raw frame, from the baseline (y = 0) up.
+module cap_h_raw() {
+    intersection() {
+        bbox2d() text("H", size = 10, font = font_name, valign = "baseline");
+        above2d(0);
+    }
+}
+
+// Band between fractions [a, b] of a capital's height above the baseline, normalised frame,
+// right across. Measured on an "H" rather than the whole text, so accents that reach above
+// the capitals (Å) don't move it. Built like norm_box() (the
+// band rides on the baseline of cap_box_raw() and gets the word's scale from its x-range):
+// the bend instantiates it once per strip, and the centred text would cost far more memory.
+module cap_band_norm(a, b) {
+    intersection() {
+        translate([-BIG, -BIG]) square([2 * BIG, BIG]);  // below the top edge, which to_final() scales from
+        hull() for (s = [-1, 1]) translate([s * BIG, 0]) resize([NORM_W, 0], auto = true) intersection() {
+            xband2d() cap_box_raw();
+            minkowski() {
+                hull() for (s = [-1, 1]) translate([s * BIG, 0]) difference() {
+                    scale([1, b]) cap_h_raw();
+                    if (a > 0) scale([1, a]) cap_h_raw();
+                }
+                difference() { cap_box_raw(); translate([0, eps]) cap_box_raw(); }  // the baseline
+            }
+        }
+    }
+}
+
+// The open frame's rails behind the letters' top and bottom strokes, so they show only
+// between the letters: bent with the letters, so they keep their place in every letter, and
+// straight beyond the word, where the arc has ended.
+// They bend in coarser strips than the letters (0.3 mm steps along their edges, finer than an
+// extrusion line): every strip instantiates the band, which costs memory.
+rail_strips = min(warp_strips, max(60, ceil(4.2 * letter_height * arc_depth / 0.3)));
+module frame_rails2d() {
+    to_final() warp2d(rail_strips) render() {
+        cap_band_norm(frame_rail_inset, frame_rail_inset + frame_rail);
+        cap_band_norm(1 - frame_rail_inset - frame_rail, 1 - frame_rail_inset);
+    }
+}
+
+module frame2d() {
+    if (frame_open) {
+        difference() { frame_outline2d(); frame_window2d(); }
+        intersection() {
+            union() { frame_rails2d(); if (frame_has_marks) frame_marks2d(); }
+            offset(delta = eps) frame_window2d();
+        }
+    } else frame_outline2d();
+}
+
+// Open frame: a pad behind an Å's ring, for it to be glued onto, tied down to the top rail by a
+// 2 mm strip through the middle of its letter. The ring sits centred over the A; marks off the
+// middle (Ä, É) are refused by an assert. Only ink starting 3 % of a capital above the cap line
+// counts, so the overshoot of round letters (O, Ø) isn't taken for a mark. The pads double the
+// frame's memory, so text without an Å skips them.
+frame_has_marks = len([for (c = txt) if (ord(c) == 197) c]) > 0;
+module frame_marks2d() {
+    frame_marks_ink2d();
+    // The strip runs from half-way into the top rail (so it can't reach into the A's counter)
+    // up to 0.3 mm into the ring's bottom stroke (so the two merge solidly), not higher, so it
+    // doesn't show through the ring's hole.
+    difference() {
+        intersection() {
+            for (i = [0 : n_letters - 1]) if (ord(txt[i]) == 197) offset(delta = 1) frame_mid2d(i);
+            to_final() warp2d(rail_strips) render() cap_band_norm(1 - frame_rail_inset - frame_rail / 2, 3);
+        }
+        minkowski() { frame_marks_ink2d(); translate([-eps / 2, 0.3]) square([eps, H]); }
+    }
+}
+
+// Only the Å letters' own columns count: an Ø's slash can also reach that far up. Bent in the
+// rails' coarser strips, which is about 0.05 mm off this close to the top edge (the bend scales
+// from it), and far cheaper than the letters' own bend.
+module frame_marks_ink2d() {
+    intersection() {
+        offset(delta = stroke_weight) to_final() warp2d(rail_strips) render()
+            intersection() { norm_text(); cap_band_norm(1.03, 3); }
+        for (i = [0 : n_letters - 1]) if (ord(txt[i]) == 197) letter_column(i);
+    }
+}
+
+// Each cut between two sections runs through the middle of a letter or digit, so a
+// glued letter, one rigid piece, splices the joint: on the open frame it is all that joins
+// the rails. Cut j goes through the letter whose share of the word (counting every letter
+// as equally wide) holds the point (j + 1) / frame_sections of the way along; on a tie, the
+// left one.
+frame_letters = [for (i = [0 : n_letters - 1]) if (frame_glyph(txt[i])) i];
+frame_cut_letters = frame_sections < 2 ? [] :
+    [for (j = [0 : frame_sections - 2]) frame_letters[ceil((j + 1) * len(frame_letters) / frame_sections) - 1]];
+
+// Vertical sliver through the middle of cut j's letter.
+module frame_cut2d(j) { frame_mid2d(frame_cut_letters[j]); }
+
+// Vertical sliver through the middle of letter i: the mean of its column's edges, as a
+// Minkowski sum of both edge slivers scaled by 1/2.
+module frame_mid2d(i) {
+    minkowski() {
+        scale([0.5, 1]) difference() { letter_column(i); translate([eps, 0]) letter_column(i); }
+        scale([0.5, 1]) difference() { letter_column(i); translate([-eps, 0]) letter_column(i); }
+    }
+}
+
+// Left (s = -1) or right (s = 1) end of section k: the frame's edge or a cut.
+module frame_end2d(k, s) {
+    if (s < 0 && k > 0) frame_cut2d(k - 1);
+    else if (s > 0 && k < frame_sections - 1) frame_cut2d(k);
+    else difference() { frame_xband(); translate([-s * eps, 0]) frame_xband(); }
+}
+
+// Seed (eps square) on a vertical sliver at height y: a Minkowski sum with it puts a shape
+// drawn around the origin there.
+module frame_seed2d(y) { intersection() { children(); translate([-BIG, y]) square([2 * BIG, eps]); } }
+
+// Dovetail tongue pointing +x: neck at x = 0, head at x = len, and 1 mm of root.
+module dovetail2d(neck, head, len) {
+    polygon([[-1, -neck / 2], [0, -neck / 2], [len, -head / 2], [len, head / 2], [0, neck / 2], [-1, neck / 2]]);
+}
+
+frame_tongue_len = 0.45 * frame_border;
+
+// Tongues of section j into section j + 1, in the top and bottom border.
+module frame_tongues2d(j) {
+    for (y = [frame_top_y, frame_bottom_y])
+        minkowski() {
+            frame_seed2d(y) frame_cut2d(j);
+            dovetail2d(0.4 * frame_border, 0.55 * frame_border, frame_tongue_len);
+        }
+}
+
+// Section k's share of the plane: between its ends, plus its tongues, minus sockets for
+// the tongues of the section to its left.
+module frame_section2d(k) {
+    difference() {
+        union() {
+            hull() { frame_end2d(k, -1); frame_end2d(k, 1); }
+            if (k < frame_sections - 1) frame_tongues2d(k);
+        }
+        if (k > 0) offset(delta = frame_joint_clearance) frame_tongues2d(k - 1);
+    }
+}
+
+// Pin holes of section k, in the middle of the top and bottom border: at its outer ends,
+// either side of each joint (so the pin heads hold the joint flat), and mid-way if asked.
+module frame_holes2d(k) {
+    N = frame_sections;
+    socket = frame_tongue_len + frame_joint_clearance;
+    left = k == 0 ? frame_border / 2 : socket + 3;
+    right = k == N - 1 ? -frame_border / 2 : -3;
+    for (y = [frame_top_y, frame_bottom_y]) minkowski() {
+        union() {
+            translate([left, 0]) frame_seed2d(y) frame_end2d(k, -1);
+            translate([right, 0]) frame_seed2d(y) frame_end2d(k, 1);
+            if (frame_edge_pins == 3) frame_seed2d(y) minkowski() {  // half-way between those two
+                scale([0.5, 1]) translate([left, 0]) frame_end2d(k, -1);
+                scale([0.5, 1]) translate([right, 0]) frame_end2d(k, 1);
+            }
+        }
+        circle(d = frame_pin_d - eps);
+    }
+}
+
+// Frame body: only the outer edge is chamfered, so the rails keep their full width.
+module frame_body(k = -1) {
+    intersection() {
+        chamfer_extrude(frame_thickness, frame_chamfer) frame_outline2d();
+        translate([0, 0, -1]) linear_extrude(frame_thickness + 2) intersection() {
+            frame2d();
+            if (k >= 0) frame_section2d(k);
+        }
+    }
+}
+
+// One section, print pose: back down, so the pockets open upwards and nothing overhangs.
+module frame_section(k) {
+    t = frame_thickness;
+    difference() {
+        frame_body(k);
+        translate([0, 0, t - frame_pocket_depth]) linear_extrude(frame_pocket_depth + 1)
+            offset(delta = clearance) word2d();
+        translate([0, 0, -1]) linear_extrude(t + 2) frame_holes2d(k);
+        if (!frame_open) translate([0, 0, t - 0.6]) linear_extrude(1) frame_groove2d();
+    }
+}
+
+// Backing panel: a groove along the border's inner edge, so the border reads as a frame.
+module frame_groove2d() {
+    difference() { offset(delta = 0.6) frame_window2d(); offset(delta = -0.6) frame_window2d(); }
+}
+
+// Frame with its letters, upright; the desktop preview adds a strip of pinboard behind it.
+module frame_display() {
+    board = desktop_output ? 25 : 0;
+    translate([0, 0, H + frame_out + board]) rotate([90, 0, 0]) {
+        if (desktop_output)
+            color(color_board) translate([0, 0, -2]) linear_extrude(2) offset(delta = board) frame_outline2d();
+        color(color_base) difference() {
+            frame_body();
+            if (!frame_open) translate([0, 0, frame_thickness - 0.6]) linear_extrude(1) frame_groove2d();
+        }
+        translate([0, 0, frame_thickness - frame_pocket_depth]) {
+            color(color_base) loose_word("body");
+            color(color_letters) loose_word("face");
+        }
+    }
+}
+
 // ------------------------------------------------------------------ template (2D, 1:1)
 
 module template2d() {
@@ -632,7 +929,8 @@ module mw_plate_1() {
         color(color_base) plaque_body();
         color(color_letters) plaque_red();
         color(color_track) plaque_track();
-    } else letters_print_pose() {
+    } else if (design == "frame" || design == "open-frame") color(color_base) frame_section(0);
+    else letters_print_pose() {
         color(color_base) loose_word("body", "left");
         color(color_letters) loose_word("face", "left");
     }
@@ -641,6 +939,7 @@ module mw_plate_1() {
 module mw_plate_2() {
     if (design == "stand") color(color_base) stand_base(pockets = true);
     else if (design == "plaque") color(color_base) plaque_stand();
+    else if (design == "frame" || design == "open-frame") color(color_base) frame_section(1);
     else letters_print_pose() {
         color(color_base) loose_word("body", "right");
         color(color_letters) loose_word("face", "right");
@@ -663,7 +962,8 @@ module display() {
                     color(color_letters) plaque_red();
                     color(color_track) plaque_track();
                 }
-    } else {
+    } else if (design == "frame" || design == "open-frame") frame_display();
+    else {
         // the whole word at once: splitting it into letters is only needed for printing
         translate([0, letters_depth / 2, H]) rotate([90, 0, 0]) {
             color(color_base) loose_word("body");
@@ -684,6 +984,7 @@ module print_part() {
     else if (part == "letter")           letters_print_pose() loose_letter(letter_index, "all");
     else if (part == "letter_face")      letters_print_pose() loose_letter(letter_index, "face");
     else if (part == "letter_body")      letters_print_pose() loose_letter(letter_index, "body");
+    else if (part == "frame_section")    frame_section(frame_index);
 }
 
 // Desktop output. The MakerWorld edition (made by tools/build.py) turns this off, because

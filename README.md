@@ -6,7 +6,7 @@ My parametric 3D-print designs. Each one is an OpenSCAD source you can customise
 
 | Design | What it is | Path |
 |--------|------------|------|
-| Streaming-style lettering | Bent streaming-style lettering for a library display: a stand, a plaque and loose wall letters | [`streaming-lettering`](streaming-lettering) |
+| Streaming-style lettering | Bent streaming-style lettering for a library display: a stand, a plaque, loose wall letters and two pinboard frames | [`streaming-lettering`](streaming-lettering) |
 
 ## Layout
 
