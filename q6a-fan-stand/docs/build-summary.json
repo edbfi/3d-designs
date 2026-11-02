@@ -1,0 +1,72 @@
+[
+ {
+  "key": "q6a-fan-stand-fit-test-a1-mini",
+  "project": "fit-test",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini",
+  "label": "Fit test: print this first",
+  "file": "a1-mini/q6a-fan-stand-fit-test-a1-mini.3mf",
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Fit test",
+    "minutes": 56,
+    "grams": 12.4
+   }
+  ]
+ },
+ {
+  "key": "q6a-fan-stand-fit-test-a2l-combo",
+  "project": "fit-test",
+  "printer": "a2l-combo",
+  "printer_label": "Bambu Lab A2L Combo",
+  "label": "Fit test: print this first",
+  "file": "a2l-combo/q6a-fan-stand-fit-test-a2l-combo.3mf",
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Fit test",
+    "minutes": 57,
+    "grams": 12.3
+   }
+  ]
+ },
+ {
+  "key": "q6a-fan-stand-fan-stand-a1-mini",
+  "project": "fan-stand",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini",
+  "label": "Fan stand: hood and base",
+  "file": "a1-mini/q6a-fan-stand-fan-stand-a1-mini.3mf",
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Hood",
+    "minutes": 106,
+    "grams": 21.9
+   },
+   {
+    "plate": 2,
+    "name": "Base",
+    "minutes": 76,
+    "grams": 16.4
+   }
+  ]
+ },
+ {
+  "key": "q6a-fan-stand-fan-stand-a2l-combo",
+  "project": "fan-stand",
+  "printer": "a2l-combo",
+  "printer_label": "Bambu Lab A2L Combo",
+  "label": "Fan stand: hood and base",
+  "file": "a2l-combo/q6a-fan-stand-fan-stand-a2l-combo.3mf",
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Hood and base",
+    "minutes": 137,
+    "grams": 38.0
+   }
+  ]
+ }
+]

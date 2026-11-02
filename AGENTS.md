@@ -14,10 +14,10 @@ One home per topic. Read it there, change it there, link to it from anywhere els
 | Measurements, experiments and decisions, with numbers | `<design>/docs/design-notes.md` |
 | Current times, grams and plate counts (generated) | `<design>/docs/build-summary.*` |
 | How the model and its build work, and why | the source: its comments, docstrings and `<design>/tools/build.py` |
-| The pinned build toolchain: OpenSCAD and Bambu Studio in Docker, shared by every design | [`tools/docker/`](tools/docker) |
+| The pinned build toolchain: OpenSCAD, build123d and Bambu Studio in Docker, shared by every design | [`tools/docker/`](tools/docker) |
 | OpenSCAD for the `openscad` MCP server | [`tools/openscad`](tools/openscad) |
 | Agent setup: the text-to-cad plugin for Claude Code; the `openscad` MCP server for Claude Code, Codex and OpenCode | [`.claude/settings.json`](.claude/settings.json), [`.mcp.json`](.mcp.json), [`.codex/config.toml`](.codex/config.toml), [`opencode.json`](opencode.json) |
-| A worked example of all of the above | [`streaming-lettering/`](streaming-lettering) |
+| Worked examples of all of the above: OpenSCAD with a MakerWorld edition, and build123d | [`streaming-lettering/`](streaming-lettering), [`q6a-fan-stand/`](q6a-fan-stand) |
 
 ## Modelling
 
@@ -60,7 +60,7 @@ Each design has one source in one toolchain. Never keep the same geometry in two
   `CPUS=2` caps it lower on a fanless board. Don't run two builds in one checkout.
 - Check the exit status: successful variants are written even when others fail.
 - Every design builds in the one image in `tools/docker/`. When a design needs a new tool, add it
-  there (build123d with the first build123d design), not in a per-design image. A toolchain
+  there, not in a per-design image; Python packages go in its `requirements.in`. A toolchain
   change can change any design's output: rebuild every design and commit what changes.
 - Never hand-edit generated files. Commit regenerated `print-files/`, `templates/`,
   `makerworld/`, `docs/build-summary.*` and `docs/images/` together with the source change
