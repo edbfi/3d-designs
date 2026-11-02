@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "openscad": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "root=$(git rev-parse --show-toplevel) && cd \"$root\" && OPENSCAD_PATH=\"$root/tools/openscad\" exec uvx openscad-mcp@0.6.1"
+      ]
+    }
+  }
+}

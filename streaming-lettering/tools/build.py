@@ -17,8 +17,8 @@ Usage:
   python3 tools/build.py --makerworld-only # just the MakerWorld edition in makerworld/
 
 Needs an OpenSCAD snapshot with the Manifold backend (2025 or newer) and Bambu Studio
-(tested with 02.08.02.61). On Linux, arm64 or amd64, tools/docker/ provides both in a
-container: `tools/docker/run.sh python3 tools/build.py`.
+(tested with 02.08.02.61). On Linux, arm64 or amd64, the repo's ../tools/docker/ provides both
+in a container: `../tools/docker/run.sh python3 tools/build.py`.
 """
 
 import argparse
@@ -48,7 +48,7 @@ PLATE_IMAGES = DOCS / "images" / "plates"
 RENDER_IMAGES = DOCS / "images" / "renders"
 
 # Tool locations: macOS app bundles by default; override with environment variables
-# (tools/docker/ sets them for the Linux toolchain image, native on arm64 and amd64).
+# (the repo's ../tools/docker/ sets them for its Linux toolchain image, native on arm64 and amd64).
 OPENSCAD = (os.environ.get("OPENSCAD") or shutil.which("openscad")
             or "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD")
 BAMBU = os.environ.get("BAMBU_STUDIO", "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio")

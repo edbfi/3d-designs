@@ -1,6 +1,6 @@
 # 3d-designs
 
-My parametric 3D-print designs. Each one is an OpenSCAD source you can customise, plus ready-to-print Bambu Studio projects.
+My parametric 3D-print designs. Each one is a parametric source you can customise, in build123d or OpenSCAD, plus ready-to-print Bambu Studio projects.
 
 ## Designs
 
@@ -10,12 +10,16 @@ My parametric 3D-print designs. Each one is an OpenSCAD source you can customise
 
 ## Layout
 
-Every design has its own folder:
+Every design has its own folder, and they share one build toolchain:
 
 ```
+tools/
+├── docker/          # the pinned build toolchain (OpenSCAD, Bambu Studio) every design builds in
+└── openscad         # OpenSCAD from that toolchain, for AI agents' OpenSCAD tooling
 <design>/
 ├── README.md        # what to print, assembly, customising
-├── <design>.scad    # the parametric source (OpenSCAD Customizer)
+├── <design>.py      # the parametric source: build123d,
+│   or <design>.scad #   or OpenSCAD where MakerWorld's customiser should offer it
 ├── fonts/           # bundled fonts with their licences, if any
 ├── docs/            # design notes; build summary and images (generated)
 ├── print-files/     # ready-to-print Bambu Studio projects (generated)

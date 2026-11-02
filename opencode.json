@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "openscad": {
+      "type": "local",
+      "command": [
+        "sh",
+        "-c",
+        "root=$(git rev-parse --show-toplevel) && cd \"$root\" && OPENSCAD_PATH=\"$root/tools/openscad\" exec uvx openscad-mcp@0.6.1"
+      ],
+      "enabled": true,
+      "timeout": 120000
+    }
+  }
+}

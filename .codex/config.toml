@@ -1,0 +1,5 @@
+# Project config: Codex loads it only when you trust this repo.
+[mcp_servers.openscad]
+command = "sh"
+args = ["-c", "root=$(git rev-parse --show-toplevel) && cd \"$root\" && OPENSCAD_PATH=\"$root/tools/openscad\" exec uvx openscad-mcp@0.6.1"]
+startup_timeout_sec = 120
