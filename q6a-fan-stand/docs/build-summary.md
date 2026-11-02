@@ -10,10 +10,10 @@ warm-up and calibration.
 
 | Project | Printer | Plates | Print time | Filament |
 |---|---|---|---|---|
-| [`a1-mini/q6a-fan-stand-fit-test-a1-mini.3mf`](../print-files/a1-mini/q6a-fan-stand-fit-test-a1-mini.3mf) | Bambu Lab A1 mini | 1 | 0 h 54 min | 12 g |
-| [`a2l-combo/q6a-fan-stand-fit-test-a2l-combo.3mf`](../print-files/a2l-combo/q6a-fan-stand-fit-test-a2l-combo.3mf) | Bambu Lab A2L Combo | 1 | 0 h 55 min | 12 g |
-| [`a1-mini/q6a-fan-stand-fan-stand-a1-mini.3mf`](../print-files/a1-mini/q6a-fan-stand-fan-stand-a1-mini.3mf) | Bambu Lab A1 mini | 2 | 2 h 58 min | 36 g |
-| [`a2l-combo/q6a-fan-stand-fan-stand-a2l-combo.3mf`](../print-files/a2l-combo/q6a-fan-stand-fan-stand-a2l-combo.3mf) | Bambu Lab A2L Combo | 1 | 2 h 13 min | 36 g |
+| [`a1-mini/q6a-fan-stand-fit-test-a1-mini.3mf`](../print-files/a1-mini/q6a-fan-stand-fit-test-a1-mini.3mf) | Bambu Lab A1 mini | 1 | 0 h 56 min | 12 g |
+| [`a2l-combo/q6a-fan-stand-fit-test-a2l-combo.3mf`](../print-files/a2l-combo/q6a-fan-stand-fit-test-a2l-combo.3mf) | Bambu Lab A2L Combo | 1 | 0 h 57 min | 12 g |
+| [`a1-mini/q6a-fan-stand-fan-stand-a1-mini.3mf`](../print-files/a1-mini/q6a-fan-stand-fan-stand-a1-mini.3mf) | Bambu Lab A1 mini | 2 | 3 h 02 min | 38 g |
+| [`a2l-combo/q6a-fan-stand-fan-stand-a2l-combo.3mf`](../print-files/a2l-combo/q6a-fan-stand-fan-stand-a2l-combo.3mf) | Bambu Lab A2L Combo | 1 | 2 h 17 min | 38 g |
 
 ## Plates
 
@@ -21,23 +21,23 @@ warm-up and calibration.
 
 Fit test: print this first
 
-- Plate 1: **Fit test**: 54 min, 12 g
+- Plate 1: **Fit test**: 56 min, 12 g
 
 ### a2l-combo/q6a-fan-stand-fit-test-a2l-combo.3mf
 
 Fit test: print this first
 
-- Plate 1: **Fit test**: 55 min, 12 g
+- Plate 1: **Fit test**: 57 min, 12 g
 
 ### a1-mini/q6a-fan-stand-fan-stand-a1-mini.3mf
 
 Fan stand: hood and base
 
-- Plate 1: **Hood**: 102 min, 20 g
+- Plate 1: **Hood**: 106 min, 22 g
 - Plate 2: **Base**: 76 min, 16 g
 
 ### a2l-combo/q6a-fan-stand-fan-stand-a2l-combo.3mf
 
 Fan stand: hood and base
 
-- Plate 1: **Hood and base**: 133 min, 36 g
+- Plate 1: **Hood and base**: 137 min, 38 g

@@ -35,7 +35,7 @@ From the STEP (frame as above; z from the PCB top):
 | Feature | x | y | Note |
 |---|---|---|---|
 | 40-pin header J20 | 7.17–57.97 | 0.15–7.36 | Pin tips +9.65; Dupont housings on it reach +16.5 |
-| USB-C power | 6.69–15.63 | HDMI edge | The plug's overmould is about x 5.2–17.6 |
+| USB-C power | 6.69–15.63 | HDMI edge | Room is left for a plug overmould up to 15 mm wide, x 3.66–18.66 |
 | HDMI | 24.55–39.55 | HDMI edge | |
 | Audio jack | 50.87–57.17 | HDMI edge | Unused; the USB-end leg stands beside it |
 | EDL button SW1 | 64.6–69.2 | HDMI edge | |
@@ -69,9 +69,9 @@ They differed on how to hold the fan:
 |---|---|---|
 | Fan position | Centred on the top cover (x 34.65) and its fin field (y 29.0) | Its bore then covers the whole cover length. The SoC pedestal (x 24.2–57.3, y 9.5–42.7) sits off-axis under the hub, but the gap spreads the air and the aluminium spreads the heat. |
 | Fan gap | 13.0 mm, fin tops to fan | Jumper housings reach 16.5 mm above the PCB, 2 mm above the fin tops. The wires bend sideways above them, under the fan's overhang. |
-| Legs | Outside the fan frame on both long sides, 1 mm clear of it; x −6.5…2.5 and 51.5…60.5 | The fan overhangs the 56 mm case by 12 mm a side, so legs over the case's corners would run through the fan's frame. These x positions keep clear of the USB-C plug's overmould and the EDL button. |
+| Legs | Outside the fan frame on both long sides, 1 mm clear of it; x −8.1…0.9 and 51.5…60.5 | The fan overhangs the 56 mm case by 12 mm a side, so legs over the case's corners would run through the fan's frame. These x positions keep clear of the USB-C plug's overmould and the EDL button. The plate reaches 1.6 mm past every leg and mount pocket, so nothing hanging from it starts in mid-air when it prints upside down. |
 | Hold-down | None on the case's top | Ledges reaching 12 mm in from the legs would hang unsupported when printed. The case sits in the base's 2 mm lip, and the hood can't move once its legs are in their sockets. |
-| Guard | Hub disc, rings at r 23.5 and 31, the bore's edge at 39, 8 spokes, 1.2 mm bars, 3 mm thick | Openings about 6.3 mm across, small enough to stop a fingertip reaching the blades. It's the first layers of the plate when printed, so it costs nothing. |
+| Guard | Hub disc, rings at r 23.5 and 31, the bore's edge at 39, 8 spokes, 1.2 mm bars, 3 mm thick | Openings 6.3–7.4 mm across, small enough to stop a fingertip reaching the blades. It's the first layers of the plate when printed, so it costs nothing. |
 | Wi-Fi antennas | Upright sleeves 8.5 mm off the case's end, at y 1 and 55 | With about 40 mm of lead, they can't reach anywhere higher. Upright, in plastic and apart is better for RF than lying flat on the desk, and they lift with the unit. The sleeves stand outside the microSD slot, power button and most of the fin grooves. |
 | Cable | A duct down the pin-1-end leg, ending in a holster | The fan's 5 V, GND, PWM and tach go to header pins 4, 6, 16 and 18, all within the first nine pin pairs at the microSD end. The duct hangs from an ear on the plate, so it prints without supports, and it holds the fan cable's spare length. |
 | J11 | Floor and lip cut away under the notch | Leaves the RTC connector reachable from below and from the end. |
@@ -90,17 +90,14 @@ Noctua publishes no drawing of the NA-AV1. These values are first guesses until 
 
 ## Material
 
-The board idled at about 55 °C without a fan (measured in an earlier session). The aluminium case sits near that for hours, and the base and the hood's legs touch it or stand in its exhaust. PLA's heat deflection temperature is about 57 °C (Bambu PLA Basic), and it creeps under a steady load below that. PETG's is about 69 °C (Bambu PETG Basic). Every file is PETG. The air leaving the fins is barely warmer than the room: a few watts into the NF-A8's airflow warms it by about 0.4 °C (estimated).
+The board idled at about 55 °C without a fan (an earlier ad-hoc reading). The aluminium case sits near that for hours, and the base and the hood's legs touch it or stand in its exhaust. PLA's heat deflection temperature is about 57 °C (Bambu PLA Basic), and it creeps under a steady load below that. PETG's is about 69 °C (Bambu PETG Basic). Every file is PETG. The air leaving the fins is barely warmer than the room: a few watts into the NF-A8's airflow warms it by about 0.4 °C (estimated).
 
 ## Thermal test
 
 `/sys/class/thermal/`, all eight cores loaded for 5 minutes, sampled every 15 s, then 90 s of cooldown. "Max" is the hottest CPU or GPU zone.
 
-| Run | Setup | Idle max | Loaded max | Skin | DDR | After 90 s |
-|---|---|---|---|---|---|---|
-| A | Fan loose on the case, USB, full speed | 45.9 °C | 64–70 °C | 40–42 °C | 48–50 °C | 27.8 °C |
-| B | No fan | to do | | | | |
-| C | Stand, USB, full speed | to do | | | | |
-| D | Stand, wired to the header, under the overlay's fan curve | to do | | | | |
+| Setup | Idle max | Loaded max | Skin | DDR | After 90 s |
+|---|---|---|---|---|---|
+| Fan loose on the case, on its USB adapter (full speed) | 45.9 °C | 64–70 °C | 40–42 °C | 48–50 °C | 27.8 °C |
 
-The stand passes if C is no worse than A. The CPU stayed at 2707 MHz throughout A, with no throttling.
+The CPU stayed at 2707 MHz throughout, with no throttling. This is the baseline the stand has to match on the same test.

@@ -10,8 +10,8 @@
    {
     "plate": 1,
     "name": "Fit test",
-    "minutes": 54,
-    "grams": 12.0
+    "minutes": 56,
+    "grams": 12.4
    }
   ]
  },
@@ -26,8 +26,8 @@
    {
     "plate": 1,
     "name": "Fit test",
-    "minutes": 55,
-    "grams": 11.9
+    "minutes": 57,
+    "grams": 12.3
    }
   ]
  },
@@ -42,8 +42,8 @@
    {
     "plate": 1,
     "name": "Hood",
-    "minutes": 102,
-    "grams": 19.8
+    "minutes": 106,
+    "grams": 21.9
    },
    {
     "plate": 2,
@@ -64,8 +64,8 @@
    {
     "plate": 1,
     "name": "Hood and base",
-    "minutes": 133,
-    "grams": 36.0
+    "minutes": 137,
+    "grams": 38.0
    }
   ]
  }

@@ -53,16 +53,18 @@ AV_WEB = 1.5                     # plate thickness the NA-AV1 grips (fit_test tr
 AV_POCKET = 10.0                 # counterbore under each mount web, for the rubber shoulder
 
 PLATE_T = 3.0                    # top plate, guard bars included
+PLATE_EDGE = 1.6                 # plate margin around the legs, the duct and the mount pockets
 GUARD_BAR = 1.2                  # guard ring and spoke width: two 0.4 mm nozzle lines + a bit
-GUARD_RINGS = (23.5, 31.0)       # ring radii between the hub disc and the bore edge (gaps ~6.3 mm)
+GUARD_RINGS = (23.5, 31.0)       # ring radii between the hub disc and the bore edge (gaps 6.3-7.4 mm)
 GUARD_SPOKES = 8
 FAN_CLEAR = 1.0                  # fan frame to the legs, all round (the fan swings a little on rubber)
 
 LEG_W = 9.0                      # leg width along x
 LEG_T = 4.0                      # leg thickness across y
-# Leg positions along x (centres). MicroSD end: the leg's socket stays clear of the USB-C plug's
-# overmould (x 5.2-17.6). USB end: beside the unused audio jack, clear of the EDL button (x 64.6-69.2).
-LEG_X = (-2.0, 56.0)
+# Leg positions along x (centres). MicroSD end: the leg's socket stays clear of a USB-C plug with an
+# overmould up to 15 mm wide (x 3.66-18.66). USB end: beside the unused audio jack, clear of the EDL
+# button (x 64.6-69.2).
+LEG_X = (-3.6, 56.0)
 SOCKET_DEPTH = 8.0               # leg tip in the base socket
 SOCKET_WALL = 2.4
 FIT = 0.2                        # PETG sliding clearance per side (sockets, case pocket)
@@ -156,7 +158,7 @@ def keepouts():
         # Dupont housings on the header (16.5 above the PCB), their wires bending out sideways
         "header jumpers": box(7.17, 57.97, 0.0, 7.36, p, p + 17.0),
         "jumper wires": box(7.17, 57.97, -10.0, 7.36, p + 14.0, p + 24.0),
-        "USB-C plug": box(5.2, 17.6, 56.0, 90.0, p - 2.5, p + 5.5),
+        "USB-C plug": box(3.66, 18.66, 56.0, 90.0, p - 2.5, p + 5.5),   # overmould up to 15 mm wide
         "HDMI plug": box(21.5, 42.6, 56.0, 95.0, p - 3.5, p + 9.5),
         "USB-A plugs": box(85.0, 125.0, 19.0, 57.5, p - 4.0, p + 18.5),
         "Ethernet plug": box(85.0, 125.0, 1.0, 19.5, p - 4.5, p + 15.0),
@@ -186,13 +188,15 @@ def guard(t):
 
 
 def plate():
-    """Top plate in use position: covers the fan and reaches out over the legs."""
-    x0 = FAN_CX - FAN / 2
-    x1 = FAN_CX + FAN / 2
-    y0, y1 = LEG_Y[0], LEG_Y[1] + LEG_T
+    """Top plate in use position: covers the fan, the mount pockets and every leg with PLATE_EDGE to
+    spare, so nothing hanging from it starts in mid-air when it prints upside down."""
+    pocket = FAN_HOLES / 2 + AV_POCKET / 2
+    x0 = min(FAN_CX - FAN / 2, FAN_CX - pocket, LEG_X[0] - LEG_W / 2) - PLATE_EDGE
+    x1 = max(FAN_CX + FAN / 2, FAN_CX + pocket, LEG_X[1] + LEG_W / 2) + PLATE_EDGE
+    y0, y1 = LEG_Y[0] - PLATE_EDGE, LEG_Y[1] + LEG_T + PLATE_EDGE
     p = rounded_box(x0, x1, y0, y1, PLATE_Z0, PLATE_Z1, 4.0)
     dx0, dx1, dy0, _, _ = duct_box()             # an ear over the cable duct, which hangs from it
-    p += rounded_box(dx0, dx1 + 4.0, dy0, y0 + 4.0, PLATE_Z0, PLATE_Z1, 2.0)
+    p += rounded_box(dx0 - PLATE_EDGE, dx1 + PLATE_EDGE, dy0 - PLATE_EDGE, y0 + 4.0, PLATE_Z0, PLATE_Z1, 2.0)
     bore = bd.Pos(FAN_CX, FAN_CY, PLATE_Z0 - 1) * bd.Cylinder(
         FAN_BORE / 2 + 0.5, PLATE_T + 2, align=(bd.Align.CENTER, bd.Align.CENTER, bd.Align.MIN))
     p = p - bore + bd.Pos(FAN_CX, FAN_CY, PLATE_Z0) * guard(PLATE_T)
@@ -261,11 +265,10 @@ def socket(x_c, y0):
                        0, top, 1.5)
     pocket = box(x_c - sx, x_c + sx, sy0, sy1, FLOOR, top + 1)
     boss -= pocket
-    for k in (-1, 1):
-        for y_face, s in ((sy0, 1), (sy1, -1)):
-            rib = bd.Pos(x_c + k * LEG_W / 4, y_face, FLOOR) * bd.Cylinder(
+    for k in (-1, 1) if RIB > 0 else ():
+        for y_face in (sy0, sy1):
+            boss += bd.Pos(x_c + k * LEG_W / 4, y_face, FLOOR) * bd.Cylinder(
                 RIB, SOCKET_DEPTH, align=(bd.Align.CENTER, bd.Align.CENTER, bd.Align.MIN))
-            boss += rib
     # a 45-degree lead-in at the mouth
     mouth = bd.Pos(x_c, (sy0 + sy1) / 2, top - 0.8) * bd.extrude(
         bd.Rectangle(2 * sx, sy1 - sy0), 0.8, taper=-45)
@@ -325,7 +328,7 @@ def marks(n, x, y, z):
 
 
 def fit_test():
-    """Samples of every fit, laid out flat in print pose, to print before the real parts:
+    """Samples of every fit, each in its print pose as on the real parts, to print before them:
     a frame with the case pocket (drop the case in) and, inside it, a leg tip and its socket,
     the NA-AV1 mount webs, a short antenna sleeve and the bottom of the cable duct."""
     samples = []
@@ -336,7 +339,11 @@ def fit_test():
     samples.append(bd.chamfer(stub.edges().group_by(bd.Axis.Z)[-1], 0.6) + box(-7, 7, -3, LEG_T + 3, 0, FLOOR))
     samples.append(antenna_sleeve(0) - box(-50, 50, -50, 50, FLOOR + 15, 100)
                    + box(ANT_X - 4, ANT_X + 4, -10, 10, 0, FLOOR))
-    samples.append(duct(z_top=duct_box()[4] + HOLSTER[2] + 4.0))
+    # the duct's bottom, upside down on a pad as it prints in the hood: the ledge the plug stands on
+    # and the window's edge are bridges
+    x0, x1, y0, y1, z0 = duct_box()
+    top = z0 + HOLSTER[2] + 4.0
+    samples.append(bd.Rot(180, 0, 0) * (duct(z_top=top) + rounded_box(x0 - 1, x1 + 1, y0 - 1, y1 + 1, top, top + 1.6, 1.0)))
     # NA-AV1 webs, (hole, web), printed like the plate: web on the bed, pocket open upwards.
     # 1-5 dimples name them in the README.
     for k, (hole, web) in enumerate([(AV_HOLE, 1.2), (AV_HOLE, AV_WEB), (AV_HOLE, 1.8),

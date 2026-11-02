@@ -121,9 +121,6 @@ def export_part(name):
     return name, stl_bbox(path)
 
 
-RIB_OVERLAP_MAX = 10.0  # mm3: the crush ribs' designed interference with the leg tips is ~6.5
-
-
 def check_fit():
     """Interference volumes in use, from the B-rep: [problem]."""
     src = load_source()
@@ -135,9 +132,10 @@ def check_fit():
             v = (part & other).volume
             if v > 1e-3:
                 problems.append(f"{name} cuts into the {oname} ({v:.2f} mm3)")
-    v = (hood & base).volume
-    if v > RIB_OVERLAP_MAX:
-        problems.append(f"hood and base overlap by {v:.1f} mm3, more than the crush ribs' {RIB_OVERLAP_MAX}")
+    src.RIB = 0  # the crush ribs grip the legs on purpose; with them gone nothing else may touch
+    v = (hood & src.base()).volume
+    if v > 1e-3:
+        problems.append(f"hood and base overlap by {v:.2f} mm3 outside the sockets' crush ribs")
     return problems
 
 

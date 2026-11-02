@@ -21,17 +21,17 @@ Open the `.3mf` in Bambu Studio. The printer, plates and filament are already se
 | Project | A1 mini | A2L Combo |
 |---|---|---|
 | Fit test: print this first | [fit-test](print-files/a1-mini/q6a-fan-stand-fit-test-a1-mini.3mf) | [fit-test](print-files/a2l-combo/q6a-fan-stand-fit-test-a2l-combo.3mf) |
-| Fan stand: hood and base | [fan-stand](print-files/a1-mini/q6a-fan-stand-fan-stand-a1-mini.3mf) (two plates) | [fan-stand](print-files/a2l-combo/q6a-fan-stand-fan-stand-a2l-combo.3mf) (one plate) |
+| Fan stand: hood and base | [fan-stand](print-files/a1-mini/q6a-fan-stand-fan-stand-a1-mini.3mf) | [fan-stand](print-files/a2l-combo/q6a-fan-stand-fan-stand-a2l-combo.3mf) |
 
 Every file uses Bambu PETG Basic, the stock 0.20 mm Standard profile and the textured PEI plate. Nothing needs supports: the hood prints upside down, guard on the bed.
 
 ### Material
 
-Print the hood and base in PETG, not PLA. The case runs warm: the board idles around 55 °C without a fan, and the aluminium is near that for hours. PLA starts to soften at about 55–60 °C and creeps under load well below that. PETG softens at about 70–80 °C. The fit test can be PLA or PETG, but the fits are tuned for PETG.
+Print the hood and base in PETG, not PLA: the case stays warm for hours, near the temperature where PLA softens and creeps (numbers in the [design notes](docs/design-notes.md#material)). The fit test can be PLA or PETG, but the fits are tuned for PETG.
 
 ## Fit test
 
-The fit test is a 1 h print that checks every fit before the 3 h of real parts. Print it in the filament you'll use for the stand.
+The fit test is a short print that checks every fit before you print the real parts. Print it in the filament you'll use for the stand.
 
 | Sample | Check | If it's wrong |
 |---|---|---|
@@ -70,7 +70,7 @@ Pin 1 is at the microSD end of the header. The header's plastic is colour-coded:
 ../tools/docker/run.sh python3 tools/build.py --jobs 2 --only fit-test
 ```
 
-The repo's shared toolchain in [`../tools/docker/`](../tools/docker) pins build123d and Bambu Studio. The script first checks the fit in use: no part touches the case, the fan, any plug, button or cable, or the air gap. It then exports the parts, slices every plate with the stock Bambu profiles, and refuses to write a project with slicer supports or overhangs. It also writes the STEP export in `makerworld/` and the images and [build summary](docs/build-summary.md) in `docs/`. When a Bambu Studio step fails, its log is in `build/work/<project>/`.
+The repo's shared toolchain in [`../tools/docker/`](../tools/docker) pins build123d and Bambu Studio. The script checks the fit against the case and fan, exports the parts, slices every plate with the stock Bambu profiles, and refuses to write a project that fails its checks. It also writes the STEP export in `makerworld/` and the images and [build summary](docs/build-summary.md) in `docs/`. When a Bambu Studio step fails, its log is in `build/work/<project>/`.
 
 To look at the model while changing it, run `cad run q6a-fan-stand.py` with [text-to-cad](https://texttocad.dev). It opens the hood, the base, the fit test and an assembly with the case and fan in the CAD Viewer.
 
