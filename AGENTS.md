@@ -36,8 +36,8 @@ Each design has one source in one toolchain. Never keep the same geometry in two
   or 3MF in the CAD Viewer, and `text-to-cad:dfam-check` measures overhangs and print orientations.
 - text-to-cad and the `openscad` server are set up for this repo only, not per user: text-to-cad
   for Claude Code, the `openscad` server for Claude Code, Codex and OpenCode (Codex loads
-  `.codex/config.toml` only once you trust the repo). If an agent lacks a tool it needs, say so: don't switch toolchains
-  to work around it.
+  `.codex/config.toml` only once you trust the repo). If an agent lacks a tool it needs, say so:
+  don't switch toolchains to work around it.
 
 ## Printing
 
