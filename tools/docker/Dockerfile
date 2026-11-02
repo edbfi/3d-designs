@@ -4,6 +4,7 @@
 #   - Bambu Studio 02.08.02.61: Flathub's build, run straight from its files through its own
 #     runtime (the flatpak sandbox cannot start inside Docker); see the bambu-studio launcher
 #   - glfw-shim.c, the only thing compiled, so headless plate thumbnails render
+#   - build123d with its OCCT kernel, from PyPI wheels pinned by hash in requirements.txt
 # Built by run.sh on first use: a few minutes, mostly a 1.5 GB download.
 FROM openscad/openscad:dev.2026-10-26@sha256:3268ba487a3b92e605f44431c890d71ed576d5cc71a249c24a4af489d88990c6
 
@@ -43,6 +44,18 @@ RUN set -eu; \
     bambu-studio --help 2>/dev/null | grep -q 'BambuStudio-02.08.02.61'; \
     openscad --help 2>&1 | grep -q Manifold
 
-ENV BAMBU_STUDIO=/usr/local/bin/bambu-studio \
+# build123d for the build123d designs, in a virtualenv that comes first on PATH (pip may not replace
+# Debian's own Python packages); to bump, edit requirements.in and recompile it (see its header)
+COPY requirements.txt /tmp/requirements.txt
+RUN set -eu; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends python3-venv; \
+    python3 -m venv /opt/py; \
+    /opt/py/bin/pip install --no-cache-dir --require-hashes -r /tmp/requirements.txt; \
+    rm -rf /var/lib/apt/lists/* /tmp/requirements.txt; \
+    /opt/py/bin/python3 -c 'import build123d; assert build123d.__version__ == "0.13.0"'
+
+ENV PATH=/opt/py/bin:$PATH \
+    BAMBU_STUDIO=/usr/local/bin/bambu-studio \
     BAMBU_PROFILES=/app/share/BambuStudio/profiles/BBL
 WORKDIR /work
