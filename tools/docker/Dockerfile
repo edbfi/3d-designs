@@ -9,7 +9,8 @@ FROM openscad/openscad:dev.2026-10-26@sha256:3268ba487a3b92e605f44431c890d71ed57
 
 # Flathub commits, per architecture: Bambu Studio 02.08.02.61 and the runtimes it runs on.
 # To bump, find the new commits with `flatpak remote-info --log flathub <ref>` for each arch,
-# update them and the version check at the end, then rebuild every design and compare its docs/build-summary.md.
+# update them and the version check at the end, then rebuild every design and compare its
+# docs/build-summary.md.
 ARG BAMBU_COMMIT_aarch64=fa17d48b6e2a3bd367c8a534a651826a5b14b23477d69d823471a215aeda60da
 ARG BAMBU_COMMIT_x86_64=68a634d4d733ce7acf79009095db6f7ca76625f0eb810eef1e92dc7adeba7852
 ARG GNOME_COMMIT_aarch64=f4e7c6946a0a4555a5667366edeab61ebce9f4357eb6901f58ca0dbbaccdcb2d

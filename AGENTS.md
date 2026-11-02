@@ -16,7 +16,7 @@ One home per topic. Read it there, change it there, link to it from anywhere els
 | How the model and its build work, and why | the source: its comments, docstrings and `<design>/tools/build.py` |
 | The pinned build toolchain: OpenSCAD and Bambu Studio in Docker, shared by every design | [`tools/docker/`](tools/docker) |
 | OpenSCAD for the `openscad` MCP server | [`tools/openscad`](tools/openscad) |
-| Agent setup: the text-to-cad plugin and MCP servers for Claude Code, Codex and OpenCode | [`.claude/settings.json`](.claude/settings.json), [`.mcp.json`](.mcp.json), [`.codex/config.toml`](.codex/config.toml), [`opencode.json`](opencode.json) |
+| Agent setup: the text-to-cad plugin for Claude Code; the `openscad` MCP server for Claude Code, Codex and OpenCode | [`.claude/settings.json`](.claude/settings.json), [`.mcp.json`](.mcp.json), [`.codex/config.toml`](.codex/config.toml), [`opencode.json`](opencode.json) |
 | A worked example of all of the above | [`streaming-lettering/`](streaming-lettering) |
 
 ## Modelling
@@ -34,9 +34,10 @@ Each design has one source in one toolchain. Never keep the same geometry in two
   the `openscad` MCP server.
 - Whichever toolchain made it, check the exported mesh with text-to-cad: `cad_show` opens an STL
   or 3MF in the CAD Viewer, and `text-to-cad:dfam-check` measures overhangs and print orientations.
-- text-to-cad and the `openscad` server are set up for this repo only, not per user. Codex loads
-  `.codex/config.toml` only once you trust the repo. If an agent lacks either tool, say so: don't
-  switch toolchains to work around it.
+- text-to-cad and the `openscad` server are set up for this repo only, not per user: text-to-cad
+  for Claude Code, the `openscad` server for Claude Code, Codex and OpenCode (Codex loads
+  `.codex/config.toml` only once you trust the repo). If an agent lacks a tool it needs, say so: don't switch toolchains
+  to work around it.
 
 ## Printing
 

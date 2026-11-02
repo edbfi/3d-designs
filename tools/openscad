@@ -3,7 +3,8 @@
 # opencode.json): runs the OpenSCAD image the toolchain in docker/ is built on, so the MCP renders
 # with the same snapshot as the build and nothing is installed or compiled. Docker pulls the image
 # on first use. It sees files the way a local OpenSCAD would: /tmp, $HOME and the repo are mounted
-# at their own paths, and the container runs as you.
+# at their own paths, and the container runs as you. The three configs pin the same openscad-mcp
+# version: bump them together. CPUS caps the container's cores, if set.
 set -eu
 HERE=$(cd "$(dirname "$0")" && pwd -P)
 ROOT=$(cd "$HERE/.." && pwd -P)
@@ -14,5 +15,5 @@ case "$ROOT/" in
     *) set -- -v "$ROOT:$ROOT" "$@" ;;
 esac
 # timeout: the MCP stops a slow render by killing this script, which would leave the container running
-exec docker run --rm --init --cpus "${CPUS:-3}" --user "$(id -u):$(id -g)" -e HOME="$HOME" \
+exec docker run --rm --init ${CPUS:+--cpus "$CPUS"} --user "$(id -u):$(id -g)" -e HOME="$HOME" \
     -e OPENSCADPATH="${OPENSCADPATH:-}" -v /tmp:/tmp -v "$HOME:$HOME" -w "$(pwd -P)" "$@"
