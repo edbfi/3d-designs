@@ -128,10 +128,10 @@ python3 tools/build.py --only serier --only 'a1-mini$'   # a subset
 python3 tools/build.py --list                            # all variant keys
 ```
 
-Needs an OpenSCAD snapshot with the Manifold backend (2025 or newer) and Bambu Studio in `/Applications` (tested with 02.08.02.61). On Linux (arm64 or amd64), `tools/docker/` runs the script in a container with both pinned:
+Needs an OpenSCAD snapshot with the Manifold backend (2025 or newer) and Bambu Studio in `/Applications` (tested with 02.08.02.61). On Linux (arm64 or amd64), the repo's shared toolchain in [`../tools/docker/`](../tools/docker) runs the script in a container with both pinned:
 
 ```bash
-tools/docker/run.sh python3 tools/build.py --jobs 2   # CPUS=2 to cap the container lower (default 3)
+../tools/docker/run.sh python3 tools/build.py --jobs 2   # CPUS=2 to cap the container lower (default 3)
 ```
 
 The script exports the parts, lays out and slices every plate with the stock Bambu profiles, and refuses to write a project that fails its checks. It also regenerates `templates/`, `makerworld/` and the images and [build summary](docs/build-summary.md) in `docs/`. When a Bambu Studio step fails, its log is in `build/work/<variant>/`.
