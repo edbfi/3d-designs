@@ -57,7 +57,7 @@ PROFILES = Path(os.environ.get("BAMBU_PROFILES", "/Applications/BambuStudio.app/
 
 RED, BLACK, GREY = "#E50914", "#161616", "#5A5A5A"
 # Texts to build, and the designs each one gets (None: every design)
-TEXTS = {"SERIER": None, "BOOKFLIX": ["stand"]}
+TEXTS = {"SERIER": None, "BOOKFLIX": ["stand", "open-frame"]}
 LAYER = 0.2  # layer height of the process preset used below; pauses are placed on this grid
 
 # ----------------------------------------------------------------------------- printers

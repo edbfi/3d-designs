@@ -1,6 +1,6 @@
 # Streaming-style lettering
 
-An exhibition piece for a school library: `SERIER` in streaming-style bent lettering, and a `BOOKFLIX` stand. SERIER comes in five designs, and every file is ready to print on a Bambu Lab A1 mini (with or without an AMS lite) or an A2L Combo. Everything is parametric, so a new word, font or size is one setting away.
+An exhibition piece for a school library: `SERIER` in streaming-style bent lettering, and `BOOKFLIX` as a stand and an open frame. SERIER comes in five designs, and every file is ready to print on a Bambu Lab A1 mini (with or without an AMS lite) or an A2L Combo. Everything is parametric, so a new word, font or size is one setting away.
 
 | | SERIER | BOOKFLIX |
 |---|---|---|
@@ -8,13 +8,13 @@ An exhibition piece for a school library: `SERIER` in streaming-style bent lette
 | **Plaque**: black screen with raised letters and a progress bar, in a leaning stand | ![](docs/images/renders/serier-plaque.png) | |
 | **Loose letters**: chunky two-tone letters for a wall or pinboard | ![](docs/images/renders/serier-letters.png) | |
 | **Frame**: the loose letters on a black backing panel with a border, pinned to a pinboard | ![](docs/images/renders/serier-frame.png) | |
-| **Open frame**: the same frame without the panel, so the board shows through around and between the letters | ![](docs/images/renders/serier-open-frame.png) | |
+| **Open frame**: the same frame without the panel, so the board shows through around and between the letters | ![](docs/images/renders/serier-open-frame.png) | ![](docs/images/renders/bookflix-open-frame.png) |
 
 ## Pick a file
 
 Open the `.3mf` in Bambu Studio. The printer, plates, filaments, colours and any filament-swap pauses are already set, and every plate is sliced. For the plates, times and grams of each file, see [`docs/build-summary.md`](docs/build-summary.md).
 
-The files come in three sets, each with all five SERIER designs and the BOOKFLIX stand:
+The files come in three sets, each with all five SERIER designs and both BOOKFLIX ones:
 
 - **`single-colour/`**: no AMS; every plate prints in one colour. The colours come from separate parts that go together afterwards. This is the simplest option for the two A1 minis.
 - **`colour-swap/`**: no AMS; some plates pause once so you can swap between red and black by hand, which gives two-tone parts from one plate.
@@ -26,7 +26,7 @@ The files come in three sets, each with all five SERIER designs and the BOOKFLIX
 | Plaque | [serier](print-files/single-colour/a1-mini/serier-plaque-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-plaque-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf) |
 | Loose letters | [serier](print-files/single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-letters-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-letters-ams-a2l-combo.3mf) |
 | Frame | [serier](print-files/single-colour/a1-mini/serier-frame-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-frame-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-frame-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-frame-ams-a2l-combo.3mf) |
-| Open frame | [serier](print-files/single-colour/a1-mini/serier-open-frame-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-open-frame-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-open-frame-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-open-frame-ams-a2l-combo.3mf) |
+| Open frame | [serier](print-files/single-colour/a1-mini/serier-open-frame-single-colour-a1-mini.3mf) · [bookflix](print-files/single-colour/a1-mini/bookflix-open-frame-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-open-frame-colour-swap-a1-mini.3mf) · [bookflix](print-files/colour-swap/a1-mini/bookflix-open-frame-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-open-frame-ams-a1-mini.3mf) · [bookflix](print-files/ams/a1-mini/bookflix-open-frame-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-open-frame-ams-a2l-combo.3mf) · [bookflix](print-files/ams/a2l-combo/bookflix-open-frame-ams-a2l-combo.3mf) |
 
 Finished sizes:
 
@@ -35,7 +35,7 @@ Finished sizes:
 | Stand | 143 × 30 mm plinth (BOOKFLIX 195 × 30 mm), 42 mm letters, 51 mm tall | 258 × 50 mm plinth (BOOKFLIX 351 × 50 mm), 76 mm letters, 90 mm tall |
 | Plaque | 135 × 69 mm, 36 mm letters | 256 × 126 mm, 70 mm letters |
 | Loose letters | 75 mm tall, 231 mm wide on the wall | 120 mm tall, 370 mm wide on the wall |
-| Frame, open frame | 275 × 119 mm, 75 mm letters | 426 × 176 mm, 120 mm letters |
+| Frame, open frame | 275 × 119 mm (BOOKFLIX open frame 366 × 119 mm), 75 mm letters | 426 × 176 mm (BOOKFLIX open frame 572 × 176 mm), 120 mm letters |
 
 All files use Bambu PLA Basic, the 0.20 mm Standard profile and the textured PEI plate, with a few tweaks (see [Print settings](#print-settings)). Nothing needs supports. Any PLA works; pick a strong red (the renders use `#E50914`) and a black or charcoal.
 
