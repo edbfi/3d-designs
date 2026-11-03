@@ -1,20 +1,20 @@
 # Streaming-style lettering
 
-An exhibition piece for a school library: `SERIER` in streaming-style bent lettering. It comes in five designs, and every file is ready to print on a Bambu Lab A1 mini (with or without an AMS lite) or an A2L Combo. Everything is parametric, so a new word, font or size is one setting away.
+An exhibition piece for a school library: `SERIER` in streaming-style bent lettering, and a `BOOKFLIX` stand. SERIER comes in five designs, and every file is ready to print on a Bambu Lab A1 mini (with or without an AMS lite) or an A2L Combo. Everything is parametric, so a new word, font or size is one setting away.
 
-| | SERIER |
-|---|---|
-| **Stand**: red letters on a black plinth that follows the arc | ![](docs/images/renders/serier-stand.png) |
-| **Plaque**: black screen with raised letters and a progress bar, in a leaning stand | ![](docs/images/renders/serier-plaque.png) |
-| **Loose letters**: chunky two-tone letters for a wall or pinboard | ![](docs/images/renders/serier-letters.png) |
-| **Frame**: the loose letters on a black backing panel with a border, pinned to a pinboard | ![](docs/images/renders/serier-frame.png) |
-| **Open frame**: the same frame without the panel, so the board shows through around and between the letters | ![](docs/images/renders/serier-open-frame.png) |
+| | SERIER | BOOKFLIX |
+|---|---|---|
+| **Stand**: red letters on a black plinth that follows the arc | ![](docs/images/renders/serier-stand.png) | ![](docs/images/renders/bookflix-stand.png) |
+| **Plaque**: black screen with raised letters and a progress bar, in a leaning stand | ![](docs/images/renders/serier-plaque.png) | |
+| **Loose letters**: chunky two-tone letters for a wall or pinboard | ![](docs/images/renders/serier-letters.png) | |
+| **Frame**: the loose letters on a black backing panel with a border, pinned to a pinboard | ![](docs/images/renders/serier-frame.png) | |
+| **Open frame**: the same frame without the panel, so the board shows through around and between the letters | ![](docs/images/renders/serier-open-frame.png) | |
 
 ## Pick a file
 
 Open the `.3mf` in Bambu Studio. The printer, plates, filaments, colours and any filament-swap pauses are already set, and every plate is sliced. For the plates, times and grams of each file, see [`docs/build-summary.md`](docs/build-summary.md).
 
-The files come in three sets, each with all five designs:
+The files come in three sets, each with all five SERIER designs and the BOOKFLIX stand:
 
 - **`single-colour/`**: no AMS; every plate prints in one colour. The colours come from separate parts that go together afterwards. This is the simplest option for the two A1 minis.
 - **`colour-swap/`**: no AMS; some plates pause once so you can swap between red and black by hand, which gives two-tone parts from one plate.
@@ -22,7 +22,7 @@ The files come in three sets, each with all five designs:
 
 | Design | Single colour (A1 mini) | Colour swap (A1 mini) | AMS (A1 mini + AMS lite) | AMS (A2L Combo) |
 |---|---|---|---|---|
-| Stand | [serier](print-files/single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-stand-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-stand-ams-a2l-combo.3mf) |
+| Stand | [serier](print-files/single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf) · [bookflix](print-files/single-colour/a1-mini/bookflix-stand-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf) · [bookflix](print-files/colour-swap/a1-mini/bookflix-stand-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-stand-ams-a1-mini.3mf) · [bookflix](print-files/ams/a1-mini/bookflix-stand-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-stand-ams-a2l-combo.3mf) · [bookflix](print-files/ams/a2l-combo/bookflix-stand-ams-a2l-combo.3mf) |
 | Plaque | [serier](print-files/single-colour/a1-mini/serier-plaque-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-plaque-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf) |
 | Loose letters | [serier](print-files/single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-letters-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-letters-ams-a2l-combo.3mf) |
 | Frame | [serier](print-files/single-colour/a1-mini/serier-frame-single-colour-a1-mini.3mf) | [serier](print-files/colour-swap/a1-mini/serier-frame-colour-swap-a1-mini.3mf) | [serier](print-files/ams/a1-mini/serier-frame-ams-a1-mini.3mf) | [serier](print-files/ams/a2l-combo/serier-frame-ams-a2l-combo.3mf) |
@@ -32,7 +32,7 @@ Finished sizes:
 
 | Design | A1 mini files | A2L Combo files |
 |---|---|---|
-| Stand | 143 × 30 mm plinth, 42 mm letters, 51 mm tall | 258 × 50 mm plinth, 76 mm letters, 90 mm tall |
+| Stand | 143 × 30 mm plinth (BOOKFLIX 195 × 30 mm), 42 mm letters, 51 mm tall | 258 × 50 mm plinth (BOOKFLIX 351 × 50 mm), 76 mm letters, 90 mm tall |
 | Plaque | 135 × 69 mm, 36 mm letters | 256 × 126 mm, 70 mm letters |
 | Loose letters | 75 mm tall, 231 mm wide on the wall | 120 mm tall, 370 mm wide on the wall |
 | Frame, open frame | 275 × 119 mm, 75 mm letters | 426 × 176 mm, 120 mm letters |
@@ -45,7 +45,7 @@ Every no-AMS project has at least two plates, so both A1 minis can run at once: 
 
 ### Single colour (no AMS)
 
-- **Stand**: plate 1 is the letters, in red, printed face down so the textured plate gives them a crisp front. Plate 2 is the plinth, in black. Push each letter's tab into its pocket; it's a press fit with 0.15 mm clearance per side, and a drop of glue makes it permanent.
+- **Stand**: plate 1 is the letters, in red, printed face down so the textured plate gives them a crisp front. Plate 2 is the plinth, in black. Push each letter's tab into its pocket; it's a press fit with 0.15 mm clearance per side, and a drop of glue makes it permanent. BOOKFLIX's letters and plinth are longer than the bed, so they lie diagonally across it.
 - **Plaque**: plate 1 is the red letters and the progress bar's fill as separate pieces, printed face down. Plate 2 is the black plaque with matching pockets, and its stand. Press each red piece into its pocket (0.15 mm clearance; glue optional), then slide the plaque into the stand's leaning slot.
 - **Loose letters**: all red, printed face down, split over two plates.
 

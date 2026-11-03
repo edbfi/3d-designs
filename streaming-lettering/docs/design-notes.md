@@ -84,6 +84,7 @@ Tested on MakerWorld (unpublished draft):
 - **Plinth arch**: printed in the standard 0.2 mm layers. 0.1 mm layers on the arch (a height-range modifier) were tried on the two-part plinth: half-height steps on the gentle arc, but 17 min more on a 48 min plate, for a difference that the matte PLA of that test mostly hid.
 - **Prime tower**: off on purpose. Bambu Studio's command-line slicer used to drop it by accident: with the same filament preset in every slot and no colours on the command line, it decides the print is single-filament. The build now passes the colours and sets the tower off explicitly. Measured on the A2L stand: a tower adds 16 min and 6 g, and flushing into infill (which needs the tower) saves less than the tower costs.
 - **Plate layout**: AMS plates that change colour keep a 45 × 55 mm corner free, in case you turn the prime tower on. One-colour plates don't, so a frame section fits the A1 mini.
+- **Parts longer than the bed**: the build turns them 45° to lie diagonally. BOOKFLIX's stand keeps SERIER's letter height that way: its plinth is 195 mm long on the A1 mini, whose bed takes 168 mm straight, and takes 155 × 155 mm turned (A2L: 351 mm straight, 277 × 277 mm turned). Smaller letters would have fitted straight but no longer matched SERIER.
 
 ## Verification
 
@@ -98,7 +99,7 @@ Every build also runs the automatic checks in `tools/build.py`, summarised in [`
 ## Known limits
 
 - `letter_height` runs from the baseline to the top of the text, so a round top overshoot (S, O) counts in it. Flat-topped outer letters of a word that contains round letters are about 1.5 % shorter (0.6 mm at 42 mm).
-- In the Customizer, check that the text fits your bed. The build script checks the fit, splits the loose letters over extra plates and cuts the frames into as many sections as the bed needs. The MakerWorld edition always makes two frame sections.
+- In the Customizer, check that the text fits your bed. The build script checks the fit, turns parts that are too long diagonally, splits the loose letters over extra plates and cuts the frames into as many sections as the bed needs. The MakerWorld edition always makes two frame sections.
 - The frames need capitals: lower-case letters would miss the open frame's top rail, and descenders could reach the border.
 - The frames aren't test-printed yet: the dovetail clearance, the pin hole size and how well glue holds the letters are first guesses.
 - `Impact` is only there if it's installed on the computer (it is on macOS and Windows). On MakerWorld, stick to Google Fonts.
