@@ -209,9 +209,9 @@ def split_balanced(items, n):
 
 def stand_two_part(text, p, notes_extra=()):
     plates = [
-        PlateSpec("1/2 Letters - red - face down (printer A)",
+        PlateSpec("1 of 2 - Letters - red - face down (printer A)",
                   [Group("Letters", [Part(f"{text}-stand-letters", dict(p, part="letters"), 1, DOWN)])]),
-        PlateSpec("2/2 Plinth - black (printer B)",
+        PlateSpec("2 of 2 - Plinth - black (printer B)",
                   [Group("Plinth", [Part(f"{text}-stand-plinth", dict(p, part="base"), 2, BACK)])]),
     ]
     notes = ["Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
@@ -242,20 +242,20 @@ def plaque_variant(text, set_, printer):
     if set_ == "ams":
         # the stand gets its own plate: next to the plaque it is black on every layer of the red
         # letters, which would cost an extra colour change per layer
-        plates = [PlateSpec("1/2 Plaque (black, red, grey)", [
+        plates = [PlateSpec("1 of 2 - Plaque (black, red, grey)", [
             Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 2, DOWN),
                              Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1, DOWN),
                              Part(f"{text}-plaque-track", dict(p, part="plaque_track"), 3, DOWN)])]),
-            PlateSpec("2/2 Stand (black)", [stand])]
+            PlateSpec("2 of 2 - Stand (black)", [stand])]
         return Variant(text, "plaque", set_, printer, [RED, BLACK, GREY], plates, [
             "Plate 1: the AMS does the black plaque, red letters and bar, and the grey bar track.",
             "Plate 2: the black stand, on its own so the plaque needs no extra colour changes.",
             "Slide the plaque into the stand's leaning slot."])
     if set_ == "single-colour":
         plates = [
-            PlateSpec("1/2 Red pieces - letters and bar, face down (printer A)",
+            PlateSpec("1 of 2 - Red pieces - letters and bar, face down (printer A)",
                       [Group("Red pieces", [Part(f"{text}-plaque-inlays", dict(p, part="plaque_inlays"), 1, DOWN)])]),
-            PlateSpec("2/2 Plaque with pockets + stand - black (printer B)",
+            PlateSpec("2 of 2 - Plaque with pockets + stand - black (printer B)",
                       [Group("Plaque", [Part(f"{text}-plaque-body-inlay", dict(p, part="plaque_body_inlay"), 2, DOWN)]),
                        stand]),
         ]
@@ -265,11 +265,11 @@ def plaque_variant(text, set_, printer):
             "Press each red piece into its pocket (0.15 mm clearance per side; a drop of glue makes it permanent). "
             "Slide the plaque into the stand's leaning slot."])
     plates = [
-        PlateSpec(f"1/2 Plaque - start black, PAUSE at {t + LAYER:.1f} mm, load red (printer A)",
+        PlateSpec(f"1 of 2 - Plaque - start black, PAUSE at {t + LAYER:.1f} mm, load red (printer A)",
                   [Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 1, DOWN),
                                     Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1, DOWN)])],
                   pause_z=round(t + LAYER, 2)),
-        PlateSpec("2/2 Stand - black (printer B)",
+        PlateSpec("2 of 2 - Stand - black (printer B)",
                   [Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 1, BACK)])]),
     ]
     return Variant(text, "plaque", set_, printer, [BLACK], plates, [
@@ -352,7 +352,7 @@ def frame_variant(text, set_, printer, design):
     n = frame_sections(text, PRINTERS[printer]["size"])
     p = scad_params(printer, design, text, frame_sections=n)
     plates, _, notes = letter_plates(text, set_, p)
-    plates += [PlateSpec(f"Frame {k + 1}/{n} - black" if n > 1 else "Frame - black",
+    plates += [PlateSpec(f"Frame {k + 1} of {n} - black" if n > 1 else "Frame - black",
                          [Group(f"Frame section {k + 1}", [Part(f"{text}-{design}-section-{k + 1}",
                                                               dict(p, part="frame_section", frame_index=k), 2, DOWN)])])
                for k in range(n)]
@@ -586,7 +586,7 @@ def pack(v: Variant):
                 head, _, tail = name.partition(" - ")
                 name = f"{head} {' '.join(g.label.split()[-1] for g, _, _ in placed)} - {tail}"
             if n > 1:
-                name = f"{k + 1}/{n} {name}"
+                name = f"{k + 1} of {n} - {name}"
             result.append((replace(spec, name=name), placed, tower))
     return result
 
@@ -828,14 +828,22 @@ def set_meta(elem, key, value):
     elem.insert(0, m)
 
 
+# Bambu Studio rejects these in plate and object names, with an error every time it opens the project
+BAMBU_NAME_FORBIDDEN = set('<>:/\\|?*"')
+
+
 def check_project(final: Path, v: Variant, layout):
-    """The sliced project must use the intended filament(s) on every plate and keep plate names."""
+    """The sliced project must use the intended filament(s) on every plate, keep plate names and
+    name nothing in a way Bambu Studio rejects."""
     problems = []
     with zipfile.ZipFile(final) as z:
         info = ET.fromstring(z.read("Metadata/slice_info.config"))
         ms = ET.fromstring(z.read("Metadata/model_settings.config"))
     names = [next((m.get("value") for m in p.findall("metadata") if m.get("key") == "plater_name"), "")
              for p in ms.findall("plate")]
+    problems += [f"name {n!r}: Bambu Studio doesn't allow {''.join(sorted(BAMBU_NAME_FORBIDDEN & set(n)))}"
+                 for n in names + [m.get("value") for m in ms.iter("metadata") if m.get("key") == "name"]
+                 if BAMBU_NAME_FORBIDDEN & set(n)]
     for i, (plate, (spec, placed, _)) in enumerate(zip(info.findall("plate"), layout), start=1):
         want = sorted({part.filament for g, _, _ in placed for part in g.parts})
         got = sorted(int(f.get("id")) for f in plate.findall("filament") if float(f.get("used_g", 0)) > 0)
