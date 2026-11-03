@@ -374,8 +374,8 @@ def variant_key(text, design, set_, printer):
 
 def variant_makers():
     """(key, maker) for every variant, in build order. The makers run only for the variants
-    that are built: a frame's maker measures the frame with OpenSCAD. Texts the open frame
-    can't hold (hyphens, most accents) get no open frame."""
+    that are built: a frame's maker measures the frame with OpenSCAD. Each text gets the
+    designs it takes (takes)."""
     return [(variant_key(text, design, set_, printer), partial(make, text, set_, printer))
             for text in TEXTS for set_, st in SETS.items() for printer in st["printers"]
             for design, make in DESIGNS.items() if takes(text, design)]
