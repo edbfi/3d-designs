@@ -33,6 +33,10 @@ plates the weight is the total for both colours.
 | [`colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 35 min | 33 g red + black (manual swap) | - |
 | [`colour-swap/a1-mini/serier-frame-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-frame-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 4 | 3 h 56 min | 115 g red + black (manual swap) | - |
 | [`colour-swap/a1-mini/serier-open-frame-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-open-frame-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 4 | 2 h 56 min | 66 g red + black (manual swap) | - |
+| [`ams/a1-mini/bookflix-stand-ams-a1-mini.3mf`](../print-files/ams/a1-mini/bookflix-stand-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 2 | 1 h 52 min | red 21 g, black 31 g | - |
+| [`ams/a2l-combo/bookflix-stand-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/bookflix-stand-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 2 | 5 h 00 min | red 74 g, black 117 g | - |
+| [`single-colour/a1-mini/bookflix-stand-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/bookflix-stand-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 52 min | red 21 g, black 31 g | - |
+| [`colour-swap/a1-mini/bookflix-stand-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/bookflix-stand-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 52 min | red 21 g, black 31 g | - |
 
 Plates of one project can run on different printers at the same time,
 so the wall-clock time with two A1 minis is the longest plate, not the total.
@@ -226,4 +230,39 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 - Plate 2: **2/2 Letters I E R - start red, PAUSE at 3.2 mm, load black**: 44 min, pause at 3.2 mm
 - Plate 3: **Frame 1/2 - black**: 38 min
 - Plate 4: **Frame 2/2 - black**: 42 min
+
+### ams/a1-mini/bookflix-stand-ams-a1-mini.3mf
+
+- Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
+- Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).
+- The AMS loads red for plate 1 and black for plate 2, so neither plate changes colour.
+
+- Plate 1: **1/2 Letters - red - face down (printer A)**: 57 min
+- Plate 2: **2/2 Plinth - black (printer B)**: 55 min
+
+### ams/a2l-combo/bookflix-stand-ams-a2l-combo.3mf
+
+- Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
+- Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).
+- The AMS loads red for plate 1 and black for plate 2, so neither plate changes colour.
+
+- Plate 1: **1/2 Letters - red - face down (printer A)**: 145 min
+- Plate 2: **2/2 Plinth - black (printer B)**: 155 min
+
+### single-colour/a1-mini/bookflix-stand-single-colour-a1-mini.3mf
+
+- Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
+- Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).
+
+- Plate 1: **1/2 Letters - red - face down (printer A)**: 57 min
+- Plate 2: **2/2 Plinth - black (printer B)**: 55 min
+
+### colour-swap/a1-mini/bookflix-stand-colour-swap-a1-mini.3mf
+
+- Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
+- Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).
+- No pause needed: each plate is one colour, so on one printer just change the spool between plates. (The arched plinth has no single layer where black could end, so a one-piece swap isn't possible.)
+
+- Plate 1: **1/2 Letters - red - face down (printer A)**: 57 min
+- Plate 2: **2/2 Plinth - black (printer B)**: 55 min
 

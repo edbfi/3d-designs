@@ -24,6 +24,7 @@ in a container: `../tools/docker/run.sh python3 tools/build.py`.
 import argparse
 import concurrent.futures as cf
 import json
+import math
 import os
 import re
 import shutil
@@ -55,7 +56,8 @@ BAMBU = os.environ.get("BAMBU_STUDIO", "/Applications/BambuStudio.app/Contents/M
 PROFILES = Path(os.environ.get("BAMBU_PROFILES", "/Applications/BambuStudio.app/Contents/Resources/profiles/BBL"))
 
 RED, BLACK, GREY = "#E50914", "#161616", "#5A5A5A"
-TEXTS = ["SERIER"]
+# Texts to build, and the designs each one gets (None: every design)
+TEXTS = {"SERIER": None, "BOOKFLIX": ["stand"]}
 LAYER = 0.2  # layer height of the process preset used below; pauses are placed on this grid
 
 # ----------------------------------------------------------------------------- printers
@@ -376,7 +378,13 @@ def variant_makers():
     can't hold (hyphens, most accents) get no open frame."""
     return [(variant_key(text, design, set_, printer), partial(make, text, set_, printer))
             for text in TEXTS for set_, st in SETS.items() for printer in st["printers"]
-            for design, make in DESIGNS.items() if design != "open-frame" or open_frame_takes(text)]
+            for design, make in DESIGNS.items() if takes(text, design)]
+
+
+def takes(text, design):
+    """Whether this text is built in this design (TEXTS, and what the open frame can hold)."""
+    wanted = TEXTS.get(text)
+    return (wanted is None or design in wanted) and (design != "open-frame" or open_frame_takes(text))
 
 
 # ----------------------------------------------------------------------------- helpers
@@ -554,6 +562,9 @@ def pack(v: Variant):
         items = []
         for g in spec.groups:
             lo, hi = group_bbox(g)
+            if hi[0] - lo[0] > W - 2 * m or hi[1] - lo[1] > D - 2 * m:
+                turn_group(g, 45)  # too long to lie straight: diagonally across the bed
+                lo, hi = group_bbox(g)
             items.append((g, hi[0] - lo[0], hi[1] - lo[1]))
         chunks = [items]
         if spec.split > 1:
@@ -578,6 +589,27 @@ def pack(v: Variant):
                 name = f"{k + 1}/{n} {name}"
             result.append((replace(spec, name=name), placed, tower))
     return result
+
+
+def turn_group(g: Group, degrees):
+    """Turn a group's parts about Z by rewriting their STLs, and their hidden sides with them.
+    The meshes are turned rather than the objects in the project, because seams can only be
+    painted on unturned objects (paint_seams)."""
+    c, s = math.cos(math.radians(degrees)), math.sin(math.radians(degrees))
+
+    def turn(x, y, z):
+        return (c * x - s * y, s * x + c * y, z)
+    for part in g.parts:
+        data = bytearray(part.stl.read_bytes())
+        n = struct.unpack_from("<I", data, 80)[0]
+        for i in range(n):
+            off = 84 + 50 * i
+            rec = struct.unpack_from("<12f", data, off)
+            struct.pack_into("<12f", data, off, *(v for k in range(0, 12, 3) for v in turn(*rec[k:k + 3])))
+        part.stl.write_bytes(data)
+        part.bbox = stl_bbox(part.stl)
+        if part.seam_dir:
+            part.seam_dir = turn(*part.seam_dir)
 
 
 def shelf(items, W, D, m, gap, tower):
@@ -1016,7 +1048,7 @@ def export_renders(texts, workers):
     jobs = []
     for text in texts:
         for design, cam in RENDER_CAMERAS.items():
-            if design == "open-frame" and not open_frame_takes(text):
+            if not takes(text, design):
                 continue
             p = dict(SIZES["small"][design], design=design, text_string=text, part="display")
             out = RENDER_IMAGES / f"{text.lower()}-{design}.png"
