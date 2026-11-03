@@ -34,9 +34,13 @@ plates the weight is the total for both colours.
 | [`colour-swap/a1-mini/serier-frame-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-frame-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 4 | 3 h 56 min | 115 g red + black (manual swap) | - |
 | [`colour-swap/a1-mini/serier-open-frame-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/serier-open-frame-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 4 | 2 h 56 min | 66 g red + black (manual swap) | - |
 | [`ams/a1-mini/bookflix-stand-ams-a1-mini.3mf`](../print-files/ams/a1-mini/bookflix-stand-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 2 | 1 h 52 min | red 21 g, black 31 g | - |
+| [`ams/a1-mini/bookflix-open-frame-ams-a1-mini.3mf`](../print-files/ams/a1-mini/bookflix-open-frame-ams-a1-mini.3mf) | Bambu Lab A1 mini, with AMS lite | 5 | 3 h 40 min | red 13 g, black 74 g | under 1 g |
 | [`ams/a2l-combo/bookflix-stand-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/bookflix-stand-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 2 | 5 h 00 min | red 74 g, black 117 g | - |
+| [`ams/a2l-combo/bookflix-open-frame-ams-a2l-combo.3mf`](../print-files/ams/a2l-combo/bookflix-open-frame-ams-a2l-combo.3mf) | Bambu Lab A2L Combo, with AMS lite | 3 | 6 h 45 min | red 32 g, black 171 g | under 1 g |
 | [`single-colour/a1-mini/bookflix-stand-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/bookflix-stand-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 2 | 1 h 52 min | red 21 g, black 31 g | - |
+| [`single-colour/a1-mini/bookflix-open-frame-single-colour-a1-mini.3mf`](../print-files/single-colour/a1-mini/bookflix-open-frame-single-colour-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, one colour per plate | 5 | 3 h 38 min | red 44 g, black 43 g | - |
 | [`colour-swap/a1-mini/bookflix-stand-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/bookflix-stand-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 2 | 1 h 52 min | red 21 g, black 31 g | - |
+| [`colour-swap/a1-mini/bookflix-open-frame-colour-swap-a1-mini.3mf`](../print-files/colour-swap/a1-mini/bookflix-open-frame-colour-swap-a1-mini.3mf) | Bambu Lab A1 mini, no AMS, manual colour swap | 5 | 3 h 39 min | 87 g red + black (manual swap) | - |
 
 Plates of one project can run on different printers at the same time,
 so the wall-clock time with two A1 minis is the longest plate, not the total.
@@ -240,6 +244,18 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 - Plate 1: **1/2 Letters - red - face down (printer A)**: 57 min
 - Plate 2: **2/2 Plinth - black (printer B)**: 55 min
 
+### ams/a1-mini/bookflix-open-frame-ams-a1-mini.3mf
+
+- Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.
+- The frame is black, in 3 sections that dovetail together, one per plate.
+- Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border.
+
+- Plate 1: **1/2 Letters B O O K F L - red face down, black body**: 85 min, 1 AMS changes
+- Plate 2: **2/2 Letters I X - red face down, black body**: 29 min, 1 AMS changes
+- Plate 3: **Frame 1/3 - black**: 38 min
+- Plate 4: **Frame 2/3 - black**: 34 min
+- Plate 5: **Frame 3/3 - black**: 34 min
+
 ### ams/a2l-combo/bookflix-stand-ams-a2l-combo.3mf
 
 - Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
@@ -249,6 +265,16 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 - Plate 1: **1/2 Letters - red - face down (printer A)**: 145 min
 - Plate 2: **2/2 Plinth - black (printer B)**: 155 min
 
+### ams/a2l-combo/bookflix-open-frame-ams-a2l-combo.3mf
+
+- Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.
+- The frame is black, in 2 sections that dovetail together, one per plate.
+- Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border.
+
+- Plate 1: **Letters B O O K F L I X - red face down, black body**: 234 min, 1 AMS changes
+- Plate 2: **Frame 1/2 - black**: 84 min
+- Plate 3: **Frame 2/2 - black**: 87 min
+
 ### single-colour/a1-mini/bookflix-stand-single-colour-a1-mini.3mf
 
 - Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.
@@ -256,6 +282,18 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 
 - Plate 1: **1/2 Letters - red - face down (printer A)**: 57 min
 - Plate 2: **2/2 Plinth - black (printer B)**: 55 min
+
+### single-colour/a1-mini/bookflix-open-frame-single-colour-a1-mini.3mf
+
+- All-red letters, printed face down, split over two plates so two printers can share the work.
+- The frame is black, in 3 sections that dovetail together, one per plate.
+- Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border.
+
+- Plate 1: **1/2 Letters B O O K - red**: 66 min
+- Plate 2: **2/2 Letters F L I X - red**: 46 min
+- Plate 3: **Frame 1/3 - black**: 38 min
+- Plate 4: **Frame 2/3 - black**: 34 min
+- Plate 5: **Frame 3/3 - black**: 34 min
 
 ### colour-swap/a1-mini/bookflix-stand-colour-swap-a1-mini.3mf
 
@@ -265,4 +303,17 @@ so the wall-clock time with two A1 minis is the longest plate, not the total.
 
 - Plate 1: **1/2 Letters - red - face down (printer A)**: 57 min
 - Plate 2: **2/2 Plinth - black (printer B)**: 55 min
+
+### colour-swap/a1-mini/bookflix-open-frame-colour-swap-a1-mini.3mf
+
+- Each letter plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.
+- The letters are split over two plates so two printers can share the work.
+- The frame is black, in 3 sections that dovetail together, one per plate.
+- Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border.
+
+- Plate 1: **1/2 Letters B O O K - start red, PAUSE at 3.2 mm, load black**: 66 min, pause at 3.2 mm
+- Plate 2: **2/2 Letters F L I X - start red, PAUSE at 3.2 mm, load black**: 46 min, pause at 3.2 mm
+- Plate 3: **Frame 1/3 - black**: 39 min
+- Plate 4: **Frame 2/3 - black**: 34 min
+- Plate 5: **Frame 3/3 - black**: 34 min
 

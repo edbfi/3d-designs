@@ -1262,6 +1262,109 @@
   "file": "ams/a1-mini/bookflix-stand-ams-a1-mini.3mf"
  },
  {
+  "key": "bookflix-open-frame-ams-a1-mini",
+  "text": "BOOKFLIX",
+  "design": "open-frame",
+  "set": "ams",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, with AMS lite",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
+   "The frame is black, in 3 sections that dovetail together, one per plate.",
+   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Letters B O O K F L - red face down, black body",
+    "minutes": 85,
+    "purge_g": 0.1,
+    "grams": {
+     "1": 10.4,
+     "2": 24.7
+    },
+    "colour_changes": 1,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 B",
+     "Letter 2 O",
+     "Letter 3 O",
+     "Letter 4 K",
+     "Letter 5 F",
+     "Letter 6 L"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Letters I X - red face down, black body",
+    "minutes": 29,
+    "purge_g": 0.1,
+    "grams": {
+     "1": 2.9,
+     "2": 6.6
+    },
+    "colour_changes": 1,
+    "pause_z": null,
+    "objects": [
+     "Letter 7 I",
+     "Letter 8 X"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 1/3 - black",
+    "minutes": 38,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 16.2
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "Frame 2/3 - black",
+    "minutes": 34,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 13.2
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 2"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 5,
+    "name": "Frame 3/3 - black",
+    "minutes": 34,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 13.4
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 3"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "ams/a1-mini/bookflix-open-frame-ams-a1-mini.3mf"
+ },
+ {
   "key": "bookflix-stand-ams-a2l-combo",
   "text": "BOOKFLIX",
   "design": "stand",
@@ -1310,6 +1413,79 @@
    }
   ],
   "file": "ams/a2l-combo/bookflix-stand-ams-a2l-combo.3mf"
+ },
+ {
+  "key": "bookflix-open-frame-ams-a2l-combo",
+  "text": "BOOKFLIX",
+  "design": "open-frame",
+  "set": "ams",
+  "printer": "a2l-combo",
+  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
+   "The frame is black, in 2 sections that dovetail together, one per plate.",
+   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Letters B O O K F L I X - red face down, black body",
+    "minutes": 234,
+    "purge_g": 0.1,
+    "grams": {
+     "1": 31.5,
+     "2": 81.8
+    },
+    "colour_changes": 1,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 B",
+     "Letter 2 O",
+     "Letter 3 O",
+     "Letter 4 K",
+     "Letter 5 F",
+     "Letter 6 L",
+     "Letter 7 I",
+     "Letter 8 X"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "Frame 1/2 - black",
+    "minutes": 84,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 43.6
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 2/2 - black",
+    "minutes": 87,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 45.3
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 2"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "ams/a2l-combo/bookflix-open-frame-ams-a2l-combo.3mf"
  },
  {
   "key": "bookflix-stand-single-colour-a1-mini",
@@ -1361,6 +1537,107 @@
   "file": "single-colour/a1-mini/bookflix-stand-single-colour-a1-mini.3mf"
  },
  {
+  "key": "bookflix-open-frame-single-colour-a1-mini",
+  "text": "BOOKFLIX",
+  "design": "open-frame",
+  "set": "single-colour",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "All-red letters, printed face down, split over two plates so two printers can share the work.",
+   "The frame is black, in 3 sections that dovetail together, one per plate.",
+   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Letters B O O K - red",
+    "minutes": 66,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 26.8
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Letter 1 B",
+     "Letter 2 O",
+     "Letter 3 O",
+     "Letter 4 K"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Letters F L I X - red",
+    "minutes": 46,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 17.5
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Letter 5 F",
+     "Letter 6 L",
+     "Letter 7 I",
+     "Letter 8 X"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 1/3 - black",
+    "minutes": 38,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 16.2
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "Frame 2/3 - black",
+    "minutes": 34,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 13.2
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 2"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 5,
+    "name": "Frame 3/3 - black",
+    "minutes": 34,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 13.4
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 3"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "single-colour/a1-mini/bookflix-open-frame-single-colour-a1-mini.3mf"
+ },
+ {
   "key": "bookflix-stand-colour-swap-a1-mini",
   "text": "BOOKFLIX",
   "design": "stand",
@@ -1409,5 +1686,107 @@
    }
   ],
   "file": "colour-swap/a1-mini/bookflix-stand-colour-swap-a1-mini.3mf"
+ },
+ {
+  "key": "bookflix-open-frame-colour-swap-a1-mini",
+  "text": "BOOKFLIX",
+  "design": "open-frame",
+  "set": "colour-swap",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "notes": [
+   "Each letter plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
+   "The letters are split over two plates so two printers can share the work.",
+   "The frame is black, in 3 sections that dovetail together, one per plate.",
+   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "1/2 Letters B O O K - start red, PAUSE at 3.2 mm, load black",
+    "minutes": 66,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 26.8
+    },
+    "colour_changes": 0,
+    "pause_z": 3.2,
+    "objects": [
+     "Letter 1 B",
+     "Letter 2 O",
+     "Letter 3 O",
+     "Letter 4 K"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "2/2 Letters F L I X - start red, PAUSE at 3.2 mm, load black",
+    "minutes": 46,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 17.5
+    },
+    "colour_changes": 0,
+    "pause_z": 3.2,
+    "objects": [
+     "Letter 5 F",
+     "Letter 6 L",
+     "Letter 7 I",
+     "Letter 8 X"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 1/3 - black",
+    "minutes": 39,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 16.2
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "Frame 2/3 - black",
+    "minutes": 34,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 13.2
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 2"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 5,
+    "name": "Frame 3/3 - black",
+    "minutes": 34,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 13.4
+    },
+    "colour_changes": 0,
+    "pause_z": null,
+    "objects": [
+     "Frame section 3"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "colour-swap/a1-mini/bookflix-open-frame-colour-swap-a1-mini.3mf"
  }
 ]
