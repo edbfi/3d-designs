@@ -1,76 +1,157 @@
 [
  {
-  "key": "serier-stand-ams-a1-mini",
-  "text": "SERIER",
-  "design": "stand",
-  "set": "ams",
+  "key": "streaming-lettering-stand-a1-mini",
+  "product": "stand",
   "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, with AMS lite",
+  "printer_label": "Bambu Lab A1 mini",
   "filaments": [
    "#E50914",
    "#161616"
   ],
-  "notes": [
-   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
-   "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
-   "The AMS loads red for plate 1 and black for plate 2, so neither plate changes colour."
-  ],
   "plates": [
    {
     "plate": 1,
-    "name": "1 of 2 - Letters - red - face down (printer A)",
+    "name": "SERIER letters",
     "minutes": 47,
     "purge_g": 0.0,
     "grams": {
      "1": 15.5
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Letters"
+     "SERIER letters"
     ],
     "warning": ""
    },
    {
     "plate": 2,
-    "name": "2 of 2 - Plinth - black (printer B)",
+    "name": "SERIER plinth",
     "minutes": 48,
     "purge_g": 0.0,
     "grams": {
      "2": 23.0
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Plinth"
+     "SERIER plinth"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "BOOKFLIX letters",
+    "minutes": 57,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 21.2
+    },
+    "colour_changes": 0,
+    "objects": [
+     "BOOKFLIX letters"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "BOOKFLIX plinth",
+    "minutes": 55,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 30.9
+    },
+    "colour_changes": 0,
+    "objects": [
+     "BOOKFLIX plinth"
     ],
     "warning": ""
    }
   ],
-  "file": "ams/a1-mini/serier-stand-ams-a1-mini.3mf"
+  "file": "streaming-lettering-stand-a1-mini.3mf"
  },
  {
-  "key": "serier-plaque-ams-a1-mini",
-  "text": "SERIER",
-  "design": "plaque",
-  "set": "ams",
+  "key": "streaming-lettering-stand-a2l",
+  "product": "stand",
+  "printer": "a2l",
+  "printer_label": "Bambu Lab A2L",
+  "filaments": [
+   "#E50914",
+   "#161616"
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "SERIER letters",
+    "minutes": 119,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 54.6
+    },
+    "colour_changes": 0,
+    "objects": [
+     "SERIER letters"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "SERIER plinth",
+    "minutes": 128,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 84.9
+    },
+    "colour_changes": 0,
+    "objects": [
+     "SERIER plinth"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "BOOKFLIX letters",
+    "minutes": 145,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 73.9
+    },
+    "colour_changes": 0,
+    "objects": [
+     "BOOKFLIX letters"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "BOOKFLIX plinth",
+    "minutes": 155,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 116.6
+    },
+    "colour_changes": 0,
+    "objects": [
+     "BOOKFLIX plinth"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "streaming-lettering-stand-a2l.3mf"
+ },
+ {
+  "key": "streaming-lettering-plaque-a1-mini",
+  "product": "plaque",
   "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, with AMS lite",
+  "printer_label": "Bambu Lab A1 mini",
   "filaments": [
    "#E50914",
    "#161616",
    "#5A5A5A"
   ],
-  "notes": [
-   "Plate 1: the AMS does the black plaque, red letters and bar, and the grey bar track.",
-   "Plate 2: the black stand, on its own so the plaque needs no extra colour changes.",
-   "Slide the plaque into the stand's leaning slot."
-  ],
   "plates": [
    {
     "plate": 1,
-    "name": "1 of 2 - Plaque (black, red, grey)",
-    "minutes": 58,
+    "name": "Plaque",
+    "minutes": 59,
     "purge_g": 1.4,
     "grams": {
      "1": 4.5,
@@ -78,283 +159,70 @@
      "3": 0.6
     },
     "colour_changes": 6,
-    "pause_z": null,
     "objects": [
-     "Plaque"
+     "SERIER plaque"
     ],
     "warning": ""
    },
    {
     "plate": 2,
-    "name": "2 of 2 - Stand (black)",
+    "name": "Plaque stand",
     "minutes": 30,
     "purge_g": 0.0,
     "grams": {
      "2": 15.7
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Plaque stand"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "ams/a1-mini/serier-plaque-ams-a1-mini.3mf"
- },
- {
-  "key": "serier-letters-ams-a1-mini",
-  "text": "SERIER",
-  "design": "letters",
-  "set": "ams",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, with AMS lite",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
-   "Hang them with the paper template in templates/ so the arc lines up."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "Letters S E R I E R - red face down, black body",
-    "minutes": 89,
-    "purge_g": 0.1,
-    "grams": {
-     "1": 9.9,
-     "2": 23.5
-    },
-    "colour_changes": 1,
-    "pause_z": null,
-    "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R",
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "ams/a1-mini/serier-letters-ams-a1-mini.3mf"
- },
- {
-  "key": "serier-frame-ams-a1-mini",
-  "text": "SERIER",
-  "design": "frame",
-  "set": "ams",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, with AMS lite",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
-   "The frame is black, in 2 sections that dovetail together, one per plate.",
-   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "Letters S E R I E R - red face down, black body",
-    "minutes": 89,
-    "purge_g": 0.1,
-    "grams": {
-     "1": 9.9,
-     "2": 23.5
-    },
-    "colour_changes": 1,
-    "pause_z": null,
-    "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R",
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "Frame 1 of 2 - black",
-    "minutes": 66,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 37.7
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 1"
+     "SERIER plaque stand"
     ],
     "warning": ""
    },
    {
     "plate": 3,
-    "name": "Frame 2 of 2 - black",
-    "minutes": 75,
+    "name": "Inlay plaque (no AMS)",
+    "minutes": 49,
     "purge_g": 0.0,
     "grams": {
-     "2": 44.3
+     "2": 26.1
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Frame section 2"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "ams/a1-mini/serier-frame-ams-a1-mini.3mf"
- },
- {
-  "key": "serier-open-frame-ams-a1-mini",
-  "text": "SERIER",
-  "design": "open-frame",
-  "set": "ams",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, with AMS lite",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
-   "The frame is black, in 2 sections that dovetail together, one per plate.",
-   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "Letters S E R I E R - red face down, black body",
-    "minutes": 89,
-    "purge_g": 0.1,
-    "grams": {
-     "1": 9.9,
-     "2": 23.5
-    },
-    "colour_changes": 1,
-    "pause_z": null,
-    "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R",
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
+     "SERIER inlay plaque"
     ],
     "warning": ""
    },
    {
-    "plate": 2,
-    "name": "Frame 1 of 2 - black",
-    "minutes": 38,
+    "plate": 4,
+    "name": "Inlay letters (no AMS)",
+    "minutes": 23,
     "purge_g": 0.0,
     "grams": {
-     "2": 15.6
+     "1": 6.2
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Frame section 1"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 3,
-    "name": "Frame 2 of 2 - black",
-    "minutes": 42,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 17.6
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 2"
+     "SERIER inlay letters"
     ],
     "warning": ""
    }
   ],
-  "file": "ams/a1-mini/serier-open-frame-ams-a1-mini.3mf"
+  "file": "streaming-lettering-plaque-a1-mini.3mf"
  },
  {
-  "key": "serier-stand-ams-a2l-combo",
-  "text": "SERIER",
-  "design": "stand",
-  "set": "ams",
-  "printer": "a2l-combo",
-  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
-   "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
-   "The AMS loads red for plate 1 and black for plate 2, so neither plate changes colour."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters - red - face down (printer A)",
-    "minutes": 119,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 54.6
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letters"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Plinth - black (printer B)",
-    "minutes": 128,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 84.9
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Plinth"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "ams/a2l-combo/serier-stand-ams-a2l-combo.3mf"
- },
- {
-  "key": "serier-plaque-ams-a2l-combo",
-  "text": "SERIER",
-  "design": "plaque",
-  "set": "ams",
-  "printer": "a2l-combo",
-  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
+  "key": "streaming-lettering-plaque-a2l",
+  "product": "plaque",
+  "printer": "a2l",
+  "printer_label": "Bambu Lab A2L",
   "filaments": [
    "#E50914",
    "#161616",
    "#5A5A5A"
   ],
-  "notes": [
-   "Plate 1: the AMS does the black plaque, red letters and bar, and the grey bar track.",
-   "Plate 2: the black stand, on its own so the plaque needs no extra colour changes.",
-   "Slide the plaque into the stand's leaning slot."
-  ],
   "plates": [
    {
     "plate": 1,
-    "name": "1 of 2 - Plaque (black, red, grey)",
+    "name": "Plaque",
     "minutes": 146,
     "purge_g": 1.8,
     "grams": {
@@ -363,924 +231,239 @@
      "3": 1.2
     },
     "colour_changes": 8,
-    "pause_z": null,
     "objects": [
-     "Plaque"
+     "SERIER plaque"
     ],
     "warning": ""
    },
    {
     "plate": 2,
-    "name": "2 of 2 - Stand (black)",
-    "minutes": 68,
+    "name": "Plaque stand",
+    "minutes": 67,
     "purge_g": 0.0,
     "grams": {
      "2": 48.2
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Plaque stand"
+     "SERIER plaque stand"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Inlay plaque (no AMS)",
+    "minutes": 129,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 91.6
+    },
+    "colour_changes": 0,
+    "objects": [
+     "SERIER inlay plaque"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "Inlay letters (no AMS)",
+    "minutes": 58,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 23.6
+    },
+    "colour_changes": 0,
+    "objects": [
+     "SERIER inlay letters"
     ],
     "warning": ""
    }
   ],
-  "file": "ams/a2l-combo/serier-plaque-ams-a2l-combo.3mf"
+  "file": "streaming-lettering-plaque-a2l.3mf"
  },
  {
-  "key": "serier-letters-ams-a2l-combo",
-  "text": "SERIER",
-  "design": "letters",
-  "set": "ams",
-  "printer": "a2l-combo",
-  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
+  "key": "streaming-lettering-frame-a1-mini",
+  "product": "frame",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini",
   "filaments": [
    "#E50914",
    "#161616"
   ],
-  "notes": [
-   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
-   "Hang them with the paper template in templates/ so the arc lines up."
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Letters",
+    "minutes": 89,
+    "purge_g": 0.1,
+    "grams": {
+     "1": 9.9,
+     "2": 23.5
+    },
+    "colour_changes": 1,
+    "objects": [
+     "SERIER letter 1 S",
+     "SERIER letter 2 E",
+     "SERIER letter 3 R",
+     "SERIER letter 4 I",
+     "SERIER letter 5 E",
+     "SERIER letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "Frame 1 of 2",
+    "minutes": 66,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 37.7
+    },
+    "colour_changes": 0,
+    "objects": [
+     "SERIER frame section 1"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Frame 2 of 2",
+    "minutes": 75,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 44.3
+    },
+    "colour_changes": 0,
+    "objects": [
+     "SERIER frame section 2"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "streaming-lettering-frame-a1-mini.3mf"
+ },
+ {
+  "key": "streaming-lettering-frame-a2l",
+  "product": "frame",
+  "printer": "a2l",
+  "printer_label": "Bambu Lab A2L",
+  "filaments": [
+   "#E50914",
+   "#161616"
   ],
   "plates": [
    {
     "plate": 1,
-    "name": "Letters S E R I E R - red face down, black body",
-    "minutes": 194,
+    "name": "Letters",
+    "minutes": 195,
     "purge_g": 0.1,
     "grams": {
      "1": 23.8,
      "2": 61.4
     },
     "colour_changes": 1,
-    "pause_z": null,
     "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R",
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "ams/a2l-combo/serier-letters-ams-a2l-combo.3mf"
- },
- {
-  "key": "serier-frame-ams-a2l-combo",
-  "text": "SERIER",
-  "design": "frame",
-  "set": "ams",
-  "printer": "a2l-combo",
-  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
-   "The frame is black, in 2 sections that dovetail together, one per plate.",
-   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "Letters S E R I E R - red face down, black body",
-    "minutes": 195,
-    "purge_g": 0.1,
-    "grams": {
-     "1": 23.8,
-     "2": 61.3
-    },
-    "colour_changes": 1,
-    "pause_z": null,
-    "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R",
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
+     "SERIER letter 1 S",
+     "SERIER letter 2 E",
+     "SERIER letter 3 R",
+     "SERIER letter 4 I",
+     "SERIER letter 5 E",
+     "SERIER letter 6 R"
     ],
     "warning": ""
    },
    {
     "plate": 2,
-    "name": "Frame 1 of 2 - black",
+    "name": "Frame 1 of 2",
     "minutes": 124,
     "purge_g": 0.0,
     "grams": {
      "2": 83.2
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Frame section 1"
+     "SERIER frame section 1"
     ],
     "warning": ""
    },
    {
     "plate": 3,
-    "name": "Frame 2 of 2 - black",
+    "name": "Frame 2 of 2",
     "minutes": 145,
     "purge_g": 0.0,
     "grams": {
      "2": 98.4
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Frame section 2"
+     "SERIER frame section 2"
     ],
     "warning": ""
    }
   ],
-  "file": "ams/a2l-combo/serier-frame-ams-a2l-combo.3mf"
+  "file": "streaming-lettering-frame-a2l.3mf"
  },
  {
-  "key": "serier-open-frame-ams-a2l-combo",
-  "text": "SERIER",
-  "design": "open-frame",
-  "set": "ams",
-  "printer": "a2l-combo",
-  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
+  "key": "streaming-lettering-open-frame-a1-mini",
+  "product": "open-frame",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini",
   "filaments": [
    "#E50914",
    "#161616"
   ],
-  "notes": [
-   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
-   "The frame is black, in 2 sections that dovetail together, one per plate.",
-   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
-  ],
   "plates": [
    {
     "plate": 1,
-    "name": "Letters S E R I E R - red face down, black body",
-    "minutes": 194,
+    "name": "SERIER letters",
+    "minutes": 89,
     "purge_g": 0.1,
     "grams": {
-     "1": 23.8,
-     "2": 61.3
+     "1": 9.9,
+     "2": 23.5
     },
     "colour_changes": 1,
-    "pause_z": null,
     "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R",
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
+     "SERIER letter 1 S",
+     "SERIER letter 2 E",
+     "SERIER letter 3 R",
+     "SERIER letter 4 I",
+     "SERIER letter 5 E",
+     "SERIER letter 6 R"
     ],
     "warning": ""
    },
    {
     "plate": 2,
-    "name": "Frame 1 of 2 - black",
-    "minutes": 64,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 32.0
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 1"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 3,
-    "name": "Frame 2 of 2 - black",
-    "minutes": 72,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 36.5
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 2"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "ams/a2l-combo/serier-open-frame-ams-a2l-combo.3mf"
- },
- {
-  "key": "serier-stand-single-colour-a1-mini",
-  "text": "SERIER",
-  "design": "stand",
-  "set": "single-colour",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
-   "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent)."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters - red - face down (printer A)",
-    "minutes": 47,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 15.5
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letters"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Plinth - black (printer B)",
-    "minutes": 48,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 23.0
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Plinth"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "single-colour/a1-mini/serier-stand-single-colour-a1-mini.3mf"
- },
- {
-  "key": "serier-plaque-single-colour-a1-mini",
-  "text": "SERIER",
-  "design": "plaque",
-  "set": "single-colour",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Plate 1 in red: the letters and the progress bar's fill as separate pieces, printed face down.",
-   "Plate 2 in black: the plaque with matching pockets, and its stand.",
-   "Press each red piece into its pocket (0.15 mm clearance per side; a drop of glue makes it permanent). Slide the plaque into the stand's leaning slot."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Red pieces - letters and bar, face down (printer A)",
-    "minutes": 23,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 6.2
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Red pieces"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Plaque with pockets + stand - black (printer B)",
-    "minutes": 72,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 41.8
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Plaque",
-     "Plaque stand"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "single-colour/a1-mini/serier-plaque-single-colour-a1-mini.3mf"
- },
- {
-  "key": "serier-letters-single-colour-a1-mini",
-  "text": "SERIER",
-  "design": "letters",
-  "set": "single-colour",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
-  "filaments": [
-   "#E50914"
-  ],
-  "notes": [
-   "All-red letters, printed face down, split over two plates so two printers can share the work.",
-   "Hang them with the paper template in templates/ so the arc lines up."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters S E R - red",
-    "minutes": 52,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 17.8
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Letters I E R - red",
-    "minutes": 44,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 15.4
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "single-colour/a1-mini/serier-letters-single-colour-a1-mini.3mf"
- },
- {
-  "key": "serier-frame-single-colour-a1-mini",
-  "text": "SERIER",
-  "design": "frame",
-  "set": "single-colour",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "All-red letters, printed face down, split over two plates so two printers can share the work.",
-   "The frame is black, in 2 sections that dovetail together, one per plate.",
-   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters S E R - red",
-    "minutes": 52,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 17.8
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Letters I E R - red",
-    "minutes": 44,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 15.4
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 3,
-    "name": "Frame 1 of 2 - black",
-    "minutes": 66,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 37.7
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 1"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 4,
-    "name": "Frame 2 of 2 - black",
-    "minutes": 75,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 44.3
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 2"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "single-colour/a1-mini/serier-frame-single-colour-a1-mini.3mf"
- },
- {
-  "key": "serier-open-frame-single-colour-a1-mini",
-  "text": "SERIER",
-  "design": "open-frame",
-  "set": "single-colour",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "All-red letters, printed face down, split over two plates so two printers can share the work.",
-   "The frame is black, in 2 sections that dovetail together, one per plate.",
-   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters S E R - red",
-    "minutes": 52,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 17.8
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Letters I E R - red",
-    "minutes": 44,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 15.4
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 3,
-    "name": "Frame 1 of 2 - black",
+    "name": "SERIER frame 1 of 2",
     "minutes": 38,
     "purge_g": 0.0,
     "grams": {
      "2": 15.6
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Frame section 1"
+     "SERIER frame section 1"
     ],
     "warning": ""
    },
    {
-    "plate": 4,
-    "name": "Frame 2 of 2 - black",
+    "plate": 3,
+    "name": "SERIER frame 2 of 2",
     "minutes": 42,
     "purge_g": 0.0,
     "grams": {
      "2": 17.6
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Frame section 2"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "single-colour/a1-mini/serier-open-frame-single-colour-a1-mini.3mf"
- },
- {
-  "key": "serier-stand-colour-swap-a1-mini",
-  "text": "SERIER",
-  "design": "stand",
-  "set": "colour-swap",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
-   "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
-   "No pause needed: each plate is one colour, so on one printer just change the spool between plates. (The arched plinth has no single layer where black could end, so a one-piece swap isn't possible.)"
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters - red - face down (printer A)",
-    "minutes": 47,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 15.5
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letters"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Plinth - black (printer B)",
-    "minutes": 48,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 23.0
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Plinth"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "colour-swap/a1-mini/serier-stand-colour-swap-a1-mini.3mf"
- },
- {
-  "key": "serier-plaque-colour-swap-a1-mini",
-  "text": "SERIER",
-  "design": "plaque",
-  "set": "colour-swap",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
-  "filaments": [
-   "#161616"
-  ],
-  "notes": [
-   "Plate 1 starts in black and pauses at 4.2 mm: unload black, load red, resume.",
-   "The progress bar's track stays as a black groove; the filled part and the letters come out red.",
-   "Slide the plaque into the stand's leaning slot."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Plaque - start black, PAUSE at 4.2 mm, load red (printer A)",
-    "minutes": 49,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 27.6
-    },
-    "colour_changes": 0,
-    "pause_z": 4.2,
-    "objects": [
-     "Plaque"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Stand - black (printer B)",
-    "minutes": 30,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 15.7
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Plaque stand"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "colour-swap/a1-mini/serier-plaque-colour-swap-a1-mini.3mf"
- },
- {
-  "key": "serier-letters-colour-swap-a1-mini",
-  "text": "SERIER",
-  "design": "letters",
-  "set": "colour-swap",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
-  "filaments": [
-   "#E50914"
-  ],
-  "notes": [
-   "Each letter plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
-   "The letters are split over two plates so two printers can share the work.",
-   "Hang them with the paper template in templates/ so the arc lines up."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters S E R - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 52,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 17.8
-    },
-    "colour_changes": 0,
-    "pause_z": 3.2,
-    "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Letters I E R - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 44,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 15.4
-    },
-    "colour_changes": 0,
-    "pause_z": 3.2,
-    "objects": [
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "colour-swap/a1-mini/serier-letters-colour-swap-a1-mini.3mf"
- },
- {
-  "key": "serier-frame-colour-swap-a1-mini",
-  "text": "SERIER",
-  "design": "frame",
-  "set": "colour-swap",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Each letter plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
-   "The letters are split over two plates so two printers can share the work.",
-   "The frame is black, in 2 sections that dovetail together, one per plate.",
-   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters S E R - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 52,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 17.8
-    },
-    "colour_changes": 0,
-    "pause_z": 3.2,
-    "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Letters I E R - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 44,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 15.4
-    },
-    "colour_changes": 0,
-    "pause_z": 3.2,
-    "objects": [
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 3,
-    "name": "Frame 1 of 2 - black",
-    "minutes": 66,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 37.7
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 1"
+     "SERIER frame section 2"
     ],
     "warning": ""
    },
    {
     "plate": 4,
-    "name": "Frame 2 of 2 - black",
-    "minutes": 75,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 44.3
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 2"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "colour-swap/a1-mini/serier-frame-colour-swap-a1-mini.3mf"
- },
- {
-  "key": "serier-open-frame-colour-swap-a1-mini",
-  "text": "SERIER",
-  "design": "open-frame",
-  "set": "colour-swap",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Each letter plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
-   "The letters are split over two plates so two printers can share the work.",
-   "The frame is black, in 2 sections that dovetail together, one per plate.",
-   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters S E R - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 51,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 17.8
-    },
-    "colour_changes": 0,
-    "pause_z": 3.2,
-    "objects": [
-     "Letter 1 S",
-     "Letter 2 E",
-     "Letter 3 R"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Letters I E R - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 44,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 15.4
-    },
-    "colour_changes": 0,
-    "pause_z": 3.2,
-    "objects": [
-     "Letter 4 I",
-     "Letter 5 E",
-     "Letter 6 R"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 3,
-    "name": "Frame 1 of 2 - black",
-    "minutes": 38,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 15.6
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 1"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 4,
-    "name": "Frame 2 of 2 - black",
-    "minutes": 42,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 17.6
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 2"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "colour-swap/a1-mini/serier-open-frame-colour-swap-a1-mini.3mf"
- },
- {
-  "key": "bookflix-stand-ams-a1-mini",
-  "text": "BOOKFLIX",
-  "design": "stand",
-  "set": "ams",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, with AMS lite",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
-   "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
-   "The AMS loads red for plate 1 and black for plate 2, so neither plate changes colour."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters - red - face down (printer A)",
-    "minutes": 57,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 21.2
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letters"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Plinth - black (printer B)",
-    "minutes": 55,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 30.9
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Plinth"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "ams/a1-mini/bookflix-stand-ams-a1-mini.3mf"
- },
- {
-  "key": "bookflix-open-frame-ams-a1-mini",
-  "text": "BOOKFLIX",
-  "design": "open-frame",
-  "set": "ams",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, with AMS lite",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
-   "The frame is black, in 3 sections that dovetail together, one per plate.",
-   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters B O O K F L - red face down, black body",
+    "name": "BOOKFLIX letters 1 of 2",
     "minutes": 85,
     "purge_g": 0.1,
     "grams": {
@@ -1288,20 +471,19 @@
      "2": 24.7
     },
     "colour_changes": 1,
-    "pause_z": null,
     "objects": [
-     "Letter 1 B",
-     "Letter 2 O",
-     "Letter 3 O",
-     "Letter 4 K",
-     "Letter 5 F",
-     "Letter 6 L"
+     "BOOKFLIX letter 1 B",
+     "BOOKFLIX letter 2 O",
+     "BOOKFLIX letter 3 O",
+     "BOOKFLIX letter 4 K",
+     "BOOKFLIX letter 5 F",
+     "BOOKFLIX letter 6 L"
     ],
     "warning": ""
    },
    {
-    "plate": 2,
-    "name": "2 of 2 - Letters I X - red face down, black body",
+    "plate": 5,
+    "name": "BOOKFLIX letters 2 of 2",
     "minutes": 29,
     "purge_g": 0.1,
     "grams": {
@@ -1309,484 +491,166 @@
      "2": 6.6
     },
     "colour_changes": 1,
-    "pause_z": null,
     "objects": [
-     "Letter 7 I",
-     "Letter 8 X"
+     "BOOKFLIX letter 7 I",
+     "BOOKFLIX letter 8 X"
     ],
     "warning": ""
    },
    {
-    "plate": 3,
-    "name": "Frame 1 of 3 - black",
+    "plate": 6,
+    "name": "BOOKFLIX frame 1 of 3",
     "minutes": 38,
     "purge_g": 0.0,
     "grams": {
      "2": 16.2
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Frame section 1"
+     "BOOKFLIX frame section 1"
     ],
     "warning": ""
    },
    {
-    "plate": 4,
-    "name": "Frame 2 of 3 - black",
+    "plate": 7,
+    "name": "BOOKFLIX frame 2 of 3",
     "minutes": 34,
     "purge_g": 0.0,
     "grams": {
      "2": 13.2
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Frame section 2"
+     "BOOKFLIX frame section 2"
     ],
     "warning": ""
    },
    {
-    "plate": 5,
-    "name": "Frame 3 of 3 - black",
+    "plate": 8,
+    "name": "BOOKFLIX frame 3 of 3",
     "minutes": 34,
     "purge_g": 0.0,
     "grams": {
      "2": 13.4
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Frame section 3"
+     "BOOKFLIX frame section 3"
     ],
     "warning": ""
    }
   ],
-  "file": "ams/a1-mini/bookflix-open-frame-ams-a1-mini.3mf"
+  "file": "streaming-lettering-open-frame-a1-mini.3mf"
  },
  {
-  "key": "bookflix-stand-ams-a2l-combo",
-  "text": "BOOKFLIX",
-  "design": "stand",
-  "set": "ams",
-  "printer": "a2l-combo",
-  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
+  "key": "streaming-lettering-open-frame-a2l",
+  "product": "open-frame",
+  "printer": "a2l",
+  "printer_label": "Bambu Lab A2L",
   "filaments": [
    "#E50914",
    "#161616"
   ],
-  "notes": [
-   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
-   "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
-   "The AMS loads red for plate 1 and black for plate 2, so neither plate changes colour."
-  ],
   "plates": [
    {
     "plate": 1,
-    "name": "1 of 2 - Letters - red - face down (printer A)",
-    "minutes": 145,
-    "purge_g": 0.0,
+    "name": "SERIER letters",
+    "minutes": 194,
+    "purge_g": 0.1,
     "grams": {
-     "1": 73.9
+     "1": 23.8,
+     "2": 61.4
     },
-    "colour_changes": 0,
-    "pause_z": null,
+    "colour_changes": 1,
     "objects": [
-     "Letters"
+     "SERIER letter 1 S",
+     "SERIER letter 2 E",
+     "SERIER letter 3 R",
+     "SERIER letter 4 I",
+     "SERIER letter 5 E",
+     "SERIER letter 6 R"
     ],
     "warning": ""
    },
    {
     "plate": 2,
-    "name": "2 of 2 - Plinth - black (printer B)",
-    "minutes": 155,
+    "name": "SERIER frame 1 of 2",
+    "minutes": 64,
     "purge_g": 0.0,
     "grams": {
-     "2": 116.6
+     "2": 32.0
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Plinth"
+     "SERIER frame section 1"
     ],
     "warning": ""
-   }
-  ],
-  "file": "ams/a2l-combo/bookflix-stand-ams-a2l-combo.3mf"
- },
- {
-  "key": "bookflix-open-frame-ams-a2l-combo",
-  "text": "BOOKFLIX",
-  "design": "open-frame",
-  "set": "ams",
-  "printer": "a2l-combo",
-  "printer_label": "Bambu Lab A2L Combo, with AMS lite",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Printed face down: the red face gets the textured plate's finish, then the AMS changes to black once for the body.",
-   "The frame is black, in 2 sections that dovetail together, one per plate.",
-   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
-  ],
-  "plates": [
+   },
    {
-    "plate": 1,
-    "name": "Letters B O O K F L I X - red face down, black body",
-    "minutes": 234,
+    "plate": 3,
+    "name": "SERIER frame 2 of 2",
+    "minutes": 72,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 36.5
+    },
+    "colour_changes": 0,
+    "objects": [
+     "SERIER frame section 2"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "BOOKFLIX letters",
+    "minutes": 235,
     "purge_g": 0.1,
     "grams": {
      "1": 31.5,
      "2": 81.8
     },
     "colour_changes": 1,
-    "pause_z": null,
     "objects": [
-     "Letter 1 B",
-     "Letter 2 O",
-     "Letter 3 O",
-     "Letter 4 K",
-     "Letter 5 F",
-     "Letter 6 L",
-     "Letter 7 I",
-     "Letter 8 X"
+     "BOOKFLIX letter 1 B",
+     "BOOKFLIX letter 2 O",
+     "BOOKFLIX letter 3 O",
+     "BOOKFLIX letter 4 K",
+     "BOOKFLIX letter 5 F",
+     "BOOKFLIX letter 6 L",
+     "BOOKFLIX letter 7 I",
+     "BOOKFLIX letter 8 X"
     ],
     "warning": ""
    },
    {
-    "plate": 2,
-    "name": "Frame 1 of 2 - black",
+    "plate": 5,
+    "name": "BOOKFLIX frame 1 of 2",
     "minutes": 84,
     "purge_g": 0.0,
     "grams": {
      "2": 43.6
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Frame section 1"
+     "BOOKFLIX frame section 1"
     ],
     "warning": ""
    },
    {
-    "plate": 3,
-    "name": "Frame 2 of 2 - black",
+    "plate": 6,
+    "name": "BOOKFLIX frame 2 of 2",
     "minutes": 87,
     "purge_g": 0.0,
     "grams": {
      "2": 45.3
     },
     "colour_changes": 0,
-    "pause_z": null,
     "objects": [
-     "Frame section 2"
+     "BOOKFLIX frame section 2"
     ],
     "warning": ""
    }
   ],
-  "file": "ams/a2l-combo/bookflix-open-frame-ams-a2l-combo.3mf"
- },
- {
-  "key": "bookflix-stand-single-colour-a1-mini",
-  "text": "BOOKFLIX",
-  "design": "stand",
-  "set": "single-colour",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
-   "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent)."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters - red - face down (printer A)",
-    "minutes": 57,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 21.2
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letters"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Plinth - black (printer B)",
-    "minutes": 55,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 30.9
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Plinth"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "single-colour/a1-mini/bookflix-stand-single-colour-a1-mini.3mf"
- },
- {
-  "key": "bookflix-open-frame-single-colour-a1-mini",
-  "text": "BOOKFLIX",
-  "design": "open-frame",
-  "set": "single-colour",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, one colour per plate",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "All-red letters, printed face down, split over two plates so two printers can share the work.",
-   "The frame is black, in 3 sections that dovetail together, one per plate.",
-   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters B O O K - red",
-    "minutes": 66,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 26.8
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letter 1 B",
-     "Letter 2 O",
-     "Letter 3 O",
-     "Letter 4 K"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Letters F L I X - red",
-    "minutes": 46,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 17.6
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letter 5 F",
-     "Letter 6 L",
-     "Letter 7 I",
-     "Letter 8 X"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 3,
-    "name": "Frame 1 of 3 - black",
-    "minutes": 38,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 16.2
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 1"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 4,
-    "name": "Frame 2 of 3 - black",
-    "minutes": 34,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 13.2
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 2"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 5,
-    "name": "Frame 3 of 3 - black",
-    "minutes": 34,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 13.4
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 3"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "single-colour/a1-mini/bookflix-open-frame-single-colour-a1-mini.3mf"
- },
- {
-  "key": "bookflix-stand-colour-swap-a1-mini",
-  "text": "BOOKFLIX",
-  "design": "stand",
-  "set": "colour-swap",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
-   "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
-   "No pause needed: each plate is one colour, so on one printer just change the spool between plates. (The arched plinth has no single layer where black could end, so a one-piece swap isn't possible.)"
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters - red - face down (printer A)",
-    "minutes": 57,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 21.2
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Letters"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Plinth - black (printer B)",
-    "minutes": 55,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 30.9
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Plinth"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "colour-swap/a1-mini/bookflix-stand-colour-swap-a1-mini.3mf"
- },
- {
-  "key": "bookflix-open-frame-colour-swap-a1-mini",
-  "text": "BOOKFLIX",
-  "design": "open-frame",
-  "set": "colour-swap",
-  "printer": "a1-mini",
-  "printer_label": "Bambu Lab A1 mini, no AMS, manual colour swap",
-  "filaments": [
-   "#E50914",
-   "#161616"
-  ],
-  "notes": [
-   "Each letter plate starts in red, face down, and pauses at 3.2 mm: swap to black and resume, for black letters with a red face.",
-   "The letters are split over two plates so two printers can share the work.",
-   "The frame is black, in 3 sections that dovetail together, one per plate.",
-   "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes in its border."
-  ],
-  "plates": [
-   {
-    "plate": 1,
-    "name": "1 of 2 - Letters B O O K - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 66,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 26.8
-    },
-    "colour_changes": 0,
-    "pause_z": 3.2,
-    "objects": [
-     "Letter 1 B",
-     "Letter 2 O",
-     "Letter 3 O",
-     "Letter 4 K"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 2,
-    "name": "2 of 2 - Letters F L I X - start red, PAUSE at 3.2 mm, load black",
-    "minutes": 46,
-    "purge_g": 0.0,
-    "grams": {
-     "1": 17.6
-    },
-    "colour_changes": 0,
-    "pause_z": 3.2,
-    "objects": [
-     "Letter 5 F",
-     "Letter 6 L",
-     "Letter 7 I",
-     "Letter 8 X"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 3,
-    "name": "Frame 1 of 3 - black",
-    "minutes": 38,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 16.2
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 1"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 4,
-    "name": "Frame 2 of 3 - black",
-    "minutes": 34,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 13.2
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 2"
-    ],
-    "warning": ""
-   },
-   {
-    "plate": 5,
-    "name": "Frame 3 of 3 - black",
-    "minutes": 34,
-    "purge_g": 0.0,
-    "grams": {
-     "2": 13.4
-    },
-    "colour_changes": 0,
-    "pause_z": null,
-    "objects": [
-     "Frame section 3"
-    ],
-    "warning": ""
-   }
-  ],
-  "file": "colour-swap/a1-mini/bookflix-open-frame-colour-swap-a1-mini.3mf"
+  "file": "streaming-lettering-open-frame-a2l.3mf"
  }
 ]

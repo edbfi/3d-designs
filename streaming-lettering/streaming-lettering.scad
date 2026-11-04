@@ -100,7 +100,7 @@ plaque_bar_width = 2.4; // [1:0.1:6]
 plaque_track_depth = 0.6; // [0.2:0.2:2]
 // Height of the red bar fill above the plaque face
 plaque_bar_relief = 1; // [0.2:0.2:4]
-// Single-colour version: how deep the separate red letters and bar sit in their pockets
+// Inlay version (no AMS): how deep the separate red letters and bar sit in their pockets
 plaque_inlay_depth = 1.2; // [0.6:0.2:3]
 // Lean of the plaque in its stand (degrees back from vertical)
 plaque_tilt = 12; // [0:1:30]
@@ -581,7 +581,7 @@ module plaque_red() {
             linear_extrude(plaque_track_depth + plaque_bar_relief) plaque_fill2d();
 }
 
-// Single-colour version, black part: the plaque with pockets for the separate red pieces.
+// Inlay version (no AMS), black part: the plaque with pockets for the separate red pieces.
 module plaque_body_inlay() {
     difference() {
         plaque_body();
@@ -593,7 +593,7 @@ module plaque_body_inlay() {
     }
 }
 
-// Single-colour version, red part: letters and bar fill as press-in pieces, face down
+// Inlay version (no AMS), red part: letters and bar fill as press-in pieces, face down
 // (mirrored so the front is on the textured plate).
 module plaque_inlays() {
     mirror([1, 0, 0]) {
