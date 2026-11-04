@@ -16,7 +16,7 @@ For every printer this script
 
 Usage:
   python3 tools/build.py --jobs 2            # everything
-  python3 tools/build.py --only a1-mini      # filter projects (regex on the file name)
+  python3 tools/build.py --only a1-mini      # filter projects (regex on the project key)
   python3 tools/build.py --list              # show projects
 
 Needs build123d 0.13 and Bambu Studio 02.08.02.61; the repo's ../tools/docker/ provides both:
@@ -300,8 +300,7 @@ def set_meta(elem, key, value):
 
 
 def name_project(src: Path, dst: Path, plates):
-    """Name the objects after their parts and the plates after what is on them (the CLI drops
-    plate names when it slices, so this runs on the sliced project too)."""
+    """Name the objects after their parts and the plates after what is on them."""
     with zipfile.ZipFile(src) as zin:
         files = {n: zin.read(n) for n in zin.namelist()}
     root = ET.fromstring(files["Metadata/model_settings.config"])
@@ -375,7 +374,6 @@ def build_variant(v: Variant, bboxes):
     if rc != 0 or info.get("return_code") != 0 or not final.exists():
         warn = [p.get("warning_message") for p in info.get("sliced_plates", []) if p.get("warning_message")]
         raise RuntimeError(f"{v.key}: slicing failed ({rc}) {info.get('error_string')} {warn}")
-    name_project(final, final, plates)
     problems = check_gcode(final, plates) + check_overhangs(info)
     if problems:
         raise RuntimeError(f"{v.key}: " + "; ".join(problems))

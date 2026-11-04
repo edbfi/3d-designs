@@ -43,7 +43,7 @@ A design's print files live in its GitHub release, `<design>-latest`, not in git
 - **printer**: the Bambu printer the project targets, such as `a1-mini` or `a2l`. A bigger printer gets its own file only when it gets bigger parts or a different plate layout.
 - **variant**: only for a variant that fits different hardware, such as another fan or case. Every other variant, such as another word or an optional part, is a plate in the same file.
 
-Plates are named `[<VARIANT> ]<part>[ <i> of <n>][ (<note>)]`, for example `SERIER letters` or `Fit test (print first)`. A fit test is always plate 1.
+Plates are named `[<GROUP> ]<part>[ <i> of <n>][ (<note>)]`, for example `SERIER letters` or `Fit test (print first)`. `<GROUP>` is the word or option the plate belongs to, when a file holds several. A fit test is always plate 1.
 
 ## Licence
 

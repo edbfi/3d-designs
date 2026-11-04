@@ -71,7 +71,8 @@ Each design has one source in one toolchain. Never keep the same geometry in two
   named as in [`README.md`](README.md#print-files). After the PR merges, publish them from
   main with `tools/release.sh <design>`.
 - New variants of a design are entries in its build script and plates in its existing files,
-  not new folders or releases (see [`README.md`](README.md#print-files)).
+  not new folders or releases. Only a variant for different hardware gets files of its own
+  (see [`README.md`](README.md#print-files)).
 - `build/` and `reference/` stay out of git; third-party logos never go in.
 
 ## Documentation

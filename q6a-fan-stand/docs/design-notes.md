@@ -53,7 +53,7 @@ The build checks every printed part against these as keep-out boxes (`keepouts()
 - **A gap under the fan instead of a duct.** Over a 13 mm gap, the air spreads past the motor hub before it reaches the fins.
 - **Rubber-mounted fan and PETG parts.**
 
-They differed on how to hold the fan:
+The ways to hold the fan that were weighed:
 
 | Concept | Why it won or lost |
 |---|---|
