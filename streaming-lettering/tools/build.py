@@ -34,6 +34,7 @@ import struct
 import subprocess
 import sys
 import time
+import uuid
 import zipfile
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field, replace
@@ -128,7 +129,7 @@ class PlateSpec:
 
 
 @dataclass
-class Variant:
+class Project:
     product: str              # key of PRODUCTS
     printer: str              # key of PRINTERS
     filaments: list           # colours per filament slot
@@ -136,7 +137,7 @@ class Variant:
 
     @property
     def key(self):
-        return variant_key(self.product, self.printer)
+        return project_key(self.product, self.printer)
 
 
 # Hidden side of each part in its print pose, where seams are painted (display front is -Y):
@@ -258,25 +259,25 @@ def frame_plates(text, printer, design):
 
 
 # Per product: the plates of one text, and the colour of each filament slot.
-DESIGNS = {"stand": (stand_plates, [RED, BLACK]), "plaque": (plaque_plates, [RED, BLACK, GREY]),
+PRODUCT_PLATES = {"stand": (stand_plates, [RED, BLACK]), "plaque": (plaque_plates, [RED, BLACK, GREY]),
            "frame": (partial(frame_plates, design="frame"), [RED, BLACK]),
            "open-frame": (partial(frame_plates, design="open-frame"), [RED, BLACK])}
 
 
-def make_variant(product, printer):
-    plates_of, filaments = DESIGNS[product]
-    return Variant(product, printer, filaments,
+def make_project(product, printer):
+    plates_of, filaments = PRODUCT_PLATES[product]
+    return Project(product, printer, filaments,
                    [spec for text in PRODUCTS[product] for spec in plates_of(text, printer)])
 
 
-def variant_key(product, printer):
+def project_key(product, printer):
     return f"streaming-lettering-{product}-{printer}"
 
 
-def variant_makers():
+def project_makers():
     """(key, maker) for every project, in build order. The makers run only for the projects
     that are built: a frame's maker measures the frame with OpenSCAD."""
-    return [(variant_key(product, printer), partial(make_variant, product, printer))
+    return [(project_key(product, printer), partial(make_project, product, printer))
             for product in PRODUCTS for printer in PRINTERS]
 
 
@@ -409,7 +410,7 @@ def resolve_preset(kind, name):
     return out
 
 
-def flat_presets(v: Variant):
+def flat_presets(v: Project):
     """Write fully resolved presets (the CLI does not resolve includes on its own)."""
     pr = PRINTERS[v.printer]
     colours = v.filaments
@@ -440,7 +441,7 @@ def flat_presets(v: Variant):
 TOWER = (45, 55)  # reserved prime-tower corner (x, y) on AMS plates that change colour
 
 
-def pack(v: Variant):
+def pack(v: Project):
     """Shelf-pack each plate's groups; split into more plates when they do not fit.
     Returns [(PlateSpec, [(group, x_center, y_center)], tower_xy)]."""
     pr = PRINTERS[v.printer]
@@ -547,7 +548,7 @@ def run_bambu(args, cwd: Path, logname: str):
     return r.returncode, info
 
 
-def assemble_json(v: Variant, layout):
+def assemble_json(v: Project, layout):
     plates = []
     for spec, placed, _ in layout:
         objs, assembled = [], []
@@ -568,7 +569,7 @@ def assemble_json(v: Variant, layout):
     return {"plates": plates}
 
 
-def patch_project(src: Path, dst: Path, v: Variant, layout):
+def patch_project(src: Path, dst: Path, v: Project, layout):
     """Name plates and objects, pin single-part objects to their filament and place prime towers."""
     with zipfile.ZipFile(src) as zin:
         files = {n: zin.read(n) for n in zin.namelist()}
@@ -592,6 +593,9 @@ def patch_project(src: Path, dst: Path, v: Variant, layout):
             set_meta(obj, "extruder", str(hits[0][1].filament))
     for plate, (spec, _, _) in zip(root.findall("plate"), layout):
         set_meta(plate, "plater_name", spec.name)
+    for obj in root.findall("object"):  # Bambu Studio draws these at random: fix them, so a rebuild is identical
+        for pt in obj.findall("part"):
+            pt.set("uuid", str(uuid.uuid5(uuid.NAMESPACE_URL, f"{v.key}/{obj.get('id')}/{pt.get('id')}")))
     files["Metadata/model_settings.config"] = (
         '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root, encoding="unicode")).encode()
     painted = paint_seams(files, root, by_part)
@@ -731,7 +735,7 @@ def check_gcode(final: Path, layout):
     return problems
 
 
-def build_variant(v: Variant):
+def build_project(v: Project):
     work = BUILD / "work" / v.key
     if work.exists():
         shutil.rmtree(work)
@@ -939,6 +943,23 @@ def write_summary(results):
     (DOCS / "build-summary.json").write_text(json.dumps(results, indent=1) + "\n")
 
 
+def steady(old, new):
+    """Bambu Studio's toolpaths vary a little from slice to slice of the same project, so its
+    estimates move by seconds (under 2 %) and hundredths of a gram, and their rounding can
+    flip. Keep the committed figures when a rebuild moves them by no more than that, so an
+    unchanged design rebuilds to the same summary: ../tools/release.sh refuses to publish if
+    it changes."""
+    if old is None or [p["name"] for p in old["plates"]] != [p["name"] for p in new["plates"]]:
+        return new
+    for o, n in zip(old["plates"], new["plates"]):
+        if (abs(o["minutes"] - n["minutes"]) > max(1, o["minutes"] // 50)
+                or abs(o["purge_g"] - n["purge_g"]) > 0.2 or o["grams"].keys() != n["grams"].keys()
+                or any(abs(o["grams"][k] - n["grams"][k]) > 0.2 for k in o["grams"])):
+            return new
+    return dict(new, plates=[dict(n, minutes=o["minutes"], purge_g=o["purge_g"], grams=o["grams"])
+                             for o, n in zip(old["plates"], new["plates"])])
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--only", action="append", default=[], help="build projects whose key matches this regex")
@@ -955,17 +976,17 @@ def main():
         log(f"MakerWorld edition: {export_makerworld_edition().relative_to(ROOT)}")
         return
 
-    makers = [(k, m) for k, m in variant_makers() if all(re.search(o, k) for o in a.only)]
+    makers = [(k, m) for k, m in project_makers() if all(re.search(o, k) for o in a.only)]
     if a.list:
         for k, _ in makers:
             print(k)
         return
     if not makers:
         sys.exit("no project matches")
-    variants = [m() for _, m in makers]
+    projects = [m() for _, m in makers]
 
     # 1. export all parts in parallel
-    parts = [(v, part) for v in variants for s in v.plates for g in s.groups for part in g.parts]
+    parts = [(v, part) for v in projects for s in v.plates for g in s.groups for part in g.parts]
     log(f"exporting {len(parts)} parts with OpenSCAD ({a.jobs} jobs)")
     with cf.ThreadPoolExecutor(a.jobs) as ex:
         futs = {ex.submit(export_stl, part, BUILD / "stl" / v.key): part for v, part in parts}
@@ -980,9 +1001,9 @@ def main():
 
     # 2. Bambu projects (sequential: the CLI shares its data directory)
     results, failed = [], []
-    for v in variants:
+    for v in projects:
         try:
-            r = build_variant(v)
+            r = build_project(v)
             results.append(r)
             log(f"ok   {v.key}: " + ", ".join(f"p{p['plate']} {p['minutes']} min" for p in r["plates"]))
         except Exception as e:  # keep going, report at the end
@@ -991,8 +1012,8 @@ def main():
     if results:  # merge with earlier runs so a partial rebuild keeps the full summary
         old = DOCS / "build-summary.json"
         merged = {r["key"]: r for r in (json.loads(old.read_text()) if old.exists() else [])}
-        merged.update({r["key"]: r for r in results})
-        order = [k for k, _ in variant_makers()]
+        merged.update({r["key"]: steady(merged.get(r["key"]), r) for r in results})
+        order = [k for k, _ in project_makers()]
         write_summary([merged[k] for k in order if k in merged])
     if failed:
         sys.exit(f"{len(failed)} project(s) failed")
