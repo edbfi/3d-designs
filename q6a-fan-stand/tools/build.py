@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
 """Build ready-to-print Bambu Studio projects for the Q6A fan stand.
 
-For every project x printer this script
+For every printer this script
   1. checks the fit in use: no part touches the case, the fan or a keep-out (plugs, buttons, the
      microSD card, the jumpers, the antenna leads, the air gap), and the hood meets the base
      only at the sockets' crush ribs,
   2. exports the parts from q6a-fan-stand.py with build123d, in their print poses, and checks
      each mesh is a closed solid with no stray slivers,
-  3. lays the parts out on plates and builds a Bambu Studio project with the Bambu Studio CLI,
+  3. lays the parts out on plates, the fit test first, and builds one Bambu Studio project with
+     the Bambu Studio CLI,
   4. slices every plate with the stock Bambu profiles (Bambu PETG Basic) and fails on slicer
      supports and on overhangs Bambu Studio would leave unsupported,
-  5. writes the sliced .3mf, plate previews, a summary, and the STEP export for MakerWorld.
+  5. writes the unsliced project and the STEP export to build/release/ (the release assets,
+     published by ../tools/release.sh), and the README image and build summary to docs/.
 
 Usage:
   python3 tools/build.py --jobs 2            # everything
-  python3 tools/build.py --only fit-test     # filter projects (regex on the project key)
+  python3 tools/build.py --only a1-mini      # filter projects (regex on the project key)
   python3 tools/build.py --list              # show projects
 
 Needs build123d 0.13 and Bambu Studio 02.08.02.61; the repo's ../tools/docker/ provides both:
@@ -40,10 +42,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / "q6a-fan-stand.py"
 BUILD = ROOT / "build"                           # scratch, git-ignored
-PRINT_FILES = ROOT / "print-files"               # ready-to-print Bambu projects, one folder per printer
-MAKERWORLD = ROOT / "makerworld"                 # the STEP export for the MakerWorld listing
+RELEASE = BUILD / "release"                      # release assets: the projects and the STEP export
 DOCS = ROOT / "docs"
-PLATE_IMAGES = DOCS / "images" / "plates"
 
 BAMBU = os.environ.get("BAMBU_STUDIO", "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio")
 PROFILES = Path(os.environ.get("BAMBU_PROFILES", "/Applications/BambuStudio.app/Contents/Resources/profiles/BBL"))
@@ -55,8 +55,8 @@ PRINTERS = {
         name="Bambu Lab A1 mini", bed=(180, 180), margin=6,
         machine="Bambu Lab A1 mini 0.4 nozzle", process="0.20mm Standard @BBL A1M",
         filament="Bambu PETG Basic @BBL A1M 0.4 nozzle"),
-    "a2l-combo": dict(
-        name="Bambu Lab A2L Combo", bed=(330, 320), margin=8,
+    "a2l": dict(
+        name="Bambu Lab A2L", bed=(330, 320), margin=8,
         machine="Bambu Lab A2L 0.4 nozzle", process="0.20mm Standard @BBL A2L",
         filament="Bambu PETG Basic @BBL A2L 0.4 nozzle"),
 }
@@ -68,25 +68,20 @@ PARTS = {
     "fit-test": ("fit_test", (0, 0, 0)),
 }
 
-# Projects: plates per printer, each plate a list of parts.
-PROJECTS = {
-    "fit-test": dict(label="Fit test: print this first",
-                     plates={"a1-mini": [["fit-test"]], "a2l-combo": [["fit-test"]]}),
-    "fan-stand": dict(label="Fan stand: hood and base",
-                      plates={"a1-mini": [["hood"], ["base"]], "a2l-combo": [["hood", "base"]]}),
-}
+# One project per printer, each plate a list of parts: the fit test first, then the stand.
+PLATES = {"a1-mini": [["fit-test"], ["hood"], ["base"]], "a2l": [["fit-test"], ["hood", "base"]]}
 PLATE_NAMES = {("hood",): "Hood", ("base",): "Base", ("hood", "base"): "Hood and base",
-               ("fit-test",): "Fit test"}
+               ("fit-test",): "Fit test (print first)"}
+README_IMAGE = ("a2l", "Hood and base", DOCS / "images" / "fan-stand.png")  # printer, plate, file
 
 
 @dataclass
 class Variant:
-    project: str
     printer: str
 
     @property
     def key(self):
-        return f"q6a-fan-stand-{self.project}-{self.printer}"
+        return f"q6a-fan-stand-{self.printer}"
 
 
 def log(*a):
@@ -147,8 +142,8 @@ def export_step():
     hood, base = src.hood(), src.base()
     hood.label, base.label = "hood", "base"
     asm = bd.Compound(children=[hood, base], label="q6a-fan-stand")
-    MAKERWORLD.mkdir(parents=True, exist_ok=True)
-    path = MAKERWORLD / "q6a-fan-stand.step"
+    RELEASE.mkdir(parents=True, exist_ok=True)
+    path = RELEASE / "q6a-fan-stand.step"
     bd.export_step(asm, str(path))
     text = path.read_text()
     text = re.sub(r"(FILE_NAME\('[^']*',)'[^']*'", r"\1'2026-01-01T00:00:00'", text, count=1)
@@ -259,7 +254,7 @@ def layout(v: Variant, bboxes):
     W, D = pr["bed"]
     gap = 10
     plates = []
-    for parts in PROJECTS[v.project]["plates"][v.printer]:
+    for parts in PLATES[v.printer]:
         sizes = [(p, bboxes[p][1][0] - bboxes[p][0][0], bboxes[p][1][1] - bboxes[p][0][1]) for p in parts]
         total = sum(w for _, w, _ in sizes) + gap * (len(sizes) - 1)
         if total > W - 2 * pr["margin"] or max(d for _, _, d in sizes) > D - 2 * pr["margin"]:
@@ -305,8 +300,7 @@ def set_meta(elem, key, value):
 
 
 def name_project(src: Path, dst: Path, plates):
-    """Name the objects after their parts and the plates after what is on them (the CLI drops
-    plate names when it slices, so this runs on the sliced project too)."""
+    """Name the objects after their parts and the plates after what is on them."""
     with zipfile.ZipFile(src) as zin:
         files = {n: zin.read(n) for n in zin.namelist()}
     root = ET.fromstring(files["Metadata/model_settings.config"])
@@ -380,27 +374,28 @@ def build_variant(v: Variant, bboxes):
     if rc != 0 or info.get("return_code") != 0 or not final.exists():
         warn = [p.get("warning_message") for p in info.get("sliced_plates", []) if p.get("warning_message")]
         raise RuntimeError(f"{v.key}: slicing failed ({rc}) {info.get('error_string')} {warn}")
-    name_project(final, final, plates)
     problems = check_gcode(final, plates) + check_overhangs(info)
     if problems:
         raise RuntimeError(f"{v.key}: " + "; ".join(problems))
 
-    out_dir = PRINT_FILES / v.printer
-    out_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copy(final, out_dir / f"{v.key}.3mf")
-    PLATE_IMAGES.mkdir(parents=True, exist_ok=True)
+    # Ship the checked project unsliced: MakerWorld and Bambu Studio slice it for the printer
+    # they print on, and the G-code would be most of the file.
+    RELEASE.mkdir(parents=True, exist_ok=True)
+    shutil.copy(work / "project.3mf", RELEASE / f"{v.key}.3mf")
+    printer, plate_name, image = README_IMAGE
+    if v.printer == printer:
+        n = 1 + [name for name, _ in plates].index(plate_name)
+        with zipfile.ZipFile(work / "project.3mf") as z:
+            image.parent.mkdir(parents=True, exist_ok=True)
+            image.write_bytes(z.read(f"Metadata/plate_{n}.png"))
     stats = []
     with zipfile.ZipFile(final) as z:
         info_xml = ET.fromstring(z.read("Metadata/slice_info.config"))
-        for i, plate in enumerate(info_xml.findall("plate"), start=1):
-            png = f"Metadata/plate_{i}.png"
-            if png in z.namelist():
-                (PLATE_IMAGES / f"{v.key}-plate-{i}.png").write_bytes(z.read(png))
+        for plate in info_xml.findall("plate"):
             meta = {m.get("key"): m.get("value") for m in plate.findall("metadata")}
             grams = sum(float(f.get("used_g", 0)) for f in plate.findall("filament"))
             stats.append((int(meta["prediction"]), round(grams, 1)))
-    return dict(key=v.key, project=v.project, printer=v.printer, printer_label=PRINTERS[v.printer]["name"],
-                label=PROJECTS[v.project]["label"], file=f"{v.printer}/{v.key}.3mf",
+    return dict(key=v.key, printer=v.printer, printer_label=PRINTERS[v.printer]["name"], file=f"{v.key}.3mf",
                 plates=[dict(plate=i, name=name, minutes=round(s / 60), grams=g)
                         for i, ((name, _), (s, g)) in enumerate(zip(plates, stats), start=1)])
 
@@ -409,26 +404,21 @@ def build_variant(v: Variant, bboxes):
 
 def write_summary(results):
     lines = ["# Build summary", "",
-             "Generated by `tools/build.py`. Every project was sliced with the stock Bambu Studio",
-             "profiles (0.20 mm Standard, Bambu PETG Basic, textured PEI plate) and checked: real",
-             "printer start G-code, every part a closed solid with no stray sliver pieces, and no",
-             "supports and no overhang Bambu Studio would leave unsupported.", "",
-             "Times and weights are Bambu Studio's estimates; the time includes the printer's",
-             "warm-up and calibration.", "",
-             "| Project | Printer | Plates | Print time | Filament |", "|---|---|---|---|---|"]
+             "Generated by `tools/build.py`. The released projects are unsliced; the build slices each",
+             "one with the stock Bambu Studio profiles (0.20 mm Standard, Bambu PETG Basic, textured",
+             "PEI plate) to check it: real printer start G-code, every part a closed solid with no",
+             "stray sliver pieces, and no supports and no overhang Bambu Studio would leave",
+             "unsupported.", "",
+             "Times and weights are Bambu Studio's estimates for all plates; the time includes the",
+             "printer's warm-up and calibration.", "",
+             "| File | Printer | Plates | Print time | Filament |", "|---|---|---|---|---|"]
     for r in results:
         mins = sum(p["minutes"] for p in r["plates"])
         grams = sum(p["grams"] for p in r["plates"])
-        lines.append(f"| [`{r['file']}`](../print-files/{r['file']}) | {r['printer_label']} | {len(r['plates'])} | "
+        lines.append(f"| `{r['file']}` | {r['printer_label']} | {' · '.join(p['name'] for p in r['plates'])} | "
                      f"{mins // 60} h {mins % 60:02d} min | {grams:.0f} g |")
-    lines += ["", "## Plates", ""]
-    for r in results:
-        lines += [f"### {r['file']}", "", r["label"], ""]
-        for p in r["plates"]:
-            lines.append(f"- Plate {p['plate']}: **{p['name']}**: {p['minutes']} min, {p['grams']:.0f} g")
-        lines.append("")
     DOCS.mkdir(parents=True, exist_ok=True)
-    (DOCS / "build-summary.md").write_text("\n".join(lines))
+    (DOCS / "build-summary.md").write_text("\n".join(lines) + "\n")
     (DOCS / "build-summary.json").write_text(json.dumps(results, indent=1) + "\n")
 
 
@@ -439,7 +429,7 @@ def main():
     ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4, help="parallel part exports")
     a = ap.parse_args()
 
-    variants = [Variant(p, pr) for p in PROJECTS for pr in PRINTERS]
+    variants = [Variant(pr) for pr in PRINTERS]
     variants = [v for v in variants if all(re.search(o, v.key) for o in a.only)]
     if a.list:
         for v in variants:
@@ -454,7 +444,7 @@ def main():
     if problems:
         sys.exit("fit check failed:\n  " + "\n  ".join(problems))
 
-    needed = sorted({p for v in variants for plate in PROJECTS[v.project]["plates"][v.printer] for p in plate})
+    needed = sorted({p for v in variants for plate in PLATES[v.printer] for p in plate})
     log(f"exporting {', '.join(needed)} with build123d ({a.jobs} jobs)")
     with cf.ProcessPoolExecutor(a.jobs) as ex:
         bboxes = dict(ex.map(export_part, needed))
@@ -475,7 +465,7 @@ def main():
         old = DOCS / "build-summary.json"
         merged = {r["key"]: r for r in (json.loads(old.read_text()) if old.exists() else [])}
         merged.update({r["key"]: r for r in results})
-        order = [Variant(p, pr).key for p in PROJECTS for pr in PRINTERS]
+        order = [Variant(pr).key for pr in PRINTERS]
         write_summary([merged[k] for k in order if k in merged])
     if failed:
         sys.exit(f"{len(failed)} project(s) failed")
