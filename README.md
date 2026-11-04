@@ -32,7 +32,7 @@ tools/
 
 ## Print files
 
-A design's print files live in its GitHub release, `<design>-latest`, not in git. One design is one release and one MakerWorld listing. Each `.3mf` is an unsliced Bambu Studio project and one MakerWorld print profile, named:
+A design's print files live in its GitHub release, `<design>-latest`, not in git. One design is one release and one MakerWorld listing. Each `.3mf` is an unsliced Bambu Studio project and one MakerWorld print profile. (`streaming-lettering` hasn't moved yet and keeps its print files in `print-files/`.) Files are named:
 
 ```
 <design>[-<variant>][-<product>]-<printer>.3mf
