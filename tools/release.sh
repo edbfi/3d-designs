@@ -19,6 +19,10 @@ cd "$(git rev-parse --show-toplevel)"
 heading=$(sed -n '1s/^# *//p' "$design/README.md")
 [ -n "$heading" ] || die "$design/README.md must start with a '# ' title"
 repo=$(gh repo view --json nameWithOwner -q .nameWithOwner) || die "gh can't see this repo; run gh auth login"
+case $(git remote get-url origin) in  # the tag is handled on origin, the release with gh
+    *[:/]"$repo" | *[:/]"$repo.git") ;;
+    *) die "origin isn't $repo, the repo gh publishes to" ;;
+esac
 
 git fetch -q origin main
 [ -z "$(git status --porcelain --untracked-files=no)" ] || die "commit or stash your changes first"
@@ -55,7 +59,7 @@ fi
 rc=0
 git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null || rc=$?
 case $rc in
-    0) git push -q origin ":refs/tags/$tag" ;;
+    0) git push -q origin ":refs/tags/$tag" || die "can't delete tag $tag: rerun tools/release.sh $design" ;;
     2) ;;
     *) die "can't list the tags on origin" ;;
 esac
