@@ -1,24 +1,26 @@
 #!/usr/bin/env python3
 """Build ready-to-print Bambu Studio projects for the streaming-style lettering.
 
-For every text x design x printer setup this script
-  1. exports the print parts from streaming-lettering.scad with OpenSCAD,
-  2. lays them out on plates (one plate per printer job),
-  3. builds a Bambu Studio project with the Bambu Studio CLI (plates, names, filaments),
-  4. adds filament-swap pauses for the no-AMS versions,
-  5. slices every plate with the stock Bambu profiles to prove the project is printable,
-  6. writes the sliced .3mf, plate previews and a summary.
+For every product x printer this script
+  1. exports the print parts from streaming-lettering.scad with OpenSCAD, and checks each mesh
+     is a closed solid with no stray slivers,
+  2. lays them out on plates and builds one Bambu Studio project with the Bambu Studio CLI
+     (plate and object names, filaments, painted seams),
+  3. slices every plate with the stock Bambu profiles (Bambu PLA Basic) and fails on slicer
+     supports, on overhangs Bambu Studio would leave unsupported and on a wrong filament,
+  4. writes the unsliced project to build/release/ (the release assets, published by
+     ../tools/release.sh), and the templates, MakerWorld edition, renders and build summary.
 
 Usage:
-  python3 tools/build.py                   # everything
-  python3 tools/build.py --only serier --only "a1-mini$"   # filter variants (regex)
-  python3 tools/build.py --list            # show variants
-  python3 tools/build.py --renders-only    # just the preview renders in docs/images/renders
-  python3 tools/build.py --makerworld-only # just the MakerWorld edition in makerworld/
+  python3 tools/build.py --jobs 2                          # everything
+  python3 tools/build.py --jobs 2 --only stand --only 'a1-mini$'  # filter projects (regex on the key)
+  python3 tools/build.py --list                            # show projects
+  python3 tools/build.py --renders-only                    # just the preview renders in docs/images/renders
+  python3 tools/build.py --makerworld-only                 # just the MakerWorld edition in makerworld/
 
 Needs an OpenSCAD snapshot with the Manifold backend (2025 or newer) and Bambu Studio
-(tested with 02.08.02.61). On Linux, arm64 or amd64, the repo's ../tools/docker/ provides both
-in a container: `../tools/docker/run.sh python3 tools/build.py`.
+02.08.02.61; the repo's ../tools/docker/ provides both:
+`../tools/docker/run.sh python3 tools/build.py --jobs 2`.
 """
 
 import argparse
@@ -32,6 +34,7 @@ import struct
 import subprocess
 import sys
 import time
+import uuid
 import zipfile
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field, replace
@@ -41,11 +44,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SCAD = ROOT / "streaming-lettering.scad"
 BUILD = ROOT / "build"                           # scratch, git-ignored
-PRINT_FILES = ROOT / "print-files"               # ready-to-print Bambu projects, one folder per printer setup
+RELEASE = BUILD / "release"                      # release assets: the unsliced projects
 TEMPLATES = ROOT / "templates"                   # 1:1 wall templates for the loose letters
 DOCS = ROOT / "docs"
 MAKERWORLD = ROOT / "makerworld"                 # MakerWorld Parametric Model Maker edition of the .scad
-PLATE_IMAGES = DOCS / "images" / "plates"
 RENDER_IMAGES = DOCS / "images" / "renders"
 
 # Tool locations: macOS app bundles by default; override with environment variables
@@ -56,9 +58,11 @@ BAMBU = os.environ.get("BAMBU_STUDIO", "/Applications/BambuStudio.app/Contents/M
 PROFILES = Path(os.environ.get("BAMBU_PROFILES", "/Applications/BambuStudio.app/Contents/Resources/profiles/BBL"))
 
 RED, BLACK, GREY = "#E50914", "#161616", "#5A5A5A"
-# Texts to build, and the designs each one gets (None: every design)
-TEXTS = {"SERIER": None, "BOOKFLIX": ["stand", "open-frame"]}
-LAYER = 0.2  # layer height of the process preset used below; pauses are placed on this grid
+# Products, one project per printer each, and the texts each one holds. Two-colour plates are
+# made by the AMS: MakerWorld bans pause-based colour-swap profiles and single-colour copies of
+# multi-colour ones, so there are none (see docs/design-notes.md).
+PRODUCTS = {"stand": ["SERIER", "BOOKFLIX"], "plaque": ["SERIER"], "frame": ["SERIER"],
+            "open-frame": ["SERIER", "BOOKFLIX"]}
 
 # ----------------------------------------------------------------------------- printers
 
@@ -67,20 +71,10 @@ PRINTERS = {
         name="Bambu Lab A1 mini", bed=(180, 180), margin=6,
         machine="Bambu Lab A1 mini 0.4 nozzle", process="0.20mm Standard @BBL A1M",
         filament="Bambu PLA Basic @BBL A1M", size="small"),
-    "a2l-combo": dict(
-        name="Bambu Lab A2L Combo", bed=(330, 320), margin=8,
+    "a2l": dict(
+        name="Bambu Lab A2L", bed=(330, 320), margin=8,
         machine="Bambu Lab A2L 0.4 nozzle", process="0.20mm Standard @BBL A2L",
         filament="Bambu PLA Basic @BBL A2L 0.4 nozzle", size="large"),
-}
-
-# Print-file sets: how the colours are made, and for which printers.
-#   ams            the AMS lite switches colours (A1 mini + AMS lite, A2L Combo)
-#   single-colour  every plate is one colour; colours come from separate parts (no AMS)
-#   colour-swap    two-tone plates with a pause to swap filament by hand (no AMS)
-SETS = {
-    "ams": dict(printers=["a1-mini", "a2l-combo"], ams=True, label="with AMS lite"),
-    "single-colour": dict(printers=["a1-mini"], ams=False, label="no AMS, one colour per plate"),
-    "colour-swap": dict(printers=["a1-mini"], ams=False, label="no AMS, manual colour swap"),
 }
 
 # OpenSCAD parameters per size class and design (everything else uses the file's defaults).
@@ -123,46 +117,27 @@ class Part:
 @dataclass
 class Group:
     """One object on a plate (several parts are merged into one multi-colour object)."""
-    label: str
+    label: str                # object name in Bambu Studio
     parts: list
     print_params: dict = field(default_factory=dict)   # Bambu object settings
 
 
 @dataclass
 class PlateSpec:
-    name: str
+    name: str                 # [<GROUP> ]<part>[ (<note>)]; pack adds " <i> of <n>" if it overflows
     groups: list
-    pause_z: float = None     # top_z of the first layer after a manual filament swap
-    pause_colour: str = RED   # colour loaded at the pause (for Bambu Studio's preview)
-    split: int = 1            # spread the groups over this many plates, so printers can share the work
-    list_letters: bool = False  # name each plate after the letters on it
 
 
 @dataclass
-class Variant:
-    text: str
-    design: str
-    set: str                  # key of SETS
+class Project:
+    product: str              # key of PRODUCTS
     printer: str              # key of PRINTERS
     filaments: list           # colours per filament slot
     plates: list
-    notes: list
 
     @property
     def key(self):
-        return variant_key(self.text, self.design, self.set, self.printer)
-
-    @property
-    def ams(self):
-        return SETS[self.set]["ams"]
-
-    @property
-    def folder(self):
-        return f"{self.set}/{self.printer}"
-
-    @property
-    def label(self):
-        return f"{PRINTERS[self.printer]['name']}, {SETS[self.set]['label']}"
+        return project_key(self.product, self.printer)
 
 
 # Hidden side of each part in its print pose, where seams are painted (display front is -Y):
@@ -175,6 +150,11 @@ def scad_params(printer, design, text, **extra):
     p.update(design=design, text_string=text)
     p.update(extra)
     return p
+
+
+def plate_name(product, text, part):
+    """`<GROUP> <part>` when the product holds several texts, else `<Part>`."""
+    return f"{text} {part}" if len(PRODUCTS[product]) > 1 else part[0].upper() + part[1:]
 
 
 def frame_glyphs(text):
@@ -192,130 +172,49 @@ def letters_of(text):
     return [(i, c) for i, c in enumerate(text) if not c.isspace()]
 
 
-def split_balanced(items, n):
-    """Split items into n consecutive chunks of similar total width (letters stay in order)."""
-    total = sum(w for _, w in items)
-    chunks, cur, acc = [], [], 0.0
-    for it in items:
-        cur.append(it)
-        acc += it[1]
-        if len(chunks) < n - 1 and acc >= total * (len(chunks) + 1) / n:
-            chunks.append(cur)
-            cur = []
-    if cur:
-        chunks.append(cur)
-    return chunks
-
-
-def stand_two_part(text, p, notes_extra=()):
-    plates = [
-        PlateSpec("1 of 2 - Letters - red - face down (printer A)",
-                  [Group("Letters", [Part(f"{text}-stand-letters", dict(p, part="letters"), 1, DOWN)])]),
-        PlateSpec("2 of 2 - Plinth - black (printer B)",
-                  [Group("Plinth", [Part(f"{text}-stand-plinth", dict(p, part="base"), 2, BACK)])]),
-    ]
-    notes = ["Plate 1 in red, plate 2 in black: on two printers at once, or one after the other.",
-             "Push the letters' tabs into the plinth pockets (press fit, a drop of glue makes it permanent).",
-             *notes_extra]
-    return plates, notes
-
-
-def stand_variant(text, set_, printer):
-    # Always two parts: upright in one piece, the arms of E, F and T would need supports
+def stand_plates(text, printer):
+    # Two parts, one colour each: upright in one piece, the arms of E, F and T would need supports
     p = scad_params(printer, "stand", text)
-    if set_ == "ams":
-        plates, notes = stand_two_part(text, p, (
-            "The AMS loads red for plate 1 and black for plate 2, so neither plate changes colour.",))
-    elif set_ == "single-colour":
-        plates, notes = stand_two_part(text, p)
-    else:
-        plates, notes = stand_two_part(text, p, (
-            "No pause needed: each plate is one colour, so on one printer just change the spool between plates. "
-            "(The arched plinth has no single layer where black could end, so a one-piece swap isn't possible.)",))
-    return Variant(text, "stand", set_, printer, [RED, BLACK], plates, notes)
-
-
-def plaque_variant(text, set_, printer):
-    p = scad_params(printer, "plaque", text)
-    t = p.get("plaque_thickness", 4)
-    stand = Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 2, BACK)])
-    if set_ == "ams":
-        # the stand gets its own plate: next to the plaque it is black on every layer of the red
-        # letters, which would cost an extra colour change per layer
-        plates = [PlateSpec("1 of 2 - Plaque (black, red, grey)", [
-            Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 2, DOWN),
-                             Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1, DOWN),
-                             Part(f"{text}-plaque-track", dict(p, part="plaque_track"), 3, DOWN)])]),
-            PlateSpec("2 of 2 - Stand (black)", [stand])]
-        return Variant(text, "plaque", set_, printer, [RED, BLACK, GREY], plates, [
-            "Plate 1: the AMS does the black plaque, red letters and bar, and the grey bar track.",
-            "Plate 2: the black stand, on its own so the plaque needs no extra colour changes.",
-            "Slide the plaque into the stand's leaning slot."])
-    if set_ == "single-colour":
-        plates = [
-            PlateSpec("1 of 2 - Red pieces - letters and bar, face down (printer A)",
-                      [Group("Red pieces", [Part(f"{text}-plaque-inlays", dict(p, part="plaque_inlays"), 1, DOWN)])]),
-            PlateSpec("2 of 2 - Plaque with pockets + stand - black (printer B)",
-                      [Group("Plaque", [Part(f"{text}-plaque-body-inlay", dict(p, part="plaque_body_inlay"), 2, DOWN)]),
-                       stand]),
-        ]
-        return Variant(text, "plaque", set_, printer, [RED, BLACK], plates, [
-            "Plate 1 in red: the letters and the progress bar's fill as separate pieces, printed face down.",
-            "Plate 2 in black: the plaque with matching pockets, and its stand.",
-            "Press each red piece into its pocket (0.15 mm clearance per side; a drop of glue makes it permanent). "
-            "Slide the plaque into the stand's leaning slot."])
-    plates = [
-        PlateSpec(f"1 of 2 - Plaque - start black, PAUSE at {t + LAYER:.1f} mm, load red (printer A)",
-                  [Group("Plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 1, DOWN),
-                                    Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1, DOWN)])],
-                  pause_z=round(t + LAYER, 2)),
-        PlateSpec("2 of 2 - Stand - black (printer B)",
-                  [Group("Plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 1, BACK)])]),
+    return [
+        PlateSpec(plate_name("stand", text, "letters"),
+                  [Group(f"{text} letters", [Part(f"{text}-stand-letters", dict(p, part="letters"), 1, DOWN)])]),
+        PlateSpec(plate_name("stand", text, "plinth"),
+                  [Group(f"{text} plinth", [Part(f"{text}-stand-plinth", dict(p, part="base"), 2, BACK)])]),
     ]
-    return Variant(text, "plaque", set_, printer, [BLACK], plates, [
-        f"Plate 1 starts in black and pauses at {t + LAYER:.1f} mm: unload black, load red, resume.",
-        "The progress bar's track stays as a black groove; the filled part and the letters come out red.",
-        "Slide the plaque into the stand's leaning slot."])
 
 
-def letter_plates(text, set_, p):
-    """Loose-letter plates, shared by the letters and frame designs: (plates, filaments, notes).
+def plaque_plates(text, printer):
+    """The AMS plaque and its stand, then the inlay version for printers without an AMS. The
+    stand gets its own plate: next to the plaque it is black on every layer of the red letters,
+    which would cost an extra colour change per layer."""
+    p = scad_params(printer, "plaque", text)
+    return [
+        PlateSpec(plate_name("plaque", text, "plaque"), [
+            Group(f"{text} plaque", [Part(f"{text}-plaque-body", dict(p, part="plaque_body"), 2, DOWN),
+                                     Part(f"{text}-plaque-red", dict(p, part="plaque_red"), 1, DOWN),
+                                     Part(f"{text}-plaque-track", dict(p, part="plaque_track"), 3, DOWN)])]),
+        PlateSpec(plate_name("plaque", text, "plaque stand"),
+                  [Group(f"{text} plaque stand", [Part(f"{text}-plaque-stand", dict(p, part="plaque_stand"), 2, BACK)])]),
+        PlateSpec(plate_name("plaque", text, "inlay plaque (no AMS)"),
+                  [Group(f"{text} inlay plaque", [Part(f"{text}-plaque-body-inlay",
+                                                       dict(p, part="plaque_body_inlay"), 2, DOWN)])]),
+        PlateSpec(plate_name("plaque", text, "inlay letters (no AMS)"),
+                  [Group(f"{text} inlay letters", [Part(f"{text}-plaque-inlays",
+                                                        dict(p, part="plaque_inlays"), 1, DOWN)])]),
+    ]
 
-    Face down (letters_face_down in the .scad): the red face prints first, on the textured
-    plate, and the black body on top of it. Lightning infill: only the back needs holding up,
-    and lighter letters stay put on tape or putty."""
-    face = p.get("letters_face_depth", 3)
-    letters = letters_of(text)
+
+def letter_plates(product, text, p):
+    """The loose letters of a frame, face down (letters_face_down in the .scad): the red face
+    prints first, on the textured plate, and the black body on top of it. Lightning infill: only
+    the back needs holding up, and lighter letters stay put on tape or putty."""
     light = {"sparse_infill_pattern": "lightning"}
-    if set_ == "ams":
-        groups = [Group(f"Letter {i + 1} {c}", [
-            Part(f"{text}-letter-{i + 1}-{c}-face", dict(p, part="letter_face", letter_index=i), 1, DOWN),
-            Part(f"{text}-letter-{i + 1}-{c}-body", dict(p, part="letter_body", letter_index=i), 2, DOWN)],
-            print_params=light)
-            for i, c in letters]
-        return ([PlateSpec("Letters - red face down, black body", groups, list_letters=True)], [RED, BLACK],
-                ["Printed face down: the red face gets the textured plate's finish, then the AMS "
-                 "changes to black once for the body."])
-    groups = [Group(f"Letter {i + 1} {c}", [Part(f"{text}-letter-{i + 1}-{c}",
-                                            dict(p, part="letter", letter_index=i), 1, DOWN)],
-                    print_params=light)
-              for i, c in letters]
-    if set_ == "single-colour":
-        return ([PlateSpec("Letters - red", groups, split=2, list_letters=True)], [RED],
-                ["All-red letters, printed face down, split over two plates so two printers can "
-                 "share the work."])
-    pz = round(face + LAYER, 2)
-    return ([PlateSpec(f"Letters - start red, PAUSE at {pz:.1f} mm, load black", groups,
-                       pause_z=pz, pause_colour=BLACK, split=2, list_letters=True)], [RED],
-            [f"Each letter plate starts in red, face down, and pauses at {pz:.1f} mm: swap to black and "
-             "resume, for black letters with a red face.",
-             "The letters are split over two plates so two printers can share the work."])
-
-
-def letters_variant(text, set_, printer):
-    plates, filaments, notes = letter_plates(text, set_, scad_params(printer, "letters", text))
-    hang = "Hang them with the paper template in templates/ so the arc lines up."
-    return Variant(text, "letters", set_, printer, filaments, plates, notes + [hang])
+    groups = [Group(f"{text} letter {i + 1} {c}", [
+        Part(f"{text}-letter-{i + 1}-{c}-face", dict(p, part="letter_face", letter_index=i), 1, DOWN),
+        Part(f"{text}-letter-{i + 1}-{c}-body", dict(p, part="letter_body", letter_index=i), 2, DOWN)],
+        print_params=light)
+        for i, c in letters_of(text)]
+    return [PlateSpec(plate_name(product, text, "letters"), groups)]
 
 
 @cache
@@ -346,45 +245,40 @@ def frame_sections(text, size):
     raise RuntimeError(f"{text}: the {size} frame doesn't fit the bed in as many sections as its letters allow")
 
 
-def frame_variant(text, set_, printer, design):
-    # The letters print exactly as in the letters design; the frame is plain black, one
-    # section per plate, printed back down.
+def frame_plates(text, printer, design):
+    """The loose letters, then the plain black frame, one section per plate, printed back down."""
+    if design == "open-frame" and not open_frame_takes(text):
+        raise RuntimeError(f"{text}: the open frame can't hold this text; use the frame")
     n = frame_sections(text, PRINTERS[printer]["size"])
     p = scad_params(printer, design, text, frame_sections=n)
-    plates, _, notes = letter_plates(text, set_, p)
-    plates += [PlateSpec(f"Frame {k + 1} of {n} - black" if n > 1 else "Frame - black",
-                         [Group(f"Frame section {k + 1}", [Part(f"{text}-{design}-section-{k + 1}",
-                                                              dict(p, part="frame_section", frame_index=k), 2, DOWN)])])
-               for k in range(n)]
-    return Variant(text, design, set_, printer, [RED, BLACK], plates, notes + [
-        f"The frame is black, in {n} sections that dovetail together, one per plate." if n > 1
-        else "The frame is black, in one piece.",
-        "Glue each letter into its pocket in the frame, then pin the frame to the board through the holes "
-        "in its border."])
+    return letter_plates(design, text, p) + [
+        PlateSpec(plate_name(design, text, f"frame {k + 1} of {n}" if n > 1 else "frame"),
+                  [Group(f"{text} frame section {k + 1}", [Part(f"{text}-{design}-section-{k + 1}",
+                                                                dict(p, part="frame_section", frame_index=k), 2, DOWN)])])
+        for k in range(n)]
 
 
-DESIGNS = {"stand": stand_variant, "plaque": plaque_variant, "letters": letters_variant,
-           "frame": partial(frame_variant, design="frame"),
-           "open-frame": partial(frame_variant, design="open-frame")}
+# Per product: the plates of one text, and the colour of each filament slot.
+PRODUCT_PLATES = {"stand": (stand_plates, [RED, BLACK]), "plaque": (plaque_plates, [RED, BLACK, GREY]),
+           "frame": (partial(frame_plates, design="frame"), [RED, BLACK]),
+           "open-frame": (partial(frame_plates, design="open-frame"), [RED, BLACK])}
 
 
-def variant_key(text, design, set_, printer):
-    return f"{text.lower()}-{design}-{set_}-{printer}"
+def make_project(product, printer):
+    plates_of, filaments = PRODUCT_PLATES[product]
+    return Project(product, printer, filaments,
+                   [spec for text in PRODUCTS[product] for spec in plates_of(text, printer)])
 
 
-def variant_makers():
-    """(key, maker) for every variant, in build order. The makers run only for the variants
-    that are built: a frame's maker measures the frame with OpenSCAD. Each text gets the
-    designs it takes (takes)."""
-    return [(variant_key(text, design, set_, printer), partial(make, text, set_, printer))
-            for text in TEXTS for set_, st in SETS.items() for printer in st["printers"]
-            for design, make in DESIGNS.items() if takes(text, design)]
+def project_key(product, printer):
+    return f"streaming-lettering-{product}-{printer}"
 
 
-def takes(text, design):
-    """Whether this text is built in this design (TEXTS, and what the open frame can hold)."""
-    wanted = TEXTS.get(text)
-    return (wanted is None or design in wanted) and (design != "open-frame" or open_frame_takes(text))
+def project_makers():
+    """(key, maker) for every project, in build order. The makers run only for the projects
+    that are built: a frame's maker measures the frame with OpenSCAD."""
+    return [(project_key(product, printer), partial(make_project, product, printer))
+            for product in PRODUCTS for printer in PRINTERS]
 
 
 # ----------------------------------------------------------------------------- helpers
@@ -516,7 +410,7 @@ def resolve_preset(kind, name):
     return out
 
 
-def flat_presets(v: Variant):
+def flat_presets(v: Project):
     """Write fully resolved presets (the CLI does not resolve includes on its own)."""
     pr = PRINTERS[v.printer]
     colours = v.filaments
@@ -547,7 +441,7 @@ def flat_presets(v: Variant):
 TOWER = (45, 55)  # reserved prime-tower corner (x, y) on AMS plates that change colour
 
 
-def pack(v: Variant):
+def pack(v: Project):
     """Shelf-pack each plate's groups; split into more plates when they do not fit.
     Returns [(PlateSpec, [(group, x_center, y_center)], tower_xy)]."""
     pr = PRINTERS[v.printer]
@@ -558,7 +452,7 @@ def pack(v: Variant):
     for spec in v.plates:
         # only plates that change colour could need the tower
         colours = {part.filament for g in spec.groups for part in g.parts}
-        tower = (W - m - TOWER[0] + 5, D - m - TOWER[1] + 5) if v.ams and len(colours) > 1 else None
+        tower = (W - m - TOWER[0] + 5, D - m - TOWER[1] + 5) if len(colours) > 1 else None
         items = []
         for g in spec.groups:
             lo, hi = group_bbox(g)
@@ -566,27 +460,16 @@ def pack(v: Variant):
                 turn_group(g, 45)  # too long to lie straight: diagonally across the bed
                 lo, hi = group_bbox(g)
             items.append((g, hi[0] - lo[0], hi[1] - lo[1]))
-        chunks = [items]
-        if spec.split > 1:
-            chunks = [[it for it, _ in c] for c in split_balanced([(it, it[1]) for it in items], spec.split)]
-        pending = list(chunks)
-        plate_sets = []
+        pending, plate_sets = items, []
         while pending:
-            chunk = pending.pop(0)
-            placed, overflow = shelf(chunk, W, D, m, gap, tower)
-            if overflow:
-                if not placed:
-                    raise RuntimeError(f"{v.key}: {overflow[0][0].label} does not fit the bed")
-                pending.insert(0, overflow)
+            placed, pending = shelf(pending, W, D, m, gap, tower)
+            if not placed:
+                raise RuntimeError(f"{v.key}: {pending[0][0].label} does not fit the bed")
             plate_sets.append(placed)
         n = len(plate_sets)
+        part, note = re.fullmatch(r"(.*?)( \(.*\))?", spec.name).groups()
         for k, placed in enumerate(plate_sets):
-            name = spec.name
-            if spec.list_letters:  # "Letters - ..." -> "Letters S E R - ..."
-                head, _, tail = name.partition(" - ")
-                name = f"{head} {' '.join(g.label.split()[-1] for g, _, _ in placed)} - {tail}"
-            if n > 1:
-                name = f"{k + 1} of {n} - {name}"
+            name = f"{part} {k + 1} of {n}{note or ''}" if n > 1 else spec.name
             result.append((replace(spec, name=name), placed, tower))
     return result
 
@@ -665,7 +548,7 @@ def run_bambu(args, cwd: Path, logname: str):
     return r.returncode, info
 
 
-def assemble_json(v: Variant, layout):
+def assemble_json(v: Project, layout):
     plates = []
     for spec, placed, _ in layout:
         objs, assembled = [], []
@@ -686,9 +569,8 @@ def assemble_json(v: Variant, layout):
     return {"plates": plates}
 
 
-def patch_project(src: Path, dst: Path, v: Variant, layout):
-    """Name plates and objects, pin single-part objects to their filament,
-    add pauses and place prime towers."""
+def patch_project(src: Path, dst: Path, v: Project, layout):
+    """Name plates and objects, pin single-part objects to their filament and place prime towers."""
     with zipfile.ZipFile(src) as zin:
         files = {n: zin.read(n) for n in zin.namelist()}
 
@@ -706,11 +588,14 @@ def patch_project(src: Path, dst: Path, v: Variant, layout):
         if not hits:
             raise RuntimeError(f"{v.key}: unknown object with parts {names}")
         group = hits[0][0]
-        set_meta(obj, "name", f"{v.text} {group.label}")
+        set_meta(obj, "name", group.label)
         if len(parts) == 1:  # Bambu keeps part filaments only on multi-part objects
             set_meta(obj, "extruder", str(hits[0][1].filament))
     for plate, (spec, _, _) in zip(root.findall("plate"), layout):
         set_meta(plate, "plater_name", spec.name)
+    for obj in root.findall("object"):  # Bambu Studio draws these at random: fix them, so a rebuild is identical
+        for pt in obj.findall("part"):
+            pt.set("uuid", str(uuid.uuid5(uuid.NAMESPACE_URL, f"{v.key}/{obj.get('id')}/{pt.get('id')}")))
     files["Metadata/model_settings.config"] = (
         '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root, encoding="unicode")).encode()
     painted = paint_seams(files, root, by_part)
@@ -725,17 +610,6 @@ def patch_project(src: Path, dst: Path, v: Variant, layout):
         ps["wipe_tower_y"] = [f"{(t or (0, 0))[1]:.1f}" for t in towers]
     ps["filament_colour"] = list(v.filaments)
     files["Metadata/project_settings.config"] = json.dumps(ps, indent=4).encode()
-
-    pauses = [(i + 1, spec) for i, (spec, _, _) in enumerate(layout) if spec.pause_z]
-    if pauses:
-        xml = ['<?xml version="1.0" encoding="utf-8"?>', "<custom_gcodes_per_layer>"]
-        for pid, spec in pauses:
-            xml += ["<plate>", f'<plate_info id="{pid}"/>',
-                    f'<layer top_z="{spec.pause_z}" type="1" extruder="1" color="{spec.pause_colour}" '
-                    'extra="" gcode="M400 U1"/>',
-                    '<mode value="SingleExtruder"/>', "</plate>"]
-        xml.append("</custom_gcodes_per_layer>")
-        files["Metadata/custom_gcode_per_layer.xml"] = ("\n".join(xml) + "\n").encode()
 
     with zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as zout:
         for n, b in files.items():
@@ -802,22 +676,6 @@ def paint_object(text, object_id, direction, min_cos=0.6):
     return text[:m.start()] + block + text[m.end():]
 
 
-def name_plates(path: Path, layout):
-    """Write plate names into a (sliced) project; they are display metadata only."""
-    with zipfile.ZipFile(path) as zin:
-        files = {n: zin.read(n) for n in zin.namelist()}
-    root = ET.fromstring(files["Metadata/model_settings.config"])
-    for plate, (spec, _, _) in zip(root.findall("plate"), layout):
-        set_meta(plate, "plater_name", spec.name)
-    files["Metadata/model_settings.config"] = (
-        '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root, encoding="unicode")).encode()
-    tmp = path.with_suffix(".tmp")
-    with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zout:
-        for n, b in files.items():
-            zout.writestr(n, b)
-    tmp.replace(path)
-
-
 def set_meta(elem, key, value):
     """Set <metadata key=.. value=..> on an element (first one wins, added if missing)."""
     for m in elem.findall("metadata"):
@@ -832,25 +690,26 @@ def set_meta(elem, key, value):
 BAMBU_NAME_FORBIDDEN = set('<>:/\\|?*"')
 
 
-def check_project(final: Path, v: Variant, layout):
-    """The sliced project must use the intended filament(s) on every plate, keep plate names and
-    name nothing in a way Bambu Studio rejects."""
+def check_project(project: Path, final: Path, layout):
+    """The released project must keep its plate names and name nothing in a way Bambu Studio
+    rejects; sliced, it must use the intended filament(s) on every plate."""
     problems = []
+    with zipfile.ZipFile(project) as z:
+        ms = ET.fromstring(z.read("Metadata/model_settings.config"))
     with zipfile.ZipFile(final) as z:
         info = ET.fromstring(z.read("Metadata/slice_info.config"))
-        ms = ET.fromstring(z.read("Metadata/model_settings.config"))
     names = [next((m.get("value") for m in p.findall("metadata") if m.get("key") == "plater_name"), "")
              for p in ms.findall("plate")]
     problems += [f"name {n!r}: Bambu Studio doesn't allow {''.join(sorted(BAMBU_NAME_FORBIDDEN & set(n)))}"
                  for n in names + [m.get("value") for m in ms.iter("metadata") if m.get("key") == "name"]
                  if BAMBU_NAME_FORBIDDEN & set(n)]
-    for i, (plate, (spec, placed, _)) in enumerate(zip(info.findall("plate"), layout), start=1):
+    if names != [spec.name for spec, _, _ in layout]:
+        problems.append(f"plate names {names}, expected {[spec.name for spec, _, _ in layout]}")
+    for i, (plate, (_, placed, _)) in enumerate(zip(info.findall("plate"), layout), start=1):
         want = sorted({part.filament for g, _, _ in placed for part in g.parts})
         got = sorted(int(f.get("id")) for f in plate.findall("filament") if float(f.get("used_g", 0)) > 0)
         if got != want:
             problems.append(f"plate {i}: filaments {got}, expected {want}")
-        if names[i - 1] != spec.name:
-            problems.append(f"plate {i}: name {names[i - 1]!r}, expected {spec.name!r}")
     return problems
 
 
@@ -864,30 +723,19 @@ def check_overhangs(info):
 
 
 def check_gcode(final: Path, layout):
-    """Every pause must land at the start of its layer; start G-code must be the real one; no
-    slicer supports."""
+    """Start G-code must be the real one; no slicer supports."""
     problems = []
     with zipfile.ZipFile(final) as z:
-        for i, (spec, _, _) in enumerate(layout, start=1):
+        for i in range(1, len(layout) + 1):
             g = z.read(f"Metadata/plate_{i}.gcode").decode(errors="replace")
             if "M1002 gcode_claim_action" not in g:
                 problems.append(f"plate {i}: Bambu start G-code missing")
             if "; FEATURE: Support" in g:
                 problems.append(f"plate {i}: slicer supports (design the part to print without them)")
-            z_now, found = None, []
-            for line in g.splitlines():
-                if line.startswith("; Z_HEIGHT:"):
-                    z_now = float(line.split(":")[1])
-                elif line.startswith("M400 U1") and z_now is not None:
-                    found.append(round(z_now, 2))
-            expected = [spec.pause_z] if spec.pause_z else []
-            if found != expected:
-                problems.append(f"plate {i}: expected pauses {expected}, found {found}")
     return problems
 
 
-def build_variant(v: Variant, out_dir: Path, keep_unsliced: bool):
-    pr = PRINTERS[v.printer]
+def build_project(v: Project):
     work = BUILD / "work" / v.key
     if work.exists():
         shutil.rmtree(work)
@@ -918,21 +766,15 @@ def build_variant(v: Variant, out_dir: Path, keep_unsliced: bool):
     if rc != 0 or info.get("return_code") != 0 or not final.exists():
         warn = [p.get("warning_message") for p in info.get("sliced_plates", []) if p.get("warning_message")]
         raise RuntimeError(f"{v.key}: slicing failed ({rc}) {info.get('error_string')} {warn}")
-    name_plates(final, layout)  # the CLI drops plate names when it slices
-    problems = check_gcode(final, layout) + check_project(final, v, layout) + check_overhangs(info)
+    problems = (check_gcode(final, layout) + check_project(work / "project.3mf", final, layout)
+                + check_overhangs(info))
     if problems:
         raise RuntimeError(f"{v.key}: " + "; ".join(problems))
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copy(final, out_dir / f"{v.key}.3mf")
-    if keep_unsliced:
-        shutil.copy(work / "project.3mf", out_dir / f"{v.key}-unsliced.3mf")
-    PLATE_IMAGES.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(final) as z:
-        for i in range(1, len(layout) + 1):
-            name = f"Metadata/plate_{i}.png"
-            if name in z.namelist():
-                (PLATE_IMAGES / f"{v.key}-plate-{i}.png").write_bytes(z.read(name))
+    # Ship the checked project unsliced: MakerWorld and Bambu Studio slice it for the printer
+    # they print on, and the G-code would be most of the file.
+    RELEASE.mkdir(parents=True, exist_ok=True)
+    shutil.copy(work / "project.3mf", RELEASE / f"{v.key}.3mf")
 
     plates = []
     stats = plate_stats(final)
@@ -940,12 +782,11 @@ def build_variant(v: Variant, out_dir: Path, keep_unsliced: bool):
         plates.append(dict(
             plate=i, name=spec.name, minutes=round(seconds / 60), purge_g=purge_g,
             grams={f"{f['id']}": round(f["total_used_g"], 1) for f in p.get("filaments", [])},
-            colour_changes=p.get("filament_change_times", 0), pause_z=spec.pause_z,
+            colour_changes=p.get("filament_change_times", 0),
             objects=[g.label for g, _, _ in placed],
             warning=p.get("warning_message", "")))
-    return dict(key=v.key, text=v.text, design=v.design, set=v.set, printer=v.printer,
-                printer_label=v.label, filaments=v.filaments, notes=v.notes, plates=plates,
-                file=f"{v.folder}/{v.key}.3mf")
+    return dict(key=v.key, product=v.product, printer=v.printer, printer_label=PRINTERS[v.printer]["name"],
+                filaments=v.filaments, plates=plates, file=f"{v.key}.3mf")
 
 
 PURGE_G_PER_MM = 3.14159 * 0.875 ** 2 * 1.26 / 1000  # 1.75 mm PLA at Bambu's 1.26 g/cm3
@@ -966,14 +807,14 @@ def plate_stats(final: Path):
     return out
 
 
-def export_templates(texts, workers):
-    """1:1 paper placement templates for the loose letters (SVG, mm units)."""
+def export_templates(workers):
+    """1:1 paper placement templates for the frame's letters hung loose (SVG, mm units)."""
     TEMPLATES.mkdir(parents=True, exist_ok=True)
     jobs = []
-    for text in texts:
-        for size, label in (("small", "a1-mini"), ("large", "a2l-combo")):
-            p = dict(SIZES[size]["letters"], design="letters", text_string=text, part="template")
-            out = TEMPLATES / f"{text.lower()}-letters-template-{label}.svg"
+    for text in PRODUCTS["frame"]:
+        for printer, pr in PRINTERS.items():
+            p = dict(SIZES[pr["size"]]["letters"], design="letters", text_string=text, part="template")
+            out = TEMPLATES / f"{text.lower()}-letters-template-{printer}.svg"
             args = [OPENSCAD, "-o", str(out)] + sum((["-D", f"{k}={fmt_param(v)}"] for k, v in p.items()), []) + [str(SCAD)]
             jobs.append((args, out))
     with cf.ThreadPoolExecutor(workers) as ex:
@@ -1050,13 +891,14 @@ RENDER_CAMERAS = {"stand": "0,0,0,74,0,-22,0", "plaque": "0,0,0,80,0,-20,0", "le
                   "frame": "0,0,0,82,0,-16,0", "open-frame": "0,0,0,82,0,-16,0"}
 
 
-def export_renders(texts, workers):
-    """Coloured display renders (A1 mini sizes) for the docs."""
+def export_renders(workers):
+    """Coloured display renders (A1 mini sizes) for the docs: every text of every product, and
+    the frame's letters hung loose."""
     RENDER_IMAGES.mkdir(parents=True, exist_ok=True)
     jobs = []
-    for text in texts:
+    for text in dict.fromkeys(t for texts in PRODUCTS.values() for t in texts):
         for design, cam in RENDER_CAMERAS.items():
-            if not takes(text, design):
+            if text not in PRODUCTS.get(design, PRODUCTS["frame"]):
                 continue
             p = dict(SIZES["small"][design], design=design, text_string=text, part="display")
             out = RENDER_IMAGES / f"{text.lower()}-{design}.png"
@@ -1079,95 +921,89 @@ def purge_text(grams):
 
 def write_summary(results):
     lines = ["# Build summary", "",
-             "Generated by `tools/build.py`. Every project was sliced with the stock Bambu Studio",
-             "profiles (0.20 mm Standard, Bambu PLA Basic, textured PEI plate) and checked: real",
-             "printer start G-code, the intended filament on every plate, pauses exactly where the",
-             "colour changes, no stray sliver pieces, every part a closed solid, and no supports",
-             "and no overhang Bambu Studio would leave unsupported.", "",
-             "Times and weights are Bambu Studio's estimates. The time is the whole print: the",
-             "printer's warm-up and calibration and every AMS colour change included. Filament is what",
-             "ends up in the print; purge is what the AMS flushes out at colour changes. On pause",
-             "plates the weight is the total for both colours.", "",
-             "| Project | Printer | Plates | Print time | Filament | Purge |", "|---|---|---|---|---|---|"]
+             "Generated by `tools/build.py`. The released projects are unsliced; the build slices each",
+             "one with the stock Bambu Studio profiles (0.20 mm Standard, Bambu PLA Basic, textured",
+             "PEI plate) to check it: real printer start G-code, the intended filament on every plate,",
+             "every part a closed solid with no stray sliver pieces, and no supports and no overhang",
+             "Bambu Studio would leave unsupported.", "",
+             "Times and weights are Bambu Studio's estimates per plate. The time is the whole print:",
+             "the printer's warm-up and calibration and every AMS colour change included. Filament is",
+             "what ends up in the print; purge is what the AMS flushes out at colour changes.", "",
+             "| File | Printer | Plate | Print time | Filament | Purge |", "|---|---|---|---|---|---|"]
     for r in results:
-        mins = sum(p["minutes"] for p in r["plates"])
-        grams = {}
+        file, printer = f"`{r['file']}`", r["printer_label"]
         for p in r["plates"]:
-            for k, g in p["grams"].items():
-                grams[k] = grams.get(k, 0) + g
-        paused = any(p["pause_z"] for p in r["plates"])
-        fil = ", ".join(f"{COLOUR_NAMES.get(r['filaments'][int(k) - 1], r['filaments'][int(k) - 1])} {g:.0f} g"
-                        for k, g in sorted(grams.items()) if g > 0)
-        if paused:
-            fil = f"{sum(grams.values()):.0f} g red + black (manual swap)"
-        purge = sum(p.get("purge_g", 0) for p in r["plates"])
-        lines.append(f"| [`{r['file']}`](../print-files/{r['file']}) | {r['printer_label']} | {len(r['plates'])} | "
-                     f"{mins // 60} h {mins % 60:02d} min | {fil} | {purge_text(purge)} |")
-    lines += ["", "Plates of one project can run on different printers at the same time,",
-              "so the wall-clock time with two A1 minis is the longest plate, not the total.",
-              "", "## Plates", ""]
-    for r in results:
-        lines += [f"### {r['file']}", ""]
-        for n in r["notes"]:
-            lines.append(f"- {n}")
-        lines.append("")
-        for p in r["plates"]:
-            extra = f", pause at {p['pause_z']} mm" if p["pause_z"] else ""
-            cc = f", {p['colour_changes']} AMS changes" if p["colour_changes"] else ""
-            lines.append(f"- Plate {p['plate']}: **{p['name']}**: {p['minutes']} min{extra}{cc}")
-            if p["warning"]:
-                lines.append(f"  - slicer note: {p['warning'].strip()}")
-        lines.append("")
+            fil = ", ".join(f"{COLOUR_NAMES.get(r['filaments'][int(k) - 1], r['filaments'][int(k) - 1])} {g:.0f} g"
+                            for k, g in sorted(p["grams"].items()) if g > 0)
+            lines.append(f"| {file} | {printer} | {p['plate']}. {p['name']} | "
+                         f"{p['minutes'] // 60} h {p['minutes'] % 60:02d} min | {fil} | {purge_text(p['purge_g'])} |")
+            file = printer = ""  # once per project
     DOCS.mkdir(parents=True, exist_ok=True)
     (DOCS / "build-summary.md").write_text("\n".join(lines) + "\n")
     (DOCS / "build-summary.json").write_text(json.dumps(results, indent=1) + "\n")
 
 
+def steady(old, new):
+    """Bambu Studio's toolpaths vary a little from slice to slice of the same project, so its
+    estimates move by seconds (under 2 %) and hundredths of a gram, and their rounding can
+    flip. Keep the committed figures when a rebuild moves them by no more than that, so an
+    unchanged design rebuilds to the same summary: ../tools/release.sh refuses to publish if
+    it changes."""
+    if old is None or [p["name"] for p in old["plates"]] != [p["name"] for p in new["plates"]]:
+        return new
+    for o, n in zip(old["plates"], new["plates"]):
+        if (abs(o["minutes"] - n["minutes"]) > max(1, o["minutes"] // 50)
+                or abs(o["purge_g"] - n["purge_g"]) > 0.2 or o["grams"].keys() != n["grams"].keys()
+                or any(abs(o["grams"][k] - n["grams"][k]) > 0.2 for k in o["grams"])):
+            return new
+    return dict(new, plates=[dict(n, minutes=o["minutes"], purge_g=o["purge_g"], grams=o["grams"])
+                             for o, n in zip(old["plates"], new["plates"])])
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--only", action="append", default=[], help="build variants whose key matches this regex")
+    ap.add_argument("--only", action="append", default=[], help="build projects whose key matches this regex")
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4, help="parallel OpenSCAD exports")
-    ap.add_argument("--keep-unsliced", action="store_true", help="also write the unsliced project")
     ap.add_argument("--renders-only", action="store_true", help="only refresh docs/images/renders")
     ap.add_argument("--no-renders", action="store_true", help="skip the preview renders")
     ap.add_argument("--makerworld-only", action="store_true", help="only write makerworld/ (the MakerWorld edition)")
     a = ap.parse_args()
     if a.renders_only:
-        export_renders(TEXTS, a.jobs)
+        export_renders(a.jobs)
         return
     if a.makerworld_only:
         log(f"MakerWorld edition: {export_makerworld_edition().relative_to(ROOT)}")
         return
 
-    makers = [(k, m) for k, m in variant_makers() if all(re.search(o, k) for o in a.only)]
+    makers = [(k, m) for k, m in project_makers() if all(re.search(o, k) for o in a.only)]
     if a.list:
         for k, _ in makers:
             print(k)
         return
     if not makers:
-        sys.exit("no variant matches")
-    variants = [m() for _, m in makers]
+        sys.exit("no project matches")
+    projects = [m() for _, m in makers]
 
     # 1. export all parts in parallel
-    parts = [(v, part) for v in variants for s in v.plates for g in s.groups for part in g.parts]
+    parts = [(v, part) for v in projects for s in v.plates for g in s.groups for part in g.parts]
     log(f"exporting {len(parts)} parts with OpenSCAD ({a.jobs} jobs)")
     with cf.ThreadPoolExecutor(a.jobs) as ex:
         futs = {ex.submit(export_stl, part, BUILD / "stl" / v.key): part for v, part in parts}
         for f in cf.as_completed(futs):
             f.result()
     log("templates")
-    export_templates(sorted({v.text for v in variants if v.design == "letters"}), a.jobs)
+    export_templates(a.jobs)
     log(f"MakerWorld edition: {export_makerworld_edition().relative_to(ROOT)}")
     if not a.no_renders:
         log("preview renders")
-        export_renders(sorted({v.text for v in variants}), a.jobs)
+        export_renders(a.jobs)
 
     # 2. Bambu projects (sequential: the CLI shares its data directory)
     results, failed = [], []
-    for v in variants:
+    for v in projects:
         try:
-            r = build_variant(v, PRINT_FILES / v.folder, a.keep_unsliced)
+            r = build_project(v)
             results.append(r)
             log(f"ok   {v.key}: " + ", ".join(f"p{p['plate']} {p['minutes']} min" for p in r["plates"]))
         except Exception as e:  # keep going, report at the end
@@ -1176,11 +1012,11 @@ def main():
     if results:  # merge with earlier runs so a partial rebuild keeps the full summary
         old = DOCS / "build-summary.json"
         merged = {r["key"]: r for r in (json.loads(old.read_text()) if old.exists() else [])}
-        merged.update({r["key"]: r for r in results})
-        order = [k for k, _ in variant_makers()]
+        merged.update({r["key"]: steady(merged.get(r["key"]), r) for r in results})
+        order = [k for k, _ in project_makers()]
         write_summary([merged[k] for k in order if k in merged])
     if failed:
-        sys.exit(f"{len(failed)} variant(s) failed")
+        sys.exit(f"{len(failed)} project(s) failed")
 
 
 if __name__ == "__main__":

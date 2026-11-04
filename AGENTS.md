@@ -69,8 +69,7 @@ Each design has one source in one toolchain. Never keep the same geometry in two
   `docs/build-summary.*` and `docs/images/` together with the source change that caused them.
 - Print files and STEP exports never go in git: the build writes them to `build/release/`,
   named as in [`README.md`](README.md#print-files). After the PR merges, publish them from
-  main with `tools/release.sh <design>`. `streaming-lettering` hasn't moved yet: it still
-  writes and commits `print-files/`.
+  main with `tools/release.sh <design>`.
 - New variants of a design are entries in its build script and plates in its existing files,
   not new folders or releases. Only a variant for different hardware gets files of its own
   (see [`README.md`](README.md#print-files)).
