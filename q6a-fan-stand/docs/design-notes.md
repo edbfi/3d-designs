@@ -49,8 +49,6 @@ The build checks every printed part against these as keep-out boxes (`keepouts()
 
 ## Concept
 
-Three council members (Claude Opus 5.5, GPT 6.1 Sol, Gemini 4 Argon) proposed concepts independently. The synthesis settled on:
-
 - **Flat, pushing down onto the fins.** The grooves run lengthwise and are open at both ends, so air pushed down leaves along them at both ends. Pulling would lift air off the case through the hub's dead zone and draw back in warm air. Standing the case on edge leaves the header and HDMI sides fighting for the floor.
 - **A gap under the fan instead of a duct.** Over a 13 mm gap, the air spreads past the motor hub before it reaches the fins.
 - **Rubber-mounted fan and PETG parts.**

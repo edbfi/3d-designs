@@ -16,18 +16,34 @@ Every design has its own folder, and they share one build toolchain:
 ```
 tools/
 ├── docker/          # the pinned build toolchain (OpenSCAD, build123d, Bambu Studio) every design builds in
-└── openscad         # OpenSCAD from that toolchain, for AI agents' OpenSCAD tooling
+├── openscad         # OpenSCAD from that toolchain, for AI agents' OpenSCAD tooling
+└── release.sh       # publishes a design's print files as its GitHub release
 <design>/
 ├── README.md        # what to print, assembly, customising
 ├── <design>.py      # the parametric source: build123d,
 │   or <design>.scad #   or OpenSCAD where MakerWorld's customiser should offer it
 ├── fonts/           # bundled fonts with their licences, if any
 ├── docs/            # design notes; build summary and images (generated)
-├── print-files/     # ready-to-print Bambu Studio projects (generated)
 ├── templates/       # paper templates, if any (generated)
-├── makerworld/      # MakerWorld edition of a .scad, or a build123d design's STEP (generated)
-└── tools/           # the build script that generates the rest
+├── makerworld/      # MakerWorld edition of a .scad, if any (generated)
+├── tools/           # the build script that generates the rest
+└── build/           # scratch, not in git; build/release/ holds the print files
 ```
+
+## Print files
+
+A design's print files live in its GitHub release, `<design>-latest`, not in git. One design is one release and one MakerWorld listing. Each `.3mf` is an unsliced Bambu Studio project and one MakerWorld print profile, named:
+
+```
+<design>[-<variant>][-<product>]-<printer>.3mf
+<design>[-<variant>].step
+```
+
+- **product**: one thing printed and photographed as one print profile, such as `stand` or `frame`. Left out when a design has only one.
+- **printer**: the Bambu printer the project targets, such as `a1-mini` or `a2l`. A bigger printer gets its own file only when it gets bigger parts or a different plate layout.
+- **variant**: only for a variant that fits different hardware, such as another fan or case. Every other variant, such as another word or an optional part, is a plate in the same file.
+
+Plates are named `[<VARIANT> ]<part>[ <i> of <n>][ (<note>)]`, for example `SERIER letters` or `Fit test (print first)`. A fit test is always plate 1.
 
 ## Licence
 

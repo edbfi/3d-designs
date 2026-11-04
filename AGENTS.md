@@ -1,6 +1,7 @@
 # 3d-designs
 
-Parametric 3D-print designs with ready-to-print Bambu Studio projects, one folder per design.
+Parametric 3D-print designs with ready-to-print Bambu Studio projects, one folder per design
+and one GitHub release per design.
 `CLAUDE.md` is a symlink to this file.
 
 ## Where to look
@@ -9,13 +10,14 @@ One home per topic. Read it there, change it there, link to it from anywhere els
 
 | Topic | Home |
 |---|---|
-| What the repo is, the design list, the folder layout, the licence | [`README.md`](README.md) |
+| What the repo is, the design list, the folder layout, print-file naming and releases, the licence | [`README.md`](README.md) |
 | What to print, assembly, print settings, customising, rebuilding, MakerWorld and licence notes, written for someone printing | `<design>/README.md` |
 | Measurements, experiments and decisions, with numbers | `<design>/docs/design-notes.md` |
 | Current times, grams and plate counts (generated) | `<design>/docs/build-summary.*` |
 | How the model and its build work, and why | the source: its comments, docstrings and `<design>/tools/build.py` |
 | The pinned build toolchain: OpenSCAD, build123d and Bambu Studio in Docker, shared by every design | [`tools/docker/`](tools/docker) |
 | OpenSCAD for the `openscad` MCP server | [`tools/openscad`](tools/openscad) |
+| Publishing a design's release | [`tools/release.sh`](tools/release.sh) |
 | Agent setup: the text-to-cad plugin for Claude Code; the `openscad` MCP server for Claude Code, Codex and OpenCode | [`.claude/settings.json`](.claude/settings.json), [`.mcp.json`](.mcp.json), [`.codex/config.toml`](.codex/config.toml), [`opencode.json`](opencode.json) |
 | Worked examples of all of the above: OpenSCAD with a MakerWorld edition, and build123d | [`streaming-lettering/`](streaming-lettering), [`q6a-fan-stand/`](q6a-fan-stand) |
 
@@ -61,10 +63,15 @@ Each design has one source in one toolchain. Never keep the same geometry in two
 - Check the exit status: successful variants are written even when others fail.
 - Every design builds in the one image in `tools/docker/`. When a design needs a new tool, add it
   there, not in a per-design image; Python packages go in its `requirements.in`. A toolchain
-  change can change any design's output: rebuild every design and commit what changes.
-- Never hand-edit generated files. Commit regenerated `print-files/`, `templates/`,
-  `makerworld/`, `docs/build-summary.*` and `docs/images/` together with the source change
-  that caused them.
+  change can change any design's output: rebuild every design, commit what changes and
+  publish every design's release.
+- Never hand-edit generated files. Commit regenerated `templates/`, `makerworld/`,
+  `docs/build-summary.*` and `docs/images/` together with the source change that caused them.
+- Print files and STEP exports never go in git: the build writes them to `build/release/`,
+  named as in [`README.md`](README.md#print-files). After the PR merges, publish them from
+  main with `tools/release.sh <design>`.
+- New variants of a design are entries in its build script and plates in its existing files,
+  not new folders or releases (see [`README.md`](README.md#print-files)).
 - `build/` and `reference/` stay out of git; third-party logos never go in.
 
 ## Documentation

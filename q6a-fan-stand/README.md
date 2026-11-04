@@ -2,7 +2,7 @@
 
 A stand that holds a Noctua NF-A8 80 mm fan over a Radxa Dragon Q6A in its fanless Radxa Armor Case 7056A. The fan blows down onto the case's fins. The case sits in a base, and a hood carries the fan above it. The hood's four legs plug into the base, so nothing is screwed, glued or clamped to the case, and the whole thing lifts as one unit.
 
-![The hood (upside down, as printed) and the base](docs/images/plates/q6a-fan-stand-fan-stand-a2l-combo-plate-1.png)
+![The hood (upside down, as printed) and the base](docs/images/fan-stand.png)
 
 - **Hood:** a top plate with a finger guard over the fan. The fan hangs under it on Noctua's rubber mounts, so its vibration doesn't reach the stand. A cable duct runs down the leg at the header's pin-1 end and ends in a holster for the fan plug.
 - **Base:** a flat frame the case drops into, with sockets for the hood's legs. Two upright sleeves at the microSD end hold the Wi-Fi antennas.
@@ -16,12 +16,12 @@ A stand that holds a Noctua NF-A8 80 mm fan over a Radxa Dragon Q6A in its fanle
 
 ## Pick a file
 
-Open the `.3mf` in Bambu Studio. The printer, plates and filament are already set, and every plate is sliced. For the plates, times and grams of each file, see [`docs/build-summary.md`](docs/build-summary.md).
+Download the project for your printer and open it in Bambu Studio. The printer, plates and filament are already set. Plate 1 is the [fit test](#fit-test): print it first, then the stand's plates. For times and grams, see [`docs/build-summary.md`](docs/build-summary.md).
 
-| Project | A1 mini | A2L Combo |
+| Printer | Project | Stand plates |
 |---|---|---|
-| Fit test: print this first | [fit-test](print-files/a1-mini/q6a-fan-stand-fit-test-a1-mini.3mf) | [fit-test](print-files/a2l-combo/q6a-fan-stand-fit-test-a2l-combo.3mf) |
-| Fan stand: hood and base | [fan-stand](print-files/a1-mini/q6a-fan-stand-fan-stand-a1-mini.3mf) | [fan-stand](print-files/a2l-combo/q6a-fan-stand-fan-stand-a2l-combo.3mf) |
+| A1 mini | [`q6a-fan-stand-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/q6a-fan-stand-latest/q6a-fan-stand-a1-mini.3mf) | Hood, then base |
+| A2L | [`q6a-fan-stand-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/q6a-fan-stand-latest/q6a-fan-stand-a2l.3mf) | Hood and base together |
 
 Every file uses Bambu PETG Basic, the stock 0.20 mm Standard profile and the textured PEI plate. Nothing needs supports: the hood prints upside down, guard on the bed.
 
@@ -67,10 +67,10 @@ Pin 1 is at the microSD end of the header. The header's plastic is colour-coded:
 
 ```bash
 ../tools/docker/run.sh python3 tools/build.py --jobs 2      # everything; CPUS=2 caps the container lower
-../tools/docker/run.sh python3 tools/build.py --jobs 2 --only fit-test
+../tools/docker/run.sh python3 tools/build.py --jobs 2 --only a1-mini
 ```
 
-The repo's shared toolchain in [`../tools/docker/`](../tools/docker) pins build123d and Bambu Studio. The script checks the fit against the case and fan, exports the parts, slices every plate with the stock Bambu profiles, and refuses to write a project that fails its checks. It also writes the STEP export in `makerworld/` and the images and [build summary](docs/build-summary.md) in `docs/`. When a Bambu Studio step fails, its log is in `build/work/<project>/`.
+The repo's shared toolchain in [`../tools/docker/`](../tools/docker) pins build123d and Bambu Studio. The script checks the fit against the case and fan, exports the parts, slices every plate with the stock Bambu profiles, and refuses to write a project that fails its checks. It writes the projects and the STEP export to `build/release/`, and the image and [build summary](docs/build-summary.md) to `docs/`. When a Bambu Studio step fails, its log is in `build/work/<project>/`. Once a change is merged, `../tools/release.sh q6a-fan-stand` publishes the [release](https://github.com/edbfi/3d-designs/releases/tag/q6a-fan-stand-latest).
 
 To look at the model while changing it, run `cad run q6a-fan-stand.py` with [text-to-cad](https://texttocad.dev). It opens the hood, the base, the fit test and an assembly with the case and fan in the CAD Viewer.
 
