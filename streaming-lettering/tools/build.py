@@ -104,7 +104,8 @@ SIZES = {
         "letters": dict(letter_height=120, letters_depth=14, letters_chamfer=1.6,
                         letters_face_depth=4),
         "subheadings": dict(letter_height=64, letters_depth=10, letters_face_depth=3.6,
-                            letters_chamfer=1.2, small_caps=True),
+                            letters_chamfer=1.2, small_caps=True, letters_pin_tab=4.6,
+                            letters_pin_tab_depth=2, letters_pin_offset=2.4),
     },
 }
 # The pinboard frames hold the loose letters, so they share their settings.
@@ -214,25 +215,29 @@ def plaque_plates(text, printer):
     ]
 
 
-def letter_plates(product, text, p, face=1, body=2):
+def letter_plates(product, text, p, face=1, body=2, variant=""):
     """Loose letters, face down (letters_face_down in the .scad): the face prints first, on the
-    textured plate, and the body on top of it. Lightning infill: only the back needs holding up,
-    and lighter letters stay put on tape or putty."""
+    textured plate, and the body on top of it. With pin tabs they print face up, on the tabs.
+    Lightning infill: only the side on top needs holding up, and lighter letters stay put on tape,
+    putty or pins. A variant (a plate note) also names the parts, which must be unique."""
     light = {"sparse_infill_pattern": "lightning"}
-    groups = [Group(f"{text} letter {i + 1} {c.upper()}", [
-        Part(f"{text}-letter-{i + 1}-{c}-face", dict(p, part="letter_face", letter_index=i), face, DOWN),
-        Part(f"{text}-letter-{i + 1}-{c}-body", dict(p, part="letter_body", letter_index=i), body, DOWN)],
+    tag, note = (f"-{variant.replace(' ', '-')}", f" ({variant})") if variant else ("", "")
+    groups = [Group(f"{text} letter {i + 1} {c.upper()}{note}", [
+        Part(f"{text}-letter-{i + 1}-{c}{tag}-face", dict(p, part="letter_face", letter_index=i), face, DOWN),
+        Part(f"{text}-letter-{i + 1}-{c}{tag}-body", dict(p, part="letter_body", letter_index=i), body, DOWN)],
         print_params=light)
         for i, c in letters_of(text)]
-    return [PlateSpec(plate_name(product, text, "letters"), groups)]
+    return [PlateSpec(plate_name(product, text, f"letters{note}"), groups)]
 
 
 def subheading_plates(text, printer):
-    """Loose letters in small capitals: a white face (filament 2) on a red body (filament 1).
+    """Loose letters in small capitals: a white face (filament 2) on a red body (filament 1), for
+    tape, then with pin tabs for a pinboard.
     No one-colour plates: MakerWorld bans one-colour copies of multi-colour profiles, and loading
     one colour as both filaments prints these in one colour."""
     p = dict(scad_params(printer, "subheadings", text), design="letters")
-    return letter_plates("subheadings", text, p, face=2, body=1)
+    return (letter_plates("subheadings", text, p, face=2, body=1)
+            + letter_plates("subheadings", text, dict(p, letters_mount="pins"), face=2, body=1, variant="pin tabs"))
 
 
 @cache
@@ -963,7 +968,8 @@ def export_makerworld_edition():
     # the edition must have no top-level geometry, and every plate must render cleanly
     small_caps = ["-D", "small_caps=true", "-D", 'text_string="Serier"']
     for label, design, extra in [(d, d, []) for d in ("stand", "plaque", "letters", "frame", "open-frame")] \
-            + [("letters-small-caps", "letters", small_caps)]:
+            + [("letters-small-caps", "letters", small_caps),
+               ("letters-pin-tabs", "letters", small_caps + ["-D", 'letters_mount="pins"'])]:
         for plate in ("", "mw_plate_1();", "mw_plate_2();"):
             probe = BUILD / "makerworld" / f"probe-{label}-{plate[:10] or 'top'}.scad"
             probe.parent.mkdir(parents=True, exist_ok=True)
@@ -987,8 +993,8 @@ RENDER_CAMERAS = {"stand": "0,0,0,74,0,-22,0", "plaque": "0,0,0,80,0,-20,0", "le
 
 
 def export_renders(workers):
-    """Coloured display renders (A1 mini sizes) for the docs: every text of every product, and
-    the frame's letters hung loose."""
+    """Coloured display renders (A1 mini sizes) for the docs: every text of every product, the
+    frame's letters hung loose and a sub-heading with pin tabs."""
     RENDER_IMAGES.mkdir(parents=True, exist_ok=True)
     jobs = []
     for text in dict.fromkeys(t for k, texts in PRODUCTS.items() if k != "subheadings" for t in texts):
@@ -1001,10 +1007,12 @@ def export_renders(workers):
                     "--colorscheme=Tomorrow", "--autocenter", "--viewall", f"--camera={cam}",
                     "-o", str(out)] + sum((["-D", f"{k}={fmt_param(v)}"] for k, v in p.items()), []) + [str(SCAD)]
             jobs.append((args, out))
-    for text in PRODUCTS["subheadings"]:
+    # every sub-heading, and the shortest one again with pin tabs
+    for text, extra in [(t, {}) for t in PRODUCTS["subheadings"]] \
+            + [(min(PRODUCTS["subheadings"], key=len), dict(letters_mount="pins"))]:
         p = dict(SIZES["small"]["subheadings"], design="letters", text_string=text, part="display",
-                 color_letters=WHITE, color_base=RED)
-        out = RENDER_IMAGES / f"{slug(text)}-subheading.png"
+                 color_letters=WHITE, color_base=RED, **extra)
+        out = RENDER_IMAGES / f"{slug(text)}-subheading{'-pin-tabs' if extra else ''}.png"
         args = [OPENSCAD, "--backend=manifold", "--render", "--imgsize=1600,500",
                 "--colorscheme=Tomorrow Night", "--autocenter", "--viewall",
                 f"--camera={RENDER_CAMERAS['letters']}", "-o", str(out)] \

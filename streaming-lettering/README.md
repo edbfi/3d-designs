@@ -10,11 +10,12 @@ An exhibition piece for a school library: `SERIER` in streaming-style bent lette
 | **Frame**: the loose letters on a black backing panel with a border, pinned to a pinboard | ![](docs/images/renders/serier-frame.png) | |
 | **Open frame**: the same frame without the panel, so the board shows through around and between the letters | ![](docs/images/renders/serier-open-frame.png) | ![](docs/images/renders/bookflix-open-frame.png) |
 
-**Sub-headings**: loose letters in small capitals, straight, about half BOOKFLIX's size: a white face on a red body (greyed by the lighting in the renders). For all white or all red, set both filaments to that colour.
+**Sub-headings**: loose letters in small capitals, straight, about half BOOKFLIX's size: a white face on a red body (greyed by the lighting in the renders). For all white or all red, set both filaments to that colour. Each word also comes with pin tabs, a small red tab behind the top and bottom of every letter, for pinning it to a fabric pinboard with dressmaker's pins (last render).
 
 ![](docs/images/renders/populaere-nu-subheading.png)
 ![](docs/images/renders/serier-subheading.png)
 ![](docs/images/renders/nyheder-subheading.png)
+![](docs/images/renders/serier-subheading-pin-tabs.png)
 
 ## Pick a file
 
@@ -26,7 +27,7 @@ Download the project for your product and printer and open it in Bambu Studio. T
 | Plaque | [`streaming-lettering-plaque-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-plaque-a1-mini.3mf) | [`streaming-lettering-plaque-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-plaque-a2l.3mf) | The plaque, its stand, then an inlay plaque and inlay letters for printing without an AMS |
 | Frame | [`streaming-lettering-frame-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-frame-a1-mini.3mf) | [`streaming-lettering-frame-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-frame-a2l.3mf) | The letters, then the frame sections |
 | Open frame | [`streaming-lettering-open-frame-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-open-frame-a1-mini.3mf) | [`streaming-lettering-open-frame-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-open-frame-a2l.3mf) | SERIER, then BOOKFLIX: the letters, then the frame sections |
-| Sub-headings | [`streaming-lettering-subheadings-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-subheadings-a1-mini.3mf) | [`streaming-lettering-subheadings-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-subheadings-a2l.3mf) | Populære nu, then Serier, then Nyheder |
+| Sub-headings | [`streaming-lettering-subheadings-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-subheadings-a1-mini.3mf) | [`streaming-lettering-subheadings-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-subheadings-a2l.3mf) | Populære nu, then Serier, then Nyheder: each word's letters, then the same letters with pin tabs |
 
 The loose letters are the letters plate of the frame file.
 
@@ -50,7 +51,7 @@ Every plate is a separate print, so with two printers, send each plate to whiche
 
 - **Stand**: the letters print in red, face down so the textured plate gives them a crisp front; the plinth prints in black. Push each letter's tab into its pocket; it's a press fit with 0.15 mm clearance per side, and a drop of glue makes it permanent. BOOKFLIX's letters and plinth are longer than the A1 mini's bed, so they lie diagonally across it.
 - **Plaque**: with an AMS, print the plaque: the AMS does the black plaque, the red letters and bar, and the grey bar track. The stand is on its own plate: printed together, it would cost an extra colour change on every layer of the red letters. Without an AMS, print the inlay letters in red (the letters and the bar's fill, face down) and the inlay plaque in black, and press each red piece into its pocket (0.15 mm clearance; glue optional). Either way, slide the plaque into the stand's leaning slot.
-- **Letters** (frames, loose letters and sub-headings): printed face down: a red face, then a black body (sub-headings: a white face, then a red body). The AMS changes colour once per plate.
+- **Letters** (frames, loose letters and sub-headings): printed face down: a red face, then a black body (sub-headings: a white face, then a red body). The AMS changes colour once per plate. Sub-headings with pin tabs print face up, standing on their tabs: the red body, then the white face.
 
 ### Frames
 
@@ -66,6 +67,8 @@ On the open frame, two rails hidden behind the letters' top and bottom strokes c
 
 Print the matching template from [`templates/`](templates) at 100 % scale (no "fit to page"). The A1 mini ones need A3, or A4 tiled (the sub-headings fit A4 landscape); the A2L ones need tiling. Tape it to the wall, then place each letter on its outline. Keep the line level: above the letters it marks their flat top edge, and under the sub-headings their common baseline. Double-sided foam tape or poster putty holds the letters well. The model can also add a back recess for tape or magnet sheet (`letters_mount = "recess"`).
 
+On a fabric pinboard, print the sub-headings with pin tabs (`letters_mount = "pins"`) and push a dressmaker's pin straight through the hole in each tab, top and bottom. Pins about 0.6 mm thick with a glass head hold best; a plain head is only just bigger than the hole. If a long pin hits the wall behind a thin board before its head reaches the tab, push it in at a slant. You can pin through the paper template and tear it away afterwards.
+
 ## Print settings
 
 The files start from Bambu's stock 0.20 mm Standard profile. What's changed, and why (measurements in [`docs/design-notes.md`](docs/design-notes.md#printability-decisions)):
@@ -73,8 +76,8 @@ The files start from Bambu's stock 0.20 mm Standard profile. What's changed, and
 | Setting | Where | Why |
 |---|---|---|
 | Painted seams | every part | Each layer's seam is painted onto the part's hidden side. |
-| Face down | loose letters, stand letters, plaque inlays | The textured plate gives the visible face a crisp, even finish with no top-surface lines. |
-| Lightning infill | loose letters | Only the back needs holding up; the letters come out about 30 % lighter, which helps tape and putty hold them. |
+| Face down | loose letters (not with pin tabs), stand letters, plaque inlays | The textured plate gives the visible face a crisp, even finish with no top-surface lines. |
+| Lightning infill | loose letters | Only the side on top needs holding up; the letters come out about 30 % lighter, which helps tape and putty hold them. |
 | No prime tower | every file | The A-series printers purge into their chute; on these parts a tower added time and filament for no visible gain. |
 
 Plinths and the plaque stand keep the stock 15 % infill: their weight keeps the display from tipping over.
