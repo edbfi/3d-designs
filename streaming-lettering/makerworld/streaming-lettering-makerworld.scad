@@ -34,6 +34,11 @@ text_string = "SERIER";
 font_name = "Bebas Neue"; // font
 // Turn the text into capitals
 force_caps = true;
+// Small capitals: only the first letter at full height, the rest as capitals this much smaller
+// (always straight: the bend needs the flat top edge that small capitals don't have)
+small_caps = false;
+// Height of the small capitals, as a fraction of the first letter's
+small_caps_height = 0.75; // [0.5:0.01:0.95]
 
 /* [Streaming look] */
 // How much shorter the middle letters are than the outer ones (0 = straight; reference wordmark = 0.134)
@@ -176,9 +181,10 @@ eps = 0.01;          // overlap for coplanar booleans
 BIG = 1e4;           // "infinity" for bounding bands
 NORM_W = 100;        // normalised word width used while bending
 // Bend resolution: enough vertical strips that the step between neighbours along the
-// bottom edge stays under bend_step (mm). Straight text (arc_depth = 0) needs none.
+// bottom edge stays under bend_step (mm). Straight text (arc = 0) needs none.
 bend_step = 0.1;
-warp_strips = min(800, max(60, ceil(4.2 * letter_height * arc_depth / bend_step)));
+arc = small_caps ? 0 : arc_depth;  // the bend in use
+warp_strips = min(800, max(60, ceil(4.2 * letter_height * arc / bend_step)));
 H = letter_height;
 
 txt = force_caps ? upper(text_string) : text_string;
@@ -186,6 +192,7 @@ n_letters = len(txt);
 
 assert(n_letters > 0, "text_string is empty");
 assert(arc_depth >= 0 && arc_depth < 0.5, "arc_depth must be in [0, 0.5)");
+assert(small_caps_height > 0 && small_caps_height < 1, "small_caps_height must be in (0, 1): the first letter is the tallest");
 assert(letter_index >= 0 && letter_index < n_letters, "letter_index is past the end of the text");
 assert(stand_tab_depth < stand_base_height, "stand_tab_depth must be less than stand_base_height");
 assert(stand_base_height < 0.85 * letter_height && plaque_margin_bottom < 0.85 * letter_height, "base height and plaque bottom margin must stay under 0.85 x letter_height");
@@ -195,8 +202,8 @@ assert(frame_pocket_depth < frame_thickness - 0.8, "frame_pocket_depth must leav
 assert(frame_rail_inset + frame_rail < 0.45, "frame_rail_inset + frame_rail must stay under 0.45 so the two rails stay apart");
 assert(frame_chamfer < frame_thickness, "frame_chamfer must be less than frame_thickness");
 assert(frame_radius <= frame_border, "frame_radius must not exceed frame_border, or the corner pin holes break out");
-assert(!(design == "frame" || design == "open-frame") || (force_caps && !letters_flat_bottom),
-       "the frames need capitals (force_caps) and letters without flat bottoms");
+assert(!(design == "frame" || design == "open-frame") || (force_caps && !small_caps && !letters_flat_bottom),
+       "the frames need full-height capitals (force_caps, no small_caps) and letters without flat bottoms");
 assert(!(design == "frame" || design == "open-frame") || frame_sections <= 2
        || frame_sections <= len([for (c = txt) if (frame_glyph(c)) c]) / 2,
        "with 3 or more frame_sections, each section needs at least two letters");
@@ -222,8 +229,8 @@ function open_frame_takes(c) = let(o = ord(c)) c == " " || c == "." || c == ","
 
 function prefix(s, n) = n <= 0 ? "" : chr([for (k = [0 : n - 1]) ord(s[k])]);
 
-// Vertical scale at normalised position u in [-1, 1]: 1 at the ends, 1 - arc_depth in the middle.
-function arc_scale(u) = let(v = max(-1, min(1, u))) 1 - arc_depth * (1 - v * v);
+// Vertical scale at normalised position u in [-1, 1]: 1 at the ends, 1 - arc in the middle.
+function arc_scale(u) = let(v = max(-1, min(1, u))) 1 - arc * (1 - v * v);
 
 // ------------------------------------------------------------------ 2D helpers
 
@@ -245,16 +252,57 @@ module above2d(y0) { translate([-BIG, y0]) square([2 * BIG, BIG]); }
 
 // Text in the raw frame, left aligned, top edge at y = 0 (not yet centred).
 module raw_text_left(s = txt) {
-    if (len(s) > 0)
-        text(s, size = 10, font = font_name, spacing = letter_spacing,
-             halign = "left", valign = "top");
+    if (len(s) > 0) {
+        if (small_caps) small_caps_top(s);
+        else text(s, size = 10, font = font_name, spacing = letter_spacing,
+                  halign = "left", valign = "top");
+    }
 }
 
 // The same, on the baseline (y = 0).
 module raw_text_base(s) {
-    if (len(s) > 0)
-        text(s, size = 10, font = font_name, spacing = letter_spacing,
-             halign = "left", valign = "baseline");
+    if (len(s) > 0) {
+        if (small_caps) small_caps_base(s);
+        else text(s, size = 10, font = font_name, spacing = letter_spacing,
+                  halign = "left", valign = "baseline");
+    }
+}
+
+// Small capitals on the baseline: the first letter right-aligned to x = 0 and the rest,
+// smaller, left-aligned from x = 0. Alignment follows the letters' advance, so the two meet
+// where the first letter's advance ends, as if set in one line, without measuring it. The text
+// starts left of x = 0; everything after centres it on its ink.
+module small_caps_base(s) {
+    text(s[0], size = 10, font = font_name, spacing = letter_spacing, halign = "right", valign = "baseline");
+    if (len(s) > 1)
+        text(chr([for (k = [1 : len(s) - 1]) ord(s[k])]), size = 10 * small_caps_height, font = font_name,
+             spacing = letter_spacing, halign = "left", valign = "baseline");
+}
+
+// Small capitals with the first letter's top edge at y = 0, as valign = "top" would put it
+// (the first letter is the tallest). The rest share its baseline: they move down by the first
+// letter's height, through a Minkowski sum with a tiny square there, measured on that letter alone.
+module small_caps_top(s) {
+    text(s[0], size = 10, font = font_name, spacing = letter_spacing, halign = "right", valign = "top");
+    if (len(s) > 1) minkowski() {
+        intersection() {
+            small_caps_base(s);
+            translate([0, -BIG]) square([2 * BIG, 2 * BIG]);  // the rest only
+        }
+        first_letter_drop2d(s[0]);
+    }
+}
+
+// A tiny square just under (0, -h), h = letter c's height above the baseline.
+module first_letter_drop2d(c) {
+    e = 0.002;
+    mirror([0, 1]) intersection() {
+        hull() for (sx = [-1, 1]) translate([sx * BIG, 0]) difference() {
+            translate([0, e]) bbox2d() text(c, size = 10, font = font_name, valign = "baseline");
+            bbox2d() text(c, size = 10, font = font_name, valign = "baseline");
+        }
+        translate([0, -BIG]) square([e, 2 * BIG]);
+    }
 }
 
 // A tiny square at minus the centre of the word's ink x-range. A Minkowski sum with it
@@ -308,8 +356,7 @@ module cap_box_raw() {
     intersection() {
         xband2d() raw_text_left();
         mirror([0, 1]) intersection() {
-            bbox2d() text(txt, size = 10, font = font_name, spacing = letter_spacing,
-                          halign = "left", valign = "baseline");
+            bbox2d() raw_text_base(txt);
             above2d(0);
         }
     }
@@ -330,7 +377,7 @@ module norm_box() {
 // Bend normalised-frame children strip by strip (y scales about the top edge y = 0).
 // Strips abut exactly (no overlap), so the union has no slivers.
 module warp2d(strips = warp_strips) {
-    if (arc_depth == 0) children();
+    if (arc == 0) children();
     else warp2d_strips(strips) children();
 }
 
@@ -728,7 +775,7 @@ module cap_band_norm(a, b) {
 // straight beyond the word, where the arc has ended.
 // They bend in coarser strips than the letters (0.3 mm steps along their edges, finer than an
 // extrusion line): every strip instantiates the band, which costs memory.
-rail_strips = min(warp_strips, max(60, ceil(4.2 * letter_height * arc_depth / 0.3)));
+rail_strips = min(warp_strips, max(60, ceil(4.2 * letter_height * arc / 0.3)));
 module frame_rails2d() {
     to_final() warp2d(rail_strips) render() {
         cap_band_norm(frame_rail_inset, frame_rail_inset + frame_rail);
@@ -909,12 +956,14 @@ module template2d() {
         offset(delta = 0.4) word2d();
         word2d();
     }
-    // top alignment line and centre tick
+    // alignment line and centre tick: above the flat top edge, or under the baseline that
+    // small capitals share, about 1 mm clear of round letters, which dip 1.4 % of H below it
+    y = small_caps ? -1.015 * H - 1.8 : 1.5;
     intersection() {
         word_xband_wide(10);
-        translate([-BIG, 1.5]) square([2 * BIG, 0.4]);
+        translate([-BIG, y]) square([2 * BIG, 0.4]);
     }
-    translate([-0.2, 1.5]) square([0.4, 5]);
+    translate([-0.2, small_caps ? y - 4.6 : y]) square([0.4, 5]);
 }
 
 // ------------------------------------------------------------------ output

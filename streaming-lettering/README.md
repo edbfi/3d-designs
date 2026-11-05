@@ -1,6 +1,6 @@
 # Streaming-style lettering
 
-An exhibition piece for a school library: `SERIER` in streaming-style bent lettering, and `BOOKFLIX` as a stand and an open frame. SERIER comes in five designs, and every file is ready to print on a Bambu Lab A1 mini or A2L, with an AMS lite for the two-colour parts. Everything is parametric, so a new word, font or size is one setting away.
+An exhibition piece for a school library: `SERIER` in streaming-style bent lettering, `BOOKFLIX` as a stand and an open frame, and the sub-headings `Populære nu`, `Serier` and `Nyheder` to go under BOOKFLIX. SERIER comes in five designs, and every file is ready to print on a Bambu Lab A1 mini or A2L, with an AMS lite for the two-colour parts. Everything is parametric, so a new word, font or size is one setting away.
 
 | | SERIER | BOOKFLIX |
 |---|---|---|
@@ -9,6 +9,12 @@ An exhibition piece for a school library: `SERIER` in streaming-style bent lette
 | **Loose letters**: chunky two-tone letters for a wall or pinboard | ![](docs/images/renders/serier-letters.png) | |
 | **Frame**: the loose letters on a black backing panel with a border, pinned to a pinboard | ![](docs/images/renders/serier-frame.png) | |
 | **Open frame**: the same frame without the panel, so the board shows through around and between the letters | ![](docs/images/renders/serier-open-frame.png) | ![](docs/images/renders/bookflix-open-frame.png) |
+
+**Sub-headings**: loose letters in small capitals, straight, about half BOOKFLIX's size: white on red, all white or all red. The renders show white on red, with the white greyed by the lighting.
+
+![](docs/images/renders/populaere-nu-subheading.png)
+![](docs/images/renders/serier-subheading.png)
+![](docs/images/renders/nyheder-subheading.png)
 
 ## Pick a file
 
@@ -20,6 +26,7 @@ Download the project for your product and printer and open it in Bambu Studio. T
 | Plaque | [`streaming-lettering-plaque-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-plaque-a1-mini.3mf) | [`streaming-lettering-plaque-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-plaque-a2l.3mf) | The plaque, its stand, then an inlay plaque and inlay letters for printing without an AMS |
 | Frame | [`streaming-lettering-frame-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-frame-a1-mini.3mf) | [`streaming-lettering-frame-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-frame-a2l.3mf) | The letters, then the frame sections |
 | Open frame | [`streaming-lettering-open-frame-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-open-frame-a1-mini.3mf) | [`streaming-lettering-open-frame-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-open-frame-a2l.3mf) | SERIER, then BOOKFLIX: the letters, then the frame sections |
+| Sub-headings | [`streaming-lettering-subheadings-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-subheadings-a1-mini.3mf) | [`streaming-lettering-subheadings-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-subheadings-a2l.3mf) | Populære nu, Serier and Nyheder white on red, then all white, then all red |
 
 The loose letters are the letters plate of the frame file.
 
@@ -31,10 +38,11 @@ Finished sizes:
 | Plaque | 135 × 69 mm, 36 mm letters | 256 × 126 mm, 70 mm letters |
 | Loose letters | 75 mm tall, 231 mm wide on the wall | 120 mm tall, 370 mm wide on the wall |
 | Frame, open frame | 275 × 119 mm (BOOKFLIX open frame 366 × 119 mm), 75 mm letters | 426 × 176 mm (BOOKFLIX open frame 572 × 176 mm), 120 mm letters |
+| Sub-headings | 40 mm first letter, 30 mm the rest; Populære nu 200 mm wide | 64 mm first letter, 48 mm the rest; Populære nu 320 mm wide |
 
-All files use Bambu PLA Basic, the 0.20 mm Standard profile and the textured PEI plate, with a few tweaks (see [Print settings](#print-settings)). Nothing needs supports. Any PLA works; pick a strong red (the renders use `#E50914`) and a black or charcoal. Load red as filament 1 and black as filament 2; the plaque also uses grey as filament 3, for the bar's track.
+All files use Bambu PLA Basic, the 0.20 mm Standard profile and the textured PEI plate, with a few tweaks (see [Print settings](#print-settings)). Nothing needs supports. Any PLA works; pick a strong red (the renders use `#E50914`) and a black or charcoal. Load red as filament 1 and black as filament 2; the plaque also uses grey as filament 3, for the bar's track, and the sub-headings white as filament 2.
 
-The AMS lite makes the two-colour plates: the plaque and the letters of the frames. Without an AMS, the stand's plates and the plaque's inlay plates are one colour each, so they print too.
+The AMS lite makes the two-colour plates: the plaque, the letters of the frames and the white-on-red sub-headings. Without an AMS, the stand's plates, the plaque's inlay plates and the all-white and all-red sub-headings are one colour each, so they print too.
 
 ## Printing and assembly
 
@@ -42,7 +50,7 @@ Every plate is a separate print, so with two printers, send each plate to whiche
 
 - **Stand**: the letters print in red, face down so the textured plate gives them a crisp front; the plinth prints in black. Push each letter's tab into its pocket; it's a press fit with 0.15 mm clearance per side, and a drop of glue makes it permanent. BOOKFLIX's letters and plinth are longer than the A1 mini's bed, so they lie diagonally across it.
 - **Plaque**: with an AMS, print the plaque: the AMS does the black plaque, the red letters and bar, and the grey bar track. The stand is on its own plate: printed together, it would cost an extra colour change on every layer of the red letters. Without an AMS, print the inlay letters in red (the letters and the bar's fill, face down) and the inlay plaque in black, and press each red piece into its pocket (0.15 mm clearance; glue optional). Either way, slide the plaque into the stand's leaning slot.
-- **Letters** (frames and loose letters): printed face down: a red face, then a black body. The AMS changes colour once per plate.
+- **Letters** (frames, loose letters and sub-headings): printed face down: a red face, then a black body (sub-headings: a white face, then a red body). The AMS changes colour once per plate.
 
 ### Frames
 
@@ -56,7 +64,7 @@ On the open frame, two rails hidden behind the letters' top and bottom strokes c
 
 ### Hanging the loose letters
 
-Print the matching template from [`templates/`](templates) at 100 % scale (no "fit to page"). The A1 mini ones need A3, or A4 tiled; the A2L ones need tiling. Tape it to the wall, then place each letter on its outline. The line above the letters is the flat top edge; keep it level. Double-sided foam tape or poster putty holds the letters well. The model can also add a back recess for tape or magnet sheet (`letters_mount = "recess"`).
+Print the matching template from [`templates/`](templates) at 100 % scale (no "fit to page"). The A1 mini ones need A3, or A4 tiled (the sub-headings fit A4 landscape); the A2L ones need tiling. Tape it to the wall, then place each letter on its outline. Keep the line level: above the letters it marks their flat top edge, and under the sub-headings their common baseline. Double-sided foam tape or poster putty holds the letters well. The model can also add a back recess for tape or magnet sheet (`letters_mount = "recess"`).
 
 ## Print settings
 

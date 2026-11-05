@@ -62,12 +62,13 @@ PROFILES = Path(os.environ.get("BAMBU_PROFILES", "/Applications/BambuStudio.app/
 OPENSCAD_TIMEOUT = int(os.environ.get("OPENSCAD_TIMEOUT", 1200))   # seconds per run
 EXPORT_MEMORY = 2 * 1024 ** 3                                     # memory budget per parallel export
 
-RED, BLACK, GREY = "#E50914", "#161616", "#5A5A5A"
+RED, BLACK, GREY, WHITE = "#E50914", "#161616", "#5A5A5A", "#FFFFFF"
 # Products, one project per printer each, and the texts each one holds. Two-colour plates are
 # made by the AMS: MakerWorld bans pause-based colour-swap profiles and single-colour copies of
-# multi-colour ones, so there are none (see docs/design-notes.md).
+# multi-colour ones, so there are none; the sub-headings' all-white and all-red plates are colours
+# of their own for the display (see docs/design-notes.md).
 PRODUCTS = {"stand": ["SERIER", "BOOKFLIX"], "plaque": ["SERIER"], "frame": ["SERIER"],
-            "open-frame": ["SERIER", "BOOKFLIX"]}
+            "open-frame": ["SERIER", "BOOKFLIX"], "subheadings": ["Populære nu", "Serier", "Nyheder"]}
 
 # ----------------------------------------------------------------------------- printers
 
@@ -88,6 +89,9 @@ SIZES = {
         "stand": dict(letter_height=42),
         "plaque": dict(letter_height=36),
         "letters": dict(letter_height=75),
+        # loose letters in small capitals, straight, about half BOOKFLIX's letter height
+        "subheadings": dict(letter_height=40, letters_depth=6, letters_face_depth=2.4,
+                            letters_chamfer=0.8, small_caps=True),
     },
     "large": {
         "stand": dict(letter_height=76, stand_letter_depth=12, stand_base_height=14,
@@ -100,6 +104,8 @@ SIZES = {
                        plaque_stand_height=16, plaque_stand_depth=50),
         "letters": dict(letter_height=120, letters_depth=14, letters_chamfer=1.6,
                         letters_face_depth=4),
+        "subheadings": dict(letter_height=64, letters_depth=10, letters_face_depth=3.6,
+                            letters_chamfer=1.2, small_caps=True),
     },
 }
 # The pinboard frames hold the loose letters, so they share their settings.
@@ -131,6 +137,7 @@ class Group:
 class PlateSpec:
     name: str                 # [<GROUP> ]<part>[ (<note>)]; pack adds " <i> of <n>" if it overflows
     groups: list
+    rank: int = 0             # plates go in rank order, then text by text
 
 
 @dataclass
@@ -209,17 +216,33 @@ def plaque_plates(text, printer):
     ]
 
 
-def letter_plates(product, text, p):
-    """The loose letters of a frame, face down (letters_face_down in the .scad): the red face
-    prints first, on the textured plate, and the black body on top of it. Lightning infill: only
-    the back needs holding up, and lighter letters stay put on tape or putty."""
+def letter_plates(product, text, p, face=1, body=2, part="letters", colour=""):
+    """Loose letters, face down (letters_face_down in the .scad): the face prints first, on the
+    textured plate, and the body on top of it; one colour when face and body share a filament,
+    named after it (part names must be unique: they name the STL files and the project's objects).
+    Lightning infill: only the back needs holding up, and lighter letters stay put on tape or putty."""
     light = {"sparse_infill_pattern": "lightning"}
-    groups = [Group(f"{text} letter {i + 1} {c}", [
-        Part(f"{text}-letter-{i + 1}-{c}-face", dict(p, part="letter_face", letter_index=i), 1, DOWN),
-        Part(f"{text}-letter-{i + 1}-{c}-body", dict(p, part="letter_body", letter_index=i), 2, DOWN)],
-        print_params=light)
-        for i, c in letters_of(text)]
-    return [PlateSpec(plate_name(product, text, "letters"), groups)]
+
+    def parts(i, c):
+        if face == body:
+            return [Part(f"{text}-letter-{i + 1}-{c}-{colour}", dict(p, part="letter", letter_index=i), face, DOWN)]
+        return [Part(f"{text}-letter-{i + 1}-{c}-face", dict(p, part="letter_face", letter_index=i), face, DOWN),
+                Part(f"{text}-letter-{i + 1}-{c}-body", dict(p, part="letter_body", letter_index=i), body, DOWN)]
+    groups = [Group(f"{text} letter {i + 1} {c.upper()}", parts(i, c), print_params=light)
+              for i, c in letters_of(text)]
+    return [PlateSpec(plate_name(product, text, part), groups)]
+
+
+# The sub-headings' colours: (plate note, face filament, body filament). Filament 1 is red, 2 white.
+SUBHEADING_COLOURS = [("white on red", 2, 1), ("white", 2, 2), ("red", 1, 1)]
+
+
+def subheading_plates(text, printer):
+    """Loose letters in small capitals, once per colour. Plates go colour by colour, so the
+    words of one colour are plates in a row."""
+    p = dict(scad_params(printer, "subheadings", text), design="letters")
+    return [replace(spec, rank=k) for k, (note, face, body) in enumerate(SUBHEADING_COLOURS)
+            for spec in letter_plates("subheadings", text, p, face, body, f"letters ({note})", note)]
 
 
 @cache
@@ -266,13 +289,14 @@ def frame_plates(text, printer, design):
 # Per product: the plates of one text, and the colour of each filament slot.
 PRODUCT_PLATES = {"stand": (stand_plates, [RED, BLACK]), "plaque": (plaque_plates, [RED, BLACK, GREY]),
            "frame": (partial(frame_plates, design="frame"), [RED, BLACK]),
-           "open-frame": (partial(frame_plates, design="open-frame"), [RED, BLACK])}
+           "open-frame": (partial(frame_plates, design="open-frame"), [RED, BLACK]),
+           "subheadings": (subheading_plates, [RED, WHITE])}
 
 
 def make_project(product, printer):
     plates_of, filaments = PRODUCT_PLATES[product]
-    return Project(product, printer, filaments,
-                   [spec for text in PRODUCTS[product] for spec in plates_of(text, printer)])
+    plates = [spec for text in PRODUCTS[product] for spec in plates_of(text, printer)]
+    return Project(product, printer, filaments, sorted(plates, key=lambda spec: spec.rank))
 
 
 def project_key(product, printer):
@@ -875,14 +899,21 @@ def plate_stats(final: Path):
     return out
 
 
+def slug(text):
+    """File-name form of a text: `Populære nu` -> `populaere-nu`."""
+    return text.lower().translate(str.maketrans({"æ": "ae", "ø": "oe", "å": "aa", " ": "-"}))
+
+
 def export_templates(workers):
-    """1:1 paper placement templates for the frame's letters hung loose (SVG, mm units)."""
+    """1:1 paper placement templates for the frame's letters hung loose and for the sub-headings
+    (SVG, mm units)."""
     TEMPLATES.mkdir(parents=True, exist_ok=True)
     jobs = []
-    for text in PRODUCTS["frame"]:
+    for design, kind, text in ([("letters", "letters", t) for t in PRODUCTS["frame"]]
+                               + [("subheadings", "subheading", t) for t in PRODUCTS["subheadings"]]):
         for printer, pr in PRINTERS.items():
-            p = dict(SIZES[pr["size"]]["letters"], design="letters", text_string=text, part="template")
-            out = TEMPLATES / f"{text.lower()}-letters-template-{printer}.svg"
+            p = dict(SIZES[pr["size"]][design], design="letters", text_string=text, part="template")
+            out = TEMPLATES / f"{slug(text)}-{kind}-template-{printer}.svg"
             args = [OPENSCAD, "-o", str(out)] + sum((["-D", f"{k}={fmt_param(v)}"] for k, v in p.items()), []) + [str(SCAD)]
             jobs.append((args, out))
 
@@ -940,19 +971,22 @@ def export_makerworld_edition():
     edition.write_text("\n".join(header + out) + "\n")
 
     # the edition must have no top-level geometry, and every plate must render cleanly
-    for design in ("stand", "plaque", "letters", "frame", "open-frame"):
+    small_caps = ["-D", "small_caps=true", "-D", 'text_string="Serier"']
+    for label, design, extra in [(d, d, []) for d in ("stand", "plaque", "letters", "frame", "open-frame")] \
+            + [("letters-small-caps", "letters", small_caps)]:
         for plate in ("", "mw_plate_1();", "mw_plate_2();"):
-            probe = BUILD / "makerworld" / f"probe-{design}-{plate[:10] or 'top'}.scad"
+            probe = BUILD / "makerworld" / f"probe-{label}-{plate[:10] or 'top'}.scad"
             probe.parent.mkdir(parents=True, exist_ok=True)
             fonts = "\n".join(f"use <{f}>" for f in sorted((ROOT / "fonts").glob("*.ttf")))
             probe.write_text(f"{fonts}\ninclude <{edition}>\n{plate}\n")
             r = run_openscad([OPENSCAD, "--backend=manifold", "--export-format", "binstl", "-o",
-                              str(probe.with_suffix(".stl")), "-D", f'design="{design}"', str(probe)],
-                             f"MakerWorld edition, {design} {plate or 'top level'}")
+                              str(probe.with_suffix(".stl")), "-D", f'design="{design}"',
+                              *extra, str(probe)],
+                             f"MakerWorld edition, {label} {plate or 'top level'}")
             empty = "Current top level object is empty" in r.stderr
             bad = [l for l in r.stderr.splitlines() if l.startswith(("ERROR", "WARNING"))]
             if bad or (plate and (r.returncode != 0 or empty)) or (not plate and not empty):
-                raise RuntimeError(f"MakerWorld edition, {design} {plate or 'top level'}: "
+                raise RuntimeError(f"MakerWorld edition, {label} {plate or 'top level'}: "
                                    f"{'not empty' if not plate else ''} {bad or r.stderr[-400:]}")
     return edition
 
@@ -967,7 +1001,7 @@ def export_renders(workers):
     the frame's letters hung loose."""
     RENDER_IMAGES.mkdir(parents=True, exist_ok=True)
     jobs = []
-    for text in dict.fromkeys(t for texts in PRODUCTS.values() for t in texts):
+    for text in dict.fromkeys(t for k, texts in PRODUCTS.items() if k != "subheadings" for t in texts):
         for design, cam in RENDER_CAMERAS.items():
             if text not in PRODUCTS.get(design, PRODUCTS["frame"]):
                 continue
@@ -977,6 +1011,15 @@ def export_renders(workers):
                     "--colorscheme=Tomorrow", "--autocenter", "--viewall", f"--camera={cam}",
                     "-o", str(out)] + sum((["-D", f"{k}={fmt_param(v)}"] for k, v in p.items()), []) + [str(SCAD)]
             jobs.append((args, out))
+    for text in PRODUCTS["subheadings"]:
+        p = dict(SIZES["small"]["subheadings"], design="letters", text_string=text, part="display",
+                 color_letters=WHITE, color_base=RED)
+        out = RENDER_IMAGES / f"{slug(text)}-subheading.png"
+        args = [OPENSCAD, "--backend=manifold", "--render", "--imgsize=1600,500",
+                "--colorscheme=Tomorrow Night", "--autocenter", "--viewall",
+                f"--camera={RENDER_CAMERAS['letters']}", "-o", str(out)] \
+            + sum((["-D", f"{k}={fmt_param(v)}"] for k, v in p.items()), []) + [str(SCAD)]
+        jobs.append((args, out))
 
     def make(job):
         args, out = job
@@ -986,7 +1029,7 @@ def export_renders(workers):
     run_parallel(make, jobs, workers)
 
 
-COLOUR_NAMES = {RED: "red", BLACK: "black", GREY: "grey"}
+COLOUR_NAMES = {RED: "red", BLACK: "black", GREY: "grey", WHITE: "white"}
 
 
 def purge_text(grams):
