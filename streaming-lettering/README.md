@@ -10,7 +10,7 @@ An exhibition piece for a school library: `SERIER` in streaming-style bent lette
 | **Frame**: the loose letters on a black backing panel with a border, pinned to a pinboard | ![](docs/images/renders/serier-frame.png) | |
 | **Open frame**: the same frame without the panel, so the board shows through around and between the letters | ![](docs/images/renders/serier-open-frame.png) | ![](docs/images/renders/bookflix-open-frame.png) |
 
-**Sub-headings**: loose letters in small capitals, straight, about half BOOKFLIX's size: white on red, all white or all red. The renders show white on red, with the white greyed by the lighting.
+**Sub-headings**: loose letters in small capitals, straight, about half BOOKFLIX's size: a white face on a red body (greyed by the lighting in the renders). For all white or all red, set both filaments to that colour.
 
 ![](docs/images/renders/populaere-nu-subheading.png)
 ![](docs/images/renders/serier-subheading.png)
@@ -26,7 +26,7 @@ Download the project for your product and printer and open it in Bambu Studio. T
 | Plaque | [`streaming-lettering-plaque-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-plaque-a1-mini.3mf) | [`streaming-lettering-plaque-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-plaque-a2l.3mf) | The plaque, its stand, then an inlay plaque and inlay letters for printing without an AMS |
 | Frame | [`streaming-lettering-frame-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-frame-a1-mini.3mf) | [`streaming-lettering-frame-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-frame-a2l.3mf) | The letters, then the frame sections |
 | Open frame | [`streaming-lettering-open-frame-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-open-frame-a1-mini.3mf) | [`streaming-lettering-open-frame-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-open-frame-a2l.3mf) | SERIER, then BOOKFLIX: the letters, then the frame sections |
-| Sub-headings | [`streaming-lettering-subheadings-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-subheadings-a1-mini.3mf) | [`streaming-lettering-subheadings-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-subheadings-a2l.3mf) | Populære nu, Serier and Nyheder white on red, then all white, then all red |
+| Sub-headings | [`streaming-lettering-subheadings-a1-mini.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-subheadings-a1-mini.3mf) | [`streaming-lettering-subheadings-a2l.3mf`](https://github.com/edbfi/3d-designs/releases/download/streaming-lettering-latest/streaming-lettering-subheadings-a2l.3mf) | Populære nu, then Serier, then Nyheder |
 
 The loose letters are the letters plate of the frame file.
 
@@ -42,7 +42,7 @@ Finished sizes:
 
 All files use Bambu PLA Basic, the 0.20 mm Standard profile and the textured PEI plate, with a few tweaks (see [Print settings](#print-settings)). Nothing needs supports. Any PLA works; pick a strong red (the renders use `#E50914`) and a black or charcoal. Load red as filament 1 and black as filament 2; the plaque also uses grey as filament 3, for the bar's track, and the sub-headings white as filament 2.
 
-The AMS lite makes the two-colour plates: the plaque, the letters of the frames and the white-on-red sub-headings. Without an AMS, the stand's plates, the plaque's inlay plates and the all-white and all-red sub-headings are one colour each, so they print too.
+The AMS lite makes the two-colour plates: the plaque and the letters of the frames and sub-headings. Without an AMS, the stand's plates and the plaque's inlay plates are one colour each, so they print too.
 
 ## Printing and assembly
 
