@@ -65,8 +65,7 @@ EXPORT_MEMORY = 2 * 1024 ** 3                                     # memory budge
 RED, BLACK, GREY, WHITE = "#E50914", "#161616", "#5A5A5A", "#FFFFFF"
 # Products, one project per printer each, and the texts each one holds. Two-colour plates are
 # made by the AMS: MakerWorld bans pause-based colour-swap profiles and single-colour copies of
-# multi-colour ones, so there are none; the sub-headings' all-white and all-red plates are colours
-# of their own for the display (see docs/design-notes.md).
+# multi-colour ones, so there are none (see docs/design-notes.md).
 PRODUCTS = {"stand": ["SERIER", "BOOKFLIX"], "plaque": ["SERIER"], "frame": ["SERIER"],
             "open-frame": ["SERIER", "BOOKFLIX"], "subheadings": ["Populære nu", "Serier", "Nyheder"]}
 
@@ -137,7 +136,6 @@ class Group:
 class PlateSpec:
     name: str                 # [<GROUP> ]<part>[ (<note>)]; pack adds " <i> of <n>" if it overflows
     groups: list
-    rank: int = 0             # plates go in rank order, then text by text
 
 
 @dataclass
@@ -216,33 +214,25 @@ def plaque_plates(text, printer):
     ]
 
 
-def letter_plates(product, text, p, face=1, body=2, part="letters", colour=""):
+def letter_plates(product, text, p, face=1, body=2):
     """Loose letters, face down (letters_face_down in the .scad): the face prints first, on the
-    textured plate, and the body on top of it; one colour when face and body share a filament,
-    named after it (part names must be unique: they name the STL files and the project's objects).
-    Lightning infill: only the back needs holding up, and lighter letters stay put on tape or putty."""
+    textured plate, and the body on top of it. Lightning infill: only the back needs holding up,
+    and lighter letters stay put on tape or putty."""
     light = {"sparse_infill_pattern": "lightning"}
-
-    def parts(i, c):
-        if face == body:
-            return [Part(f"{text}-letter-{i + 1}-{c}-{colour}", dict(p, part="letter", letter_index=i), face, DOWN)]
-        return [Part(f"{text}-letter-{i + 1}-{c}-face", dict(p, part="letter_face", letter_index=i), face, DOWN),
-                Part(f"{text}-letter-{i + 1}-{c}-body", dict(p, part="letter_body", letter_index=i), body, DOWN)]
-    groups = [Group(f"{text} letter {i + 1} {c.upper()}", parts(i, c), print_params=light)
-              for i, c in letters_of(text)]
-    return [PlateSpec(plate_name(product, text, part), groups)]
-
-
-# The sub-headings' colours: (plate note, face filament, body filament). Filament 1 is red, 2 white.
-SUBHEADING_COLOURS = [("white on red", 2, 1), ("white", 2, 2), ("red", 1, 1)]
+    groups = [Group(f"{text} letter {i + 1} {c.upper()}", [
+        Part(f"{text}-letter-{i + 1}-{c}-face", dict(p, part="letter_face", letter_index=i), face, DOWN),
+        Part(f"{text}-letter-{i + 1}-{c}-body", dict(p, part="letter_body", letter_index=i), body, DOWN)],
+        print_params=light)
+        for i, c in letters_of(text)]
+    return [PlateSpec(plate_name(product, text, "letters"), groups)]
 
 
 def subheading_plates(text, printer):
-    """Loose letters in small capitals, once per colour. Plates go colour by colour, so the
-    words of one colour are plates in a row."""
+    """Loose letters in small capitals: a white face (filament 2) on a red body (filament 1).
+    No one-colour plates: MakerWorld bans one-colour copies of multi-colour profiles, and loading
+    one colour as both filaments prints these in one colour."""
     p = dict(scad_params(printer, "subheadings", text), design="letters")
-    return [replace(spec, rank=k) for k, (note, face, body) in enumerate(SUBHEADING_COLOURS)
-            for spec in letter_plates("subheadings", text, p, face, body, f"letters ({note})", note)]
+    return letter_plates("subheadings", text, p, face=2, body=1)
 
 
 @cache
@@ -295,8 +285,8 @@ PRODUCT_PLATES = {"stand": (stand_plates, [RED, BLACK]), "plaque": (plaque_plate
 
 def make_project(product, printer):
     plates_of, filaments = PRODUCT_PLATES[product]
-    plates = [spec for text in PRODUCTS[product] for spec in plates_of(text, printer)]
-    return Project(product, printer, filaments, sorted(plates, key=lambda spec: spec.rank))
+    return Project(product, printer, filaments,
+                   [spec for text in PRODUCTS[product] for spec in plates_of(text, printer)])
 
 
 def project_key(product, printer):
