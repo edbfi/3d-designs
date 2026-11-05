@@ -211,8 +211,8 @@ assert(letters_mount != "pins" || letters_pin_tab_depth < letters_depth - letter
        "letters_pin_tab_depth must be less than the body (letters_depth - letters_face_depth), or the tabs show the face colour");
 assert(letters_mount != "pins" || (design == "letters" && arc == 0 && stroke_weight >= 0),
        "pin tabs are for straight loose letters (design letters; arc_depth = 0, or small_caps) with stroke_weight >= 0");
-assert(letters_mount != "pins" || (force_caps && len([for (c = txt) if (ord(c) >= 128 && ord(c) != 198 && ord(c) != 216) c]) == 0),
-       "pin tabs need capitals, and of the accented letters take only Æ and Ø: a mark above a capital would meet its top tab");
+assert(letters_mount != "pins" || (force_caps && len([for (c = txt) if (c == "Q" || (ord(c) >= 128 && ord(c) != 198 && ord(c) != 216)) c]) == 0),
+       "pin tabs need capitals without a Q, whose tail would meet its bottom tab, and of the accented letters take only Æ and Ø: a mark above a capital would meet its top tab");
 assert(letters_mount != "pins" || letters_pin_tab >= letters_pin_d + 1.6, "letters_pin_tab must leave 0.8 mm of wall either side of the pin hole");
 // a round letter reaches above the capitals' line (1.5 % of its height in Bebas Neue)
 assert(letters_mount != "pins" || letters_pin_offset >= letters_pin_d / 2 + 0.4 + 0.02 * H + stroke_weight,
@@ -818,26 +818,31 @@ module letters_print_pose() {
 }
 
 // All letters in place, flat, face up (preview and MakerWorld plates; no flat bottoms).
-// half = "left"/"right" keeps only the letters before/from the middle one.
+// half = "left"/"right" keeps only the letters before/from the middle one. The halves split the
+// letters, not the spaces: a space has an empty column, which would leave the half's cut short.
 module loose_word(zone, half = "all") {
     f = letters_depth - letters_face_depth;
-    m = floor(n_letters / 2);
-    difference() {
-        intersection() {
-            chamfer_extrude(letters_depth, letters_chamfer) word2d();
-            if (zone == "face") translate([-BIG, -BIG, f]) cube([2 * BIG, 2 * BIG, BIG]);
-            if (zone == "body") translate([-BIG, -BIG, -1]) cube([2 * BIG, 2 * BIG, f + 1]);
-            if (half == "left")  translate([0, 0, -1]) linear_extrude(BIG) hull() { letter_column(0); letter_column(m - 1); }
-            if (half == "right") translate([0, 0, -1]) linear_extrude(BIG) hull() { letter_column(m); letter_column(n_letters - 1); }
+    ink = [for (i = [0 : n_letters - 1]) if (txt[i] != " ") i];
+    m = floor(len(ink) / 2);
+    keep = half == "left" ? [for (k = [0 : 1 : m - 1]) ink[k]]
+         : half == "right" ? [for (k = [m : 1 : len(ink) - 1]) ink[k]] : ink;
+    if (len(keep) > 0) {
+        difference() {
+            intersection() {
+                chamfer_extrude(letters_depth, letters_chamfer) word2d();
+                if (zone == "face") translate([-BIG, -BIG, f]) cube([2 * BIG, 2 * BIG, BIG]);
+                if (zone == "body") translate([-BIG, -BIG, -1]) cube([2 * BIG, 2 * BIG, f + 1]);
+                if (half != "all")
+                    translate([0, 0, -1]) linear_extrude(BIG) hull() { letter_column(keep[0]); letter_column(keep[len(keep) - 1]); }
+            }
+            if (letters_mount == "recess")
+                translate([0, 0, -1]) linear_extrude(letters_recess_depth + 1)
+                    offset(delta = -letters_recess_wall) word2d();
         }
-        if (letters_mount == "recess")
-            translate([0, 0, -1]) linear_extrude(letters_recess_depth + 1)
-                offset(delta = -letters_recess_wall) word2d();
+        // pin tabs (in the body): those of this half's letters, not cut by its columns, which a
+        // tab wider than its letter would reach past
+        if (pins && zone != "face") linear_extrude(letters_pin_tab_depth) pin_tabs2d(keep);
     }
-    // pin tabs (in the body): those of this half's letters, not cut by its columns, which a tab
-    // wider than its letter would reach past
-    if (pins && zone != "face") linear_extrude(letters_pin_tab_depth)
-        pin_tabs2d(half == "right" ? [m : n_letters - 1] : [0 : (half == "left" ? m : n_letters) - 1]);
 }
 
 // ------------------------------------------------------------------ design: pinboard frames
