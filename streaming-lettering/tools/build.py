@@ -969,7 +969,8 @@ def export_makerworld_edition():
     small_caps = ["-D", "small_caps=true", "-D", 'text_string="Serier"']
     for label, design, extra in [(d, d, []) for d in ("stand", "plaque", "letters", "frame", "open-frame")] \
             + [("letters-small-caps", "letters", small_caps),
-               ("letters-pin-tabs", "letters", small_caps + ["-D", 'letters_mount="pins"'])]:
+               # a text with a space and an Æ: the halves split over letters, and pins take Æ
+               ("letters-pin-tabs", "letters", small_caps + ["-D", 'text_string="Populære nu"', "-D", 'letters_mount="pins"'])]:
         for plate in ("", "mw_plate_1();", "mw_plate_2();"):
             probe = BUILD / "makerworld" / f"probe-{label}-{plate[:10] or 'top'}.scad"
             probe.parent.mkdir(parents=True, exist_ok=True)

@@ -704,7 +704,7 @@ pin_band = 0.03;   // a tab is centred on its letter's ink this deep along the e
 pin_line = 0.0005; // the seed's height on that edge, x a capital's height
 pin_root = 0.3;    // how far a tab reaches past the edge, into the strip behind its letter (mm)
 
-// Pin tabs of the letters is (final frame): one on each letter's top edge and one on its bottom
+// Pin tabs of the letters at indices is (final frame): one on each letter's top edge and one on its bottom
 // edge, each with a hole letters_pin_offset beyond that edge, so no hole goes through a letter.
 // The edges are the capitals' lines (the baseline, and the top of a capital: a small one after a
 // small capitals' first letter), not each letter's own, so the tabs line up in a row and a round

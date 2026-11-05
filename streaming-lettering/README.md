@@ -10,12 +10,12 @@ An exhibition piece for a school library: `SERIER` in streaming-style bent lette
 | **Frame**: the loose letters on a black backing panel with a border, pinned to a pinboard | ![](docs/images/renders/serier-frame.png) | |
 | **Open frame**: the same frame without the panel, so the board shows through around and between the letters | ![](docs/images/renders/serier-open-frame.png) | ![](docs/images/renders/bookflix-open-frame.png) |
 
-**Sub-headings**: loose letters in small capitals, straight, about half BOOKFLIX's size: a white face on a red body (greyed by the lighting in the renders). For all white or all red, set both filaments to that colour. Each word also comes with pin tabs, a small red tab behind the top and bottom of every letter, for pinning it to a fabric pinboard with dressmaker's pins (last render).
+**Sub-headings**: loose letters in small capitals, straight, about half BOOKFLIX's size: a white face on a red body (greyed by the lighting in the renders). For all white or all red, set both filaments to that colour. Each word also comes with pin tabs, a small red tab behind the top and bottom of every letter, for pinning it to a fabric pinboard with dressmaker's pins.
 
 ![](docs/images/renders/populaere-nu-subheading.png)
 ![](docs/images/renders/serier-subheading.png)
 ![](docs/images/renders/nyheder-subheading.png)
-![](docs/images/renders/serier-subheading-pin-tabs.png)
+![Serier with pin tabs](docs/images/renders/serier-subheading-pin-tabs.png)
 
 ## Pick a file
 
