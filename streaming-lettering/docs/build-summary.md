@@ -49,8 +49,14 @@ what ends up in the print; purge is what the AMS flushes out at colour changes.
 |  |  | 5. BOOKFLIX frame 1 of 2 | 1 h 24 min | black 44 g | - |
 |  |  | 6. BOOKFLIX frame 2 of 2 | 1 h 27 min | black 45 g | - |
 | `streaming-lettering-subheadings-a1-mini.3mf` | Bambu Lab A1 mini | 1. Populære nu letters | 0 h 35 min | red 8 g, white 4 g | under 1 g |
-|  |  | 2. Serier letters | 0 h 24 min | red 4 g, white 2 g | under 1 g |
-|  |  | 3. Nyheder letters | 0 h 29 min | red 6 g, white 3 g | under 1 g |
+|  |  | 2. Populære nu letters (pin tabs) | 0 h 39 min | red 7 g, white 6 g | under 1 g |
+|  |  | 3. Serier letters | 0 h 24 min | red 4 g, white 2 g | under 1 g |
+|  |  | 4. Serier letters (pin tabs) | 0 h 26 min | red 4 g, white 4 g | under 1 g |
+|  |  | 5. Nyheder letters | 0 h 29 min | red 6 g, white 3 g | under 1 g |
+|  |  | 6. Nyheder letters (pin tabs) | 0 h 32 min | red 5 g, white 5 g | under 1 g |
 | `streaming-lettering-subheadings-a2l.3mf` | Bambu Lab A2L | 1. Populære nu letters | 1 h 21 min | red 24 g, white 11 g | under 1 g |
-|  |  | 2. Serier letters | 0 h 47 min | red 13 g, white 6 g | under 1 g |
-|  |  | 3. Nyheder letters | 0 h 59 min | red 17 g, white 8 g | under 1 g |
+|  |  | 2. Populære nu letters (pin tabs) | 1 h 23 min | red 20 g, white 17 g | under 1 g |
+|  |  | 3. Serier letters | 0 h 47 min | red 13 g, white 6 g | under 1 g |
+|  |  | 4. Serier letters (pin tabs) | 0 h 50 min | red 11 g, white 9 g | under 1 g |
+|  |  | 5. Nyheder letters | 0 h 59 min | red 17 g, white 8 g | under 1 g |
+|  |  | 6. Nyheder letters (pin tabs) | 1 h 02 min | red 14 g, white 12 g | under 1 g |

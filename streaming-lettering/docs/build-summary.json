@@ -689,6 +689,30 @@
    },
    {
     "plate": 2,
+    "name": "Popul\u00e6re nu letters (pin tabs)",
+    "minutes": 39,
+    "purge_g": 0.7,
+    "grams": {
+     "1": 7.0,
+     "2": 6.2
+    },
+    "colour_changes": 1,
+    "objects": [
+     "Popul\u00e6re nu letter 1 P (pin tabs)",
+     "Popul\u00e6re nu letter 2 O (pin tabs)",
+     "Popul\u00e6re nu letter 3 P (pin tabs)",
+     "Popul\u00e6re nu letter 4 U (pin tabs)",
+     "Popul\u00e6re nu letter 5 L (pin tabs)",
+     "Popul\u00e6re nu letter 6 \u00c6 (pin tabs)",
+     "Popul\u00e6re nu letter 7 R (pin tabs)",
+     "Popul\u00e6re nu letter 8 E (pin tabs)",
+     "Popul\u00e6re nu letter 10 N (pin tabs)",
+     "Popul\u00e6re nu letter 11 U (pin tabs)"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
     "name": "Serier letters",
     "minutes": 24,
     "purge_g": 0.3,
@@ -708,7 +732,27 @@
     "warning": ""
    },
    {
-    "plate": 3,
+    "plate": 4,
+    "name": "Serier letters (pin tabs)",
+    "minutes": 26,
+    "purge_g": 0.7,
+    "grams": {
+     "1": 3.9,
+     "2": 3.7
+    },
+    "colour_changes": 1,
+    "objects": [
+     "Serier letter 1 S (pin tabs)",
+     "Serier letter 2 E (pin tabs)",
+     "Serier letter 3 R (pin tabs)",
+     "Serier letter 4 I (pin tabs)",
+     "Serier letter 5 E (pin tabs)",
+     "Serier letter 6 R (pin tabs)"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 5,
     "name": "Nyheder letters",
     "minutes": 29,
     "purge_g": 0.3,
@@ -725,6 +769,27 @@
      "Nyheder letter 5 D",
      "Nyheder letter 6 E",
      "Nyheder letter 7 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 6,
+    "name": "Nyheder letters (pin tabs)",
+    "minutes": 32,
+    "purge_g": 0.7,
+    "grams": {
+     "1": 5.1,
+     "2": 4.8
+    },
+    "colour_changes": 1,
+    "objects": [
+     "Nyheder letter 1 N (pin tabs)",
+     "Nyheder letter 2 Y (pin tabs)",
+     "Nyheder letter 3 H (pin tabs)",
+     "Nyheder letter 4 E (pin tabs)",
+     "Nyheder letter 5 D (pin tabs)",
+     "Nyheder letter 6 E (pin tabs)",
+     "Nyheder letter 7 R (pin tabs)"
     ],
     "warning": ""
    }
@@ -767,6 +832,30 @@
    },
    {
     "plate": 2,
+    "name": "Popul\u00e6re nu letters (pin tabs)",
+    "minutes": 83,
+    "purge_g": 0.7,
+    "grams": {
+     "1": 19.5,
+     "2": 16.7
+    },
+    "colour_changes": 1,
+    "objects": [
+     "Popul\u00e6re nu letter 1 P (pin tabs)",
+     "Popul\u00e6re nu letter 2 O (pin tabs)",
+     "Popul\u00e6re nu letter 3 P (pin tabs)",
+     "Popul\u00e6re nu letter 4 U (pin tabs)",
+     "Popul\u00e6re nu letter 5 L (pin tabs)",
+     "Popul\u00e6re nu letter 6 \u00c6 (pin tabs)",
+     "Popul\u00e6re nu letter 7 R (pin tabs)",
+     "Popul\u00e6re nu letter 8 E (pin tabs)",
+     "Popul\u00e6re nu letter 10 N (pin tabs)",
+     "Popul\u00e6re nu letter 11 U (pin tabs)"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
     "name": "Serier letters",
     "minutes": 47,
     "purge_g": 0.3,
@@ -786,7 +875,27 @@
     "warning": ""
    },
    {
-    "plate": 3,
+    "plate": 4,
+    "name": "Serier letters (pin tabs)",
+    "minutes": 50,
+    "purge_g": 0.7,
+    "grams": {
+     "1": 10.7,
+     "2": 9.4
+    },
+    "colour_changes": 1,
+    "objects": [
+     "Serier letter 1 S (pin tabs)",
+     "Serier letter 2 E (pin tabs)",
+     "Serier letter 3 R (pin tabs)",
+     "Serier letter 4 I (pin tabs)",
+     "Serier letter 5 E (pin tabs)",
+     "Serier letter 6 R (pin tabs)"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 5,
     "name": "Nyheder letters",
     "minutes": 59,
     "purge_g": 0.3,
@@ -803,6 +912,27 @@
      "Nyheder letter 5 D",
      "Nyheder letter 6 E",
      "Nyheder letter 7 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 6,
+    "name": "Nyheder letters (pin tabs)",
+    "minutes": 62,
+    "purge_g": 0.7,
+    "grams": {
+     "1": 14.3,
+     "2": 12.4
+    },
+    "colour_changes": 1,
+    "objects": [
+     "Nyheder letter 1 N (pin tabs)",
+     "Nyheder letter 2 Y (pin tabs)",
+     "Nyheder letter 3 H (pin tabs)",
+     "Nyheder letter 4 E (pin tabs)",
+     "Nyheder letter 5 D (pin tabs)",
+     "Nyheder letter 6 E (pin tabs)",
+     "Nyheder letter 7 R (pin tabs)"
     ],
     "warning": ""
    }
