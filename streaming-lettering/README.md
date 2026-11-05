@@ -10,7 +10,7 @@ An exhibition piece for a school library: `SERIER` in streaming-style bent lette
 | **Frame**: the loose letters on a black backing panel with a border, pinned to a pinboard | ![](docs/images/renders/serier-frame.png) | |
 | **Open frame**: the same frame without the panel, so the board shows through around and between the letters | ![](docs/images/renders/serier-open-frame.png) | ![](docs/images/renders/bookflix-open-frame.png) |
 
-**Sub-headings**: loose letters in small capitals, straight, about half BOOKFLIX's size: white on red (shown), all white or all red.
+**Sub-headings**: loose letters in small capitals, straight, about half BOOKFLIX's size: white on red, all white or all red. The renders show white on red, with the white greyed by the lighting.
 
 ![](docs/images/renders/populaere-nu-subheading.png)
 ![](docs/images/renders/serier-subheading.png)

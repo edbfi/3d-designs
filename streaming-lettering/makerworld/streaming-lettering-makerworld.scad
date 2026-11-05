@@ -192,6 +192,7 @@ n_letters = len(txt);
 
 assert(n_letters > 0, "text_string is empty");
 assert(arc_depth >= 0 && arc_depth < 0.5, "arc_depth must be in [0, 0.5)");
+assert(small_caps_height > 0 && small_caps_height < 1, "small_caps_height must be in (0, 1): the first letter is the tallest");
 assert(letter_index >= 0 && letter_index < n_letters, "letter_index is past the end of the text");
 assert(stand_tab_depth < stand_base_height, "stand_tab_depth must be less than stand_base_height");
 assert(stand_base_height < 0.85 * letter_height && plaque_margin_bottom < 0.85 * letter_height, "base height and plaque bottom margin must stay under 0.85 x letter_height");
@@ -956,8 +957,8 @@ module template2d() {
         word2d();
     }
     // alignment line and centre tick: above the flat top edge, or under the baseline that
-    // small capitals share
-    y = small_caps ? -H - 1.9 : 1.5;
+    // small capitals share, about 1 mm clear of round letters, which dip 1.4 % of H below it
+    y = small_caps ? -1.015 * H - 1.8 : 1.5;
     intersection() {
         word_xband_wide(10);
         translate([-BIG, y]) square([2 * BIG, 0.4]);

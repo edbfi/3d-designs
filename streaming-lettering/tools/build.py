@@ -65,7 +65,8 @@ EXPORT_MEMORY = 2 * 1024 ** 3                                     # memory budge
 RED, BLACK, GREY, WHITE = "#E50914", "#161616", "#5A5A5A", "#FFFFFF"
 # Products, one project per printer each, and the texts each one holds. Two-colour plates are
 # made by the AMS: MakerWorld bans pause-based colour-swap profiles and single-colour copies of
-# multi-colour ones, so there are none (see docs/design-notes.md).
+# multi-colour ones, so there are none; the sub-headings' all-white and all-red plates are colours
+# of their own for the display (see docs/design-notes.md).
 PRODUCTS = {"stand": ["SERIER", "BOOKFLIX"], "plaque": ["SERIER"], "frame": ["SERIER"],
             "open-frame": ["SERIER", "BOOKFLIX"], "subheadings": ["Populære nu", "Serier", "Nyheder"]}
 
@@ -970,21 +971,22 @@ def export_makerworld_edition():
     edition.write_text("\n".join(header + out) + "\n")
 
     # the edition must have no top-level geometry, and every plate must render cleanly
-    for design in ("stand", "plaque", "letters", "letters-small-caps", "frame", "open-frame"):
-        extra = ["-D", "small_caps=true", "-D", 'text_string="Serier"'] if design.endswith("small-caps") else []
+    small_caps = ["-D", "small_caps=true", "-D", 'text_string="Serier"']
+    for label, design, extra in [(d, d, []) for d in ("stand", "plaque", "letters", "frame", "open-frame")] \
+            + [("letters-small-caps", "letters", small_caps)]:
         for plate in ("", "mw_plate_1();", "mw_plate_2();"):
-            probe = BUILD / "makerworld" / f"probe-{design}-{plate[:10] or 'top'}.scad"
+            probe = BUILD / "makerworld" / f"probe-{label}-{plate[:10] or 'top'}.scad"
             probe.parent.mkdir(parents=True, exist_ok=True)
             fonts = "\n".join(f"use <{f}>" for f in sorted((ROOT / "fonts").glob("*.ttf")))
             probe.write_text(f"{fonts}\ninclude <{edition}>\n{plate}\n")
             r = run_openscad([OPENSCAD, "--backend=manifold", "--export-format", "binstl", "-o",
-                              str(probe.with_suffix(".stl")), "-D", f'design="{design.split("-small")[0]}"',
+                              str(probe.with_suffix(".stl")), "-D", f'design="{design}"',
                               *extra, str(probe)],
-                             f"MakerWorld edition, {design} {plate or 'top level'}")
+                             f"MakerWorld edition, {label} {plate or 'top level'}")
             empty = "Current top level object is empty" in r.stderr
             bad = [l for l in r.stderr.splitlines() if l.startswith(("ERROR", "WARNING"))]
             if bad or (plate and (r.returncode != 0 or empty)) or (not plate and not empty):
-                raise RuntimeError(f"MakerWorld edition, {design} {plate or 'top level'}: "
+                raise RuntimeError(f"MakerWorld edition, {label} {plate or 'top level'}: "
                                    f"{'not empty' if not plate else ''} {bad or r.stderr[-400:]}")
     return edition
 
