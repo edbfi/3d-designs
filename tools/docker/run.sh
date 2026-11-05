@@ -6,6 +6,7 @@
 # CPUS caps the container (default 3), which keeps small fanless boards from overheating.
 # MEMORY caps it (default 4.5g, no swap), so a runaway export is killed inside the container instead
 # of starving the machine; the kernel also kills the container first if the machine runs out.
+# OPENSCAD_TIMEOUT, if set, is passed through to the build's per-run OpenSCAD time limit.
 set -eu
 IMAGE=${TOOLS_IMAGE:-3d-designs-tools}
 HERE=$(cd "$(dirname "$0")" && pwd -P)
