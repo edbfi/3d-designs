@@ -48,6 +48,8 @@ DOCS = ROOT / "docs"
 BAMBU = os.environ.get("BAMBU_STUDIO", "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio")
 PROFILES = Path(os.environ.get("BAMBU_PROFILES", "/Applications/BambuStudio.app/Contents/Resources/profiles/BBL"))
 
+EXPORT_MEMORY = 2 * 1024 ** 3  # memory budget per parallel export: they must fit the container's cap
+
 COLOUR = "#2B2B2D"  # PETG Basic Black: the case is black, and black hides the guard's layer lines
 
 PRINTERS = {
@@ -114,6 +116,15 @@ def export_part(name):
     if slivers:
         raise RuntimeError(f"{name}: stray sliver pieces in the mesh (size, min corner): {slivers[:3]}")
     return name, stl_bbox(path)
+
+
+def memory_jobs(jobs):
+    """As many parallel exports as fit this container's memory cap (EXPORT_MEMORY each), at most jobs."""
+    try:
+        cap = Path("/sys/fs/cgroup/memory.max").read_text().strip()
+    except OSError:
+        return jobs
+    return jobs if cap == "max" else max(1, min(jobs, int(cap) // EXPORT_MEMORY))
 
 
 def check_fit():
@@ -426,8 +437,10 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--only", action="append", default=[], help="build projects whose key matches this regex")
     ap.add_argument("--list", action="store_true")
-    ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4, help="parallel part exports")
+    ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4,
+                    help="parallel part exports (lowered to fit the container's memory cap)")
     a = ap.parse_args()
+    a.jobs = memory_jobs(a.jobs)
 
     variants = [Variant(pr) for pr in PRINTERS]
     variants = [v for v in variants if all(re.search(o, v.key) for o in a.only)]
@@ -447,7 +460,19 @@ def main():
     needed = sorted({p for v in variants for plate in PLATES[v.printer] for p in plate})
     log(f"exporting {', '.join(needed)} with build123d ({a.jobs} jobs)")
     with cf.ProcessPoolExecutor(a.jobs) as ex:
-        bboxes = dict(ex.map(export_part, needed))
+        try:
+            bboxes = dict(ex.map(export_part, needed))
+        except BaseException as e:
+            # the first failure stops the build: kill the exports in flight (the executor has no
+            # public way to) rather than waiting for them and the rest of the queue
+            for proc in list(ex._processes.values()):
+                proc.kill()
+            ex.shutdown(wait=False, cancel_futures=True)
+            if isinstance(e, cf.process.BrokenProcessPool):
+                sys.exit("a build123d export was killed, most likely for running out of memory: the "
+                         "container's MEMORY cap, or the memory all containers share, if a build and "
+                         "MCP renders overlapped; simplify the geometry")
+            raise
     log(f"STEP: {export_step().relative_to(ROOT)}")
 
     # Bambu projects, one at a time: the CLI shares its data directory

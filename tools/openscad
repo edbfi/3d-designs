@@ -4,16 +4,18 @@
 # with the same snapshot as the build and nothing is installed or compiled. Docker pulls the image
 # on first use. It sees files the way a local OpenSCAD would: /tmp, $HOME and the repo are mounted
 # at their own paths, and the container runs as you. The three configs pin the same openscad-mcp
-# version: bump them together. CPUS caps the container's cores, if set.
+# version: bump them together. CPUS caps the container's cores, if set; MCP_RENDER_MEMORY caps its
+# memory (default 2g, no swap), and the kernel kills it first if the machine runs out.
 set -eu
 HERE=$(cd "$(dirname "$0")" && pwd -P)
 ROOT=$(cd "$HERE/.." && pwd -P)
 IMAGE=$(sed -n 's/^FROM \([^ ]*\).*/\1/p' "$HERE/docker/Dockerfile" | head -n 1)
-set -- "$IMAGE" timeout "${MCP_RENDER_TIMEOUT:-300}" openscad "$@"
+set -- "$IMAGE" timeout --kill-after=10 "${MCP_RENDER_TIMEOUT:-300}" openscad "$@"
 case "$ROOT/" in
     "$HOME"/*) ;;
     *) set -- -v "$ROOT:$ROOT" "$@" ;;
 esac
 # timeout: the MCP stops a slow render by killing this script, which would leave the container running
-exec docker run --rm --init ${CPUS:+--cpus "$CPUS"} --user "$(id -u):$(id -g)" -e HOME="$HOME" \
+exec docker run --rm --init ${CPUS:+--cpus "$CPUS"} --memory "${MCP_RENDER_MEMORY:-2g}" \
+    --memory-swap "${MCP_RENDER_MEMORY:-2g}" --oom-score-adj 1000 --user "$(id -u):$(id -g)" -e HOME="$HOME" \
     -e OPENSCADPATH="${OPENSCADPATH:-}" -v /tmp:/tmp -v "$HOME:$HOME" -w "$(pwd -P)" "$@"
