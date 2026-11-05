@@ -33,6 +33,7 @@ import shutil
 import struct
 import subprocess
 import sys
+import threading
 import time
 import uuid
 import zipfile
@@ -56,6 +57,10 @@ OPENSCAD = (os.environ.get("OPENSCAD") or shutil.which("openscad")
             or "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD")
 BAMBU = os.environ.get("BAMBU_STUDIO", "/Applications/BambuStudio.app/Contents/MacOS/BambuStudio")
 PROFILES = Path(os.environ.get("BAMBU_PROFILES", "/Applications/BambuStudio.app/Contents/Resources/profiles/BBL"))
+# A runaway model (a CSG tree that explodes) must fail fast with its part's name, not starve the
+# machine: every OpenSCAD run has a time limit, and parallel exports must fit the memory cap.
+OPENSCAD_TIMEOUT = int(os.environ.get("OPENSCAD_TIMEOUT", 1200))   # seconds per run
+EXPORT_MEMORY = 2 * 1024 ** 3                                     # memory budget per parallel export
 
 RED, BLACK, GREY = "#E50914", "#161616", "#5A5A5A"
 # Products, one project per printer each, and the texts each one holds. Two-colour plates are
@@ -295,6 +300,69 @@ def fmt_param(v):
     return repr(v)
 
 
+# OpenSCAD runs in flight, so the first failure can stop the others (stop_openscad).
+_running, _running_lock, _stopped = set(), threading.Lock(), threading.Event()
+
+
+def run_openscad(args, label):
+    """Run OpenSCAD; a run that times out or is killed (for running out of memory) raises,
+    naming what it was making."""
+    with _running_lock:
+        if _stopped.is_set():
+            raise RuntimeError(f"{label}: not started, an earlier OpenSCAD run failed")
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        _running.add(proc)
+    try:
+        out, err = proc.communicate(timeout=OPENSCAD_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        proc.communicate()
+        raise RuntimeError(f"{label}: OpenSCAD took over {OPENSCAD_TIMEOUT} s; simplify the geometry "
+                           "(OPENSCAD_TIMEOUT sets the limit)") from None
+    finally:
+        with _running_lock:
+            _running.discard(proc)
+    if proc.returncode == -9:
+        if _stopped.is_set():
+            raise RuntimeError(f"{label}: stopped, an earlier OpenSCAD run failed")
+        raise RuntimeError(f"{label}: OpenSCAD was killed, most likely for running out of memory: the "
+                           "container's MEMORY cap, or the memory all containers share, if a build and "
+                           "MCP renders overlapped; simplify the geometry")
+    return subprocess.CompletedProcess(args, proc.returncode, out, err)
+
+
+def stop_openscad():
+    """Kill the OpenSCAD runs in flight and refuse new ones: the build is failing."""
+    with _running_lock:
+        _stopped.set()
+        for proc in _running:
+            proc.kill()
+
+
+def run_parallel(fn, items, workers):
+    """fn over items in threads, results in order. The first failure stops the runs in flight,
+    cancels the rest and is raised, rather than waiting for the rest of the queue."""
+    with cf.ThreadPoolExecutor(workers) as ex:
+        futs = [ex.submit(fn, item) for item in items]
+        try:
+            for f in cf.as_completed(futs):
+                f.result()
+        except BaseException:
+            stop_openscad()
+            ex.shutdown(wait=False, cancel_futures=True)
+            raise
+        return [f.result() for f in futs]
+
+
+def memory_jobs(jobs):
+    """As many parallel exports as fit this container's memory cap (EXPORT_MEMORY each), at most jobs."""
+    try:
+        cap = Path("/sys/fs/cgroup/memory.max").read_text().strip()
+    except OSError:
+        return jobs
+    return jobs if cap == "max" else max(1, min(jobs, int(cap) // EXPORT_MEMORY))
+
+
 def export_stl(part: Part, out_dir: Path):
     out_dir.mkdir(parents=True, exist_ok=True)
     part.stl = out_dir / f"{part.name}.stl"
@@ -302,7 +370,7 @@ def export_stl(part: Part, out_dir: Path):
     for k, v in part.params.items():
         args += ["-D", f"{k}={fmt_param(v)}"]
     args.append(str(SCAD))
-    r = subprocess.run(args, capture_output=True, text=True)
+    r = run_openscad(args, part.name)
     if r.returncode != 0 or not part.stl.exists():
         raise RuntimeError(f"OpenSCAD failed for {part.name}:\n{r.stderr[-2000:]}")
     bad = [l for l in r.stderr.splitlines() if l.startswith(("ERROR", "WARNING"))]
@@ -817,13 +885,16 @@ def export_templates(workers):
             out = TEMPLATES / f"{text.lower()}-letters-template-{printer}.svg"
             args = [OPENSCAD, "-o", str(out)] + sum((["-D", f"{k}={fmt_param(v)}"] for k, v in p.items()), []) + [str(SCAD)]
             jobs.append((args, out))
-    with cf.ThreadPoolExecutor(workers) as ex:
-        for (args, out), r in zip(jobs, ex.map(lambda j: subprocess.run(j[0], capture_output=True, text=True), jobs)):
-            if r.returncode != 0:
-                raise RuntimeError(f"template {out.name}: {r.stderr[-800:]}")
-            # OpenSCAD writes unfilled hairline paths; fill them so the outline prints solid
-            svg = out.read_text().replace('stroke="black" fill="none"', 'stroke="none" fill="black"')
-            out.write_text(svg)
+
+    def make(job):
+        args, out = job
+        r = run_openscad(args, f"template {out.name}")
+        if r.returncode != 0:
+            raise RuntimeError(f"template {out.name}: {r.stderr[-800:]}")
+        # OpenSCAD writes unfilled hairline paths; fill them so the outline prints solid
+        svg = out.read_text().replace('stroke="black" fill="none"', 'stroke="none" fill="black"')
+        out.write_text(svg)
+    run_parallel(make, jobs, workers)
 
 
 # Desktop-only settings, hidden in the MakerWorld edition (its plates replace them).
@@ -875,9 +946,9 @@ def export_makerworld_edition():
             probe.parent.mkdir(parents=True, exist_ok=True)
             fonts = "\n".join(f"use <{f}>" for f in sorted((ROOT / "fonts").glob("*.ttf")))
             probe.write_text(f"{fonts}\ninclude <{edition}>\n{plate}\n")
-            r = subprocess.run([OPENSCAD, "--backend=manifold", "--export-format", "binstl", "-o",
-                                str(probe.with_suffix(".stl")), "-D", f'design="{design}"', str(probe)],
-                               capture_output=True, text=True)
+            r = run_openscad([OPENSCAD, "--backend=manifold", "--export-format", "binstl", "-o",
+                              str(probe.with_suffix(".stl")), "-D", f'design="{design}"', str(probe)],
+                             f"MakerWorld edition, {design} {plate or 'top level'}")
             empty = "Current top level object is empty" in r.stderr
             bad = [l for l in r.stderr.splitlines() if l.startswith(("ERROR", "WARNING"))]
             if bad or (plate and (r.returncode != 0 or empty)) or (not plate and not empty):
@@ -906,10 +977,13 @@ def export_renders(workers):
                     "--colorscheme=Tomorrow", "--autocenter", "--viewall", f"--camera={cam}",
                     "-o", str(out)] + sum((["-D", f"{k}={fmt_param(v)}"] for k, v in p.items()), []) + [str(SCAD)]
             jobs.append((args, out))
-    with cf.ThreadPoolExecutor(workers) as ex:
-        for (args, out), r in zip(jobs, ex.map(lambda j: subprocess.run(j[0], capture_output=True, text=True), jobs)):
-            if r.returncode != 0 or not out.exists():
-                raise RuntimeError(f"render {out.name}: {r.stderr[-800:]}")
+
+    def make(job):
+        args, out = job
+        r = run_openscad(args, f"render {out.name}")
+        if r.returncode != 0 or not out.exists():
+            raise RuntimeError(f"render {out.name}: {r.stderr[-800:]}")
+    run_parallel(make, jobs, workers)
 
 
 COLOUR_NAMES = {RED: "red", BLACK: "black", GREY: "grey"}
@@ -964,11 +1038,13 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--only", action="append", default=[], help="build projects whose key matches this regex")
     ap.add_argument("--list", action="store_true")
-    ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4, help="parallel OpenSCAD exports")
+    ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4,
+                    help="parallel OpenSCAD exports (lowered to fit the container's memory cap)")
     ap.add_argument("--renders-only", action="store_true", help="only refresh docs/images/renders")
     ap.add_argument("--no-renders", action="store_true", help="skip the preview renders")
     ap.add_argument("--makerworld-only", action="store_true", help="only write makerworld/ (the MakerWorld edition)")
     a = ap.parse_args()
+    a.jobs = memory_jobs(a.jobs)
     if a.renders_only:
         export_renders(a.jobs)
         return
@@ -988,10 +1064,7 @@ def main():
     # 1. export all parts in parallel
     parts = [(v, part) for v in projects for s in v.plates for g in s.groups for part in g.parts]
     log(f"exporting {len(parts)} parts with OpenSCAD ({a.jobs} jobs)")
-    with cf.ThreadPoolExecutor(a.jobs) as ex:
-        futs = {ex.submit(export_stl, part, BUILD / "stl" / v.key): part for v, part in parts}
-        for f in cf.as_completed(futs):
-            f.result()
+    run_parallel(lambda vp: export_stl(vp[1], BUILD / "stl" / vp[0].key), parts, a.jobs)
     log("templates")
     export_templates(a.jobs)
     log(f"MakerWorld edition: {export_makerworld_edition().relative_to(ROOT)}")

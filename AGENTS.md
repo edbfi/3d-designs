@@ -59,7 +59,15 @@ Each design has one source in one toolchain. Never keep the same geometry in two
 
 - From the design folder: `../tools/docker/run.sh python3 tools/build.py --jobs 2`.
   Always pass `--jobs 2`: the container is CPU-capped but Python still sees every core.
-  `CPUS=2` caps it lower on a fanless board. Don't run two builds in one checkout.
+  `CPUS=2` caps it lower on a fanless board.
+- Run one build at a time on a machine, and no `openscad` MCP renders while it runs: every
+  container shares one memory budget.
+- Builds and MCP renders run memory-capped, and OpenSCAD runs time-limited, so a model whose
+  geometry explodes is killed instead of taking the machine down. A part that is killed or times
+  out is a geometry bug: after changing a model, export one part through the MCP, or build the
+  smallest `--only` project, before a full build, and simplify the geometry. Don't raise `MEMORY`
+  or the time limits to get past it.
+- Scratch files go in the design's `build/`, not `/tmp`.
 - Check the exit status: successful variants are written even when others fail.
 - Every design builds in the one image in `tools/docker/`. When a design needs a new tool, add it
   there, not in a per-design image; Python packages go in its `requirements.in`. A toolchain
