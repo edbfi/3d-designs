@@ -51,7 +51,7 @@ Every plate is a separate print, so with two printers, send each plate to whiche
 
 - **Stand**: the letters print in red, face down so the textured plate gives them a crisp front; the plinth prints in black. Push each letter's tab into its pocket; it's a press fit with 0.15 mm clearance per side, and a drop of glue makes it permanent. BOOKFLIX's letters and plinth are longer than the A1 mini's bed, so they lie diagonally across it.
 - **Plaque**: with an AMS, print the plaque: the AMS does the black plaque, the red letters and bar, and the grey bar track. The stand is on its own plate: printed together, it would cost an extra colour change on every layer of the red letters. Without an AMS, print the inlay letters in red (the letters and the bar's fill, face down) and the inlay plaque in black, and press each red piece into its pocket (0.15 mm clearance; glue optional). Either way, slide the plaque into the stand's leaning slot.
-- **Letters** (frames, loose letters and sub-headings): printed face down: a red face, then a black body (sub-headings: a white face, then a red body). The AMS changes colour once per plate. Sub-headings with pin tabs print face up, standing on their tabs: the red body, then the white face.
+- **Letters** (frames, loose letters and sub-headings): printed face down: a red face, then a black body (sub-headings: a white face, then a red body). The AMS changes colour once per plate. Sub-headings with pin tabs print face up, on their backs: the red body, then the white face.
 
 ### Frames
 

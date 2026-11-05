@@ -135,8 +135,8 @@ letters_face_down = true;
 // Recess depth and wall thickness
 letters_recess_depth = 3; // [1:0.5:10]
 letters_recess_wall = 2.4; // [1.2:0.2:6]
-// Pin tabs: hole diameter (prints about 0.3 mm smaller: a 0.6 mm dressmaker's pin can lean a
-// little, and its head can't pull through)
+// Pin tabs: hole diameter (expected to print about 0.3 mm smaller, so a 0.6 mm dressmaker's pin
+// can lean a little and its head can't pull through; not test-printed yet)
 letters_pin_d = 1.3; // [0.8:0.1:2.5]
 // Pin tabs: width and thickness (keep it thinner than the body, so the tabs are the body's colour)
 letters_pin_tab = 3.8; // [2.5:0.1:8]
@@ -209,9 +209,14 @@ assert(stand_base_height < 0.85 * letter_height && plaque_margin_bottom < 0.85 *
 assert(letters_face_depth < letters_depth, "letters_face_depth must be less than letters_depth");
 assert(letters_mount != "pins" || letters_pin_tab_depth < letters_depth - letters_face_depth,
        "letters_pin_tab_depth must be less than the body (letters_depth - letters_face_depth), or the tabs show the face colour");
-assert(letters_mount != "pins" || arc == 0, "pin tabs need straight letters: arc_depth = 0, or small_caps");
-assert(letters_pin_tab >= letters_pin_d + 1.6, "letters_pin_tab must leave 0.8 mm of wall either side of the pin hole");
-assert(letters_pin_offset >= letters_pin_d / 2 + 0.4 + max(0, stroke_weight), "letters_pin_offset must keep the pin hole clear of the letter");
+assert(letters_mount != "pins" || (design == "letters" && arc == 0 && stroke_weight >= 0),
+       "pin tabs are for straight loose letters (design letters; arc_depth = 0, or small_caps) with stroke_weight >= 0");
+assert(letters_mount != "pins" || (force_caps && len([for (c = txt) if (ord(c) >= 128 && ord(c) != 198 && ord(c) != 216) c]) == 0),
+       "pin tabs need capitals, and of the accented letters take only Æ and Ø: a mark above a capital would meet its top tab");
+assert(letters_mount != "pins" || letters_pin_tab >= letters_pin_d + 1.6, "letters_pin_tab must leave 0.8 mm of wall either side of the pin hole");
+// a round letter reaches above the capitals' line (1.5 % of its height in Bebas Neue)
+assert(letters_mount != "pins" || letters_pin_offset >= letters_pin_d / 2 + 0.4 + 0.02 * H + stroke_weight,
+       "letters_pin_offset must keep the pin hole clear of the letter: raise it for big letters");
 assert(frame_index >= 0 && frame_index < frame_sections, "frame_index is past the last frame section");
 assert(frame_pocket_depth < frame_thickness - 0.8, "frame_pocket_depth must leave at least 0.8 mm of frame under the pockets");
 assert(frame_rail_inset + frame_rail < 0.45, "frame_rail_inset + frame_rail must stay under 0.45 so the two rails stay apart");
@@ -697,7 +702,7 @@ module plaque_stand() {
 pins = letters_mount == "pins";
 pin_band = 0.03;   // a tab is centred on its letter's ink this deep along the edge, x a capital's height
 pin_line = 0.0005; // the seed's height on that edge, x a capital's height
-pin_root = 1.2;    // how far a tab reaches into its letter, behind it (mm)
+pin_root = 0.3;    // how far a tab reaches past the edge, into the strip behind its letter (mm)
 
 // Pin tabs of the letters is (final frame): one on each letter's top edge and one on its bottom
 // edge, each with a hole letters_pin_offset beyond that edge, so no hole goes through a letter.
@@ -707,18 +712,16 @@ pin_root = 1.2;    // how far a tab reaches into its letter, behind it (mm)
 // along that edge, not on the letter's middle, which would miss an L's top and a P's foot. Where
 // that ink is two strokes (H, N, U, Y), its hull joins them: a strip behind the letter that
 // shows only at the end of the gap between them, set back by the letter's depth.
-// Each letter's edge ink, its hull and the tab's seed are found in the raw frame, on the bare
-// text: OpenSCAD writes out a reference's whole CSG tree for the cache, again for every
-// reference, and a letter of the final word (letter2d) is 11 MB of it. Only the results go to
-// the final frame, three references however many letters there are; the tab and its hole are
-// then a Minkowski sum with the seeds.
+// Each letter's edge ink, its hull and the tab's seed are found on the bare text, in the raw
+// frame, because every reference to a final letter (letter2d) costs 11 MB of CSG tree; only the
+// results go to the final frame, and the tab and its hole are a Minkowski sum with the seeds.
 module pin_tabs2d(is) {
     o = letters_pin_offset;
     w = letters_pin_tab;
     glyphs = [for (i = is) if (frame_glyph(txt[i])) i];
     if (len(glyphs) > 0) {
-        // inset a little, so a bar never peeks past the sides of the strokes it hides behind
-        offset(delta = stroke_weight - 0.05) pin_to_final() for (i = glyphs, s = [1, -1]) hull() pin_edge_ink2d(i, s);
+        // inset a little, so a strip never peeks past the sides of the strokes it hides behind
+        offset(delta = -0.05) pin_to_final() for (i = glyphs, s = [1, -1]) hull() pin_edge_ink2d(i, s);
         for (s = [1, -1]) minkowski() {
             pin_to_final() for (i = glyphs) pin_seed2d(i, s);
             scale([1, s]) difference() {
@@ -785,15 +788,9 @@ module pin_seed2d(i, s) {
     }
 }
 
-// The children's x-range as a vertical band, cut off square: the ends of the smeared hull slant
-// like the ink (a D's curve), and their edge slivers, summed in pin_seed2d, would land back on
-// the edge.
-module pin_xband2d() {
-    intersection() {
-        minkowski() { hull() children(); square([0.002, 2 * BIG], center = true); }
-        square([2 * BIG, BIG], center = true);
-    }
-}
+// The children's x-range as a vertical band, cut off square: xband2d's ends slant like the ink
+// (a D's curve), and their edge slivers, summed in pin_seed2d, would land back on the edge.
+module pin_xband2d() { intersection() { xband2d() children(); square([2 * BIG, BIG], center = true); } }
 
 module loose_letter(i, zone = "all") {
     f = letters_depth - letters_face_depth;
@@ -827,12 +824,7 @@ module loose_word(zone, half = "all") {
     m = floor(n_letters / 2);
     difference() {
         intersection() {
-            union() {
-                chamfer_extrude(letters_depth, letters_chamfer) word2d();
-                // pin tabs need each letter on its own: only the letters of this half
-                if (pins && zone != "face") linear_extrude(letters_pin_tab_depth)
-                    pin_tabs2d(half == "right" ? [m : n_letters - 1] : [0 : (half == "left" ? m : n_letters) - 1]);
-            }
+            chamfer_extrude(letters_depth, letters_chamfer) word2d();
             if (zone == "face") translate([-BIG, -BIG, f]) cube([2 * BIG, 2 * BIG, BIG]);
             if (zone == "body") translate([-BIG, -BIG, -1]) cube([2 * BIG, 2 * BIG, f + 1]);
             if (half == "left")  translate([0, 0, -1]) linear_extrude(BIG) hull() { letter_column(0); letter_column(m - 1); }
@@ -842,6 +834,10 @@ module loose_word(zone, half = "all") {
             translate([0, 0, -1]) linear_extrude(letters_recess_depth + 1)
                 offset(delta = -letters_recess_wall) word2d();
     }
+    // pin tabs (in the body): those of this half's letters, not cut by its columns, which a tab
+    // wider than its letter would reach past
+    if (pins && zone != "face") linear_extrude(letters_pin_tab_depth)
+        pin_tabs2d(half == "right" ? [m : n_letters - 1] : [0 : (half == "left" ? m : n_letters) - 1]);
 }
 
 // ------------------------------------------------------------------ design: pinboard frames
