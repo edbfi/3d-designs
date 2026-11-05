@@ -652,5 +652,409 @@
    }
   ],
   "file": "streaming-lettering-open-frame-a2l.3mf"
+ },
+ {
+  "key": "streaming-lettering-subheadings-a1-mini",
+  "product": "subheadings",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini",
+  "filaments": [
+   "#E50914",
+   "#FFFFFF"
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Popul\u00e6re nu letters (white on red)",
+    "minutes": 35,
+    "purge_g": 0.3,
+    "grams": {
+     "1": 8.0,
+     "2": 4.5
+    },
+    "colour_changes": 1,
+    "objects": [
+     "Popul\u00e6re nu letter 1 P",
+     "Popul\u00e6re nu letter 2 O",
+     "Popul\u00e6re nu letter 3 P",
+     "Popul\u00e6re nu letter 4 U",
+     "Popul\u00e6re nu letter 5 L",
+     "Popul\u00e6re nu letter 6 \u00c6",
+     "Popul\u00e6re nu letter 7 R",
+     "Popul\u00e6re nu letter 8 E",
+     "Popul\u00e6re nu letter 10 N",
+     "Popul\u00e6re nu letter 11 U"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "Serier letters (white on red)",
+    "minutes": 24,
+    "purge_g": 0.3,
+    "grams": {
+     "1": 4.4,
+     "2": 2.5
+    },
+    "colour_changes": 1,
+    "objects": [
+     "Serier letter 1 S",
+     "Serier letter 2 E",
+     "Serier letter 3 R",
+     "Serier letter 4 I",
+     "Serier letter 5 E",
+     "Serier letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Nyheder letters (white on red)",
+    "minutes": 29,
+    "purge_g": 0.3,
+    "grams": {
+     "1": 5.8,
+     "2": 3.3
+    },
+    "colour_changes": 1,
+    "objects": [
+     "Nyheder letter 1 N",
+     "Nyheder letter 2 Y",
+     "Nyheder letter 3 H",
+     "Nyheder letter 4 E",
+     "Nyheder letter 5 D",
+     "Nyheder letter 6 E",
+     "Nyheder letter 7 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "Popul\u00e6re nu letters (white)",
+    "minutes": 34,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 12.1
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Popul\u00e6re nu letter 1 P",
+     "Popul\u00e6re nu letter 2 O",
+     "Popul\u00e6re nu letter 3 P",
+     "Popul\u00e6re nu letter 4 U",
+     "Popul\u00e6re nu letter 5 L",
+     "Popul\u00e6re nu letter 6 \u00c6",
+     "Popul\u00e6re nu letter 7 R",
+     "Popul\u00e6re nu letter 8 E",
+     "Popul\u00e6re nu letter 10 N",
+     "Popul\u00e6re nu letter 11 U"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 5,
+    "name": "Serier letters (white)",
+    "minutes": 22,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 6.6
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Serier letter 1 S",
+     "Serier letter 2 E",
+     "Serier letter 3 R",
+     "Serier letter 4 I",
+     "Serier letter 5 E",
+     "Serier letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 6,
+    "name": "Nyheder letters (white)",
+    "minutes": 27,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 8.9
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Nyheder letter 1 N",
+     "Nyheder letter 2 Y",
+     "Nyheder letter 3 H",
+     "Nyheder letter 4 E",
+     "Nyheder letter 5 D",
+     "Nyheder letter 6 E",
+     "Nyheder letter 7 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 7,
+    "name": "Popul\u00e6re nu letters (red)",
+    "minutes": 34,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 12.1
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Popul\u00e6re nu letter 1 P",
+     "Popul\u00e6re nu letter 2 O",
+     "Popul\u00e6re nu letter 3 P",
+     "Popul\u00e6re nu letter 4 U",
+     "Popul\u00e6re nu letter 5 L",
+     "Popul\u00e6re nu letter 6 \u00c6",
+     "Popul\u00e6re nu letter 7 R",
+     "Popul\u00e6re nu letter 8 E",
+     "Popul\u00e6re nu letter 10 N",
+     "Popul\u00e6re nu letter 11 U"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 8,
+    "name": "Serier letters (red)",
+    "minutes": 22,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 6.6
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Serier letter 1 S",
+     "Serier letter 2 E",
+     "Serier letter 3 R",
+     "Serier letter 4 I",
+     "Serier letter 5 E",
+     "Serier letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 9,
+    "name": "Nyheder letters (red)",
+    "minutes": 27,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 8.9
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Nyheder letter 1 N",
+     "Nyheder letter 2 Y",
+     "Nyheder letter 3 H",
+     "Nyheder letter 4 E",
+     "Nyheder letter 5 D",
+     "Nyheder letter 6 E",
+     "Nyheder letter 7 R"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "streaming-lettering-subheadings-a1-mini.3mf"
+ },
+ {
+  "key": "streaming-lettering-subheadings-a2l",
+  "product": "subheadings",
+  "printer": "a2l",
+  "printer_label": "Bambu Lab A2L",
+  "filaments": [
+   "#E50914",
+   "#FFFFFF"
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Popul\u00e6re nu letters (white on red)",
+    "minutes": 81,
+    "purge_g": 0.3,
+    "grams": {
+     "1": 24.1,
+     "2": 11.4
+    },
+    "colour_changes": 1,
+    "objects": [
+     "Popul\u00e6re nu letter 1 P",
+     "Popul\u00e6re nu letter 2 O",
+     "Popul\u00e6re nu letter 3 P",
+     "Popul\u00e6re nu letter 4 U",
+     "Popul\u00e6re nu letter 5 L",
+     "Popul\u00e6re nu letter 6 \u00c6",
+     "Popul\u00e6re nu letter 7 R",
+     "Popul\u00e6re nu letter 8 E",
+     "Popul\u00e6re nu letter 10 N",
+     "Popul\u00e6re nu letter 11 U"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "Serier letters (white on red)",
+    "minutes": 47,
+    "purge_g": 0.3,
+    "grams": {
+     "1": 13.0,
+     "2": 6.2
+    },
+    "colour_changes": 1,
+    "objects": [
+     "Serier letter 1 S",
+     "Serier letter 2 E",
+     "Serier letter 3 R",
+     "Serier letter 4 I",
+     "Serier letter 5 E",
+     "Serier letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 3,
+    "name": "Nyheder letters (white on red)",
+    "minutes": 59,
+    "purge_g": 0.3,
+    "grams": {
+     "1": 17.4,
+     "2": 8.3
+    },
+    "colour_changes": 1,
+    "objects": [
+     "Nyheder letter 1 N",
+     "Nyheder letter 2 Y",
+     "Nyheder letter 3 H",
+     "Nyheder letter 4 E",
+     "Nyheder letter 5 D",
+     "Nyheder letter 6 E",
+     "Nyheder letter 7 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 4,
+    "name": "Popul\u00e6re nu letters (white)",
+    "minutes": 79,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 34.9
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Popul\u00e6re nu letter 1 P",
+     "Popul\u00e6re nu letter 2 O",
+     "Popul\u00e6re nu letter 3 P",
+     "Popul\u00e6re nu letter 4 U",
+     "Popul\u00e6re nu letter 5 L",
+     "Popul\u00e6re nu letter 6 \u00c6",
+     "Popul\u00e6re nu letter 7 R",
+     "Popul\u00e6re nu letter 8 E",
+     "Popul\u00e6re nu letter 10 N",
+     "Popul\u00e6re nu letter 11 U"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 5,
+    "name": "Serier letters (white)",
+    "minutes": 47,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 19.0
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Serier letter 1 S",
+     "Serier letter 2 E",
+     "Serier letter 3 R",
+     "Serier letter 4 I",
+     "Serier letter 5 E",
+     "Serier letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 6,
+    "name": "Nyheder letters (white)",
+    "minutes": 59,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 25.4
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Nyheder letter 1 N",
+     "Nyheder letter 2 Y",
+     "Nyheder letter 3 H",
+     "Nyheder letter 4 E",
+     "Nyheder letter 5 D",
+     "Nyheder letter 6 E",
+     "Nyheder letter 7 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 7,
+    "name": "Popul\u00e6re nu letters (red)",
+    "minutes": 79,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 34.9
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Popul\u00e6re nu letter 1 P",
+     "Popul\u00e6re nu letter 2 O",
+     "Popul\u00e6re nu letter 3 P",
+     "Popul\u00e6re nu letter 4 U",
+     "Popul\u00e6re nu letter 5 L",
+     "Popul\u00e6re nu letter 6 \u00c6",
+     "Popul\u00e6re nu letter 7 R",
+     "Popul\u00e6re nu letter 8 E",
+     "Popul\u00e6re nu letter 10 N",
+     "Popul\u00e6re nu letter 11 U"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 8,
+    "name": "Serier letters (red)",
+    "minutes": 47,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 19.0
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Serier letter 1 S",
+     "Serier letter 2 E",
+     "Serier letter 3 R",
+     "Serier letter 4 I",
+     "Serier letter 5 E",
+     "Serier letter 6 R"
+    ],
+    "warning": ""
+   },
+   {
+    "plate": 9,
+    "name": "Nyheder letters (red)",
+    "minutes": 59,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 25.4
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Nyheder letter 1 N",
+     "Nyheder letter 2 Y",
+     "Nyheder letter 3 H",
+     "Nyheder letter 4 E",
+     "Nyheder letter 5 D",
+     "Nyheder letter 6 E",
+     "Nyheder letter 7 R"
+    ],
+    "warning": ""
+   }
+  ],
+  "file": "streaming-lettering-subheadings-a2l.3mf"
  }
 ]
