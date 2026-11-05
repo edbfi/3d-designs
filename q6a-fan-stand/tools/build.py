@@ -460,8 +460,11 @@ def main():
     needed = sorted({p for v in variants for plate in PLATES[v.printer] for p in plate})
     log(f"exporting {', '.join(needed)} with build123d ({a.jobs} jobs)")
     with cf.ProcessPoolExecutor(a.jobs) as ex:
+        futs = [ex.submit(export_part, name) for name in needed]
         try:
-            bboxes = dict(ex.map(export_part, needed))
+            for f in cf.as_completed(futs):  # the first failure in time, not in submission order
+                f.result()
+            bboxes = dict(f.result() for f in futs)
         except BaseException as e:
             # the first failure stops the build: kill the exports in flight (the executor has no
             # public way to) rather than waiting for them and the rest of the queue

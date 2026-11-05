@@ -62,8 +62,8 @@ Each design has one source in one toolchain. Never keep the same geometry in two
   `CPUS=2` caps it lower on a fanless board.
 - Run one build at a time on a machine, and no `openscad` MCP renders while it runs: every
   container shares one memory budget.
-- Builds and MCP renders run memory-capped and time-limited, so a model whose geometry explodes
-  is killed instead of taking the machine down. A part that is killed or times out is a geometry
+- Builds and MCP renders run memory-capped, and OpenSCAD runs time-limited, so a model whose
+  geometry explodes is killed instead of taking the machine down. A part that is killed or times out is a geometry
   bug: after changing a model, export one part through the MCP, or build the smallest `--only`
   project, before a full build, and simplify the geometry. Don't raise `MEMORY` or the time
   limits to get past it.
