@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/svg/3d-designs-logo.svg" alt="3d-designs logo" width="256" height="256">
+  <img src="assets/svg/3d-designs-logo.svg" alt="3d-designs logo" width="160" height="160">
 </p>
 
 <h1 align="center">3d-designs</h1>
@@ -7,7 +7,7 @@
 <p align="center"><strong>Parametric 3D-print designs with ready-to-print Bambu Studio projects.</strong></p>
 
 <p align="center">
-  <a href="https://github.com/edbfi/3d-designs/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue?style=flat" alt="License: AGPL-3.0"></a>
+  <a href="https://github.com/edbfi/3d-designs/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0--or--later-blue?style=flat" alt="License: AGPL-3.0-or-later"></a>
   <a href="https://github.com/gumyr/build123d"><img src="https://img.shields.io/badge/build123d-227A6F?style=flat" alt="build123d"></a>
   <a href="https://github.com/openscad/openscad"><img src="https://img.shields.io/badge/OpenSCAD-F9D72C?style=flat" alt="OpenSCAD"></a>
   <a href="https://github.com/python/cpython" title="CPython implementation source"><img src="https://img.shields.io/badge/Python-3776AB?style=flat" alt="Python"></a>
@@ -60,4 +60,8 @@ Plates are named `[<GROUP> ]<part>[ <i> of <n>][ (<note>)]`, for example `SERIER
 
 ## Licence
 
-[AGPL-3.0](LICENSE), except bundled fonts, which keep their own licence (see each design's `fonts/`).
+Original code, models and print files in this repository are licensed under the
+[GNU Affero General Public License](LICENSE), version 3 or (at your option) any later version
+(`AGPL-3.0-or-later`). Bundled fonts keep their own licences (see each design's `fonts/`);
+the [streaming-lettering MakerWorld edition](streaming-lettering#licence-and-trademarks)
+also remains available under CC BY-SA 4.0.

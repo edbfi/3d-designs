@@ -78,6 +78,6 @@ The measurements and decisions behind the design are in [`docs/design-notes.md`]
 
 ## Licence and trademarks
 
-The model, build script and print files are [AGPL-3.0](../LICENSE).
+The model, build script and print files are [AGPL-3.0-or-later](../README.md#licence).
 
 This is an independent design. It isn't affiliated with or endorsed by Radxa or Noctua. Radxa, Dragon and Armor Case are Radxa's trademarks, and Noctua and NF-A8 are Noctua's. The case and board positions come from Radxa's published drawings; none of their files are included.

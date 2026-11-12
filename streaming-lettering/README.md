@@ -108,6 +108,6 @@ The reference wordmark uses a proprietary typeface, so this bends **Bebas Neue**
 
 ## Licence and trademarks
 
-The model, build script and print files are [AGPL-3.0](../LICENSE). The MakerWorld listing ("Streaming-style bent lettering (customizable)", a draft for now) offers the MakerWorld edition under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), the closest Creative Commons match to the AGPL's share-alike terms. The fonts in `fonts/` are under the SIL Open Font License 1.1 and belong to their authors (see the `OFL-*.txt` files).
+The model, build script and print files are [AGPL-3.0-or-later](../README.md#licence). The MakerWorld listing ("Streaming-style bent lettering (customizable)", a draft for now) offers the MakerWorld edition under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), the closest Creative Commons match to the AGPL's share-alike terms. The fonts in `fonts/` are under the SIL Open Font License 1.1 and belong to their authors (see the `OFL-*.txt` files).
 
 This is an independent design for a school library display. It is not affiliated with or endorsed by any streaming service, and it contains no third-party logos or artwork: the lettering is a free font bent to a similar shape.
