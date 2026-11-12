@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title description">
+  <title id="title">3d-designs</title>
+  <desc id="description">A layered teal cube with an orange caliper at its upper-right corner.</desc>
+  <rect x="8" y="8" width="240" height="240" rx="44" fill="#eaf4f5"/>
+  <g stroke="#164955" stroke-width="5" stroke-linejoin="round">
+    <path d="M52 88 120 50 188 88 120 126Z" fill="#70d2c4"/>
+    <path d="M52 88 120 126V204L52 166Z" fill="#319689"/>
+    <path d="m120 126 68-38v78l-68 38Z" fill="#155e64"/>
+  </g>
+  <g fill="none" stroke="#eaf4f5" stroke-width="4" stroke-linejoin="round">
+    <path d="m55 114 65 37 65-37"/>
+    <path d="m55 140 65 37 65-37"/>
+  </g>
+  <g fill="none" stroke="#a64b1a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M150 52V34h64v92"/>
+    <path d="M190 52h24m-24 50h24"/>
+  </g>
+  <path d="M206 65h8m-8 12h8m-8 12h8" fill="none" stroke="#a64b1a" stroke-width="3"/>
+</svg>
