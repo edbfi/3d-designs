@@ -26,7 +26,7 @@ One home per topic. Read it there, change it there, link to it from anywhere els
 Each design has one source in one toolchain. Never keep the same geometry in two.
 
 - **build123d with text-to-cad, by default.** Model with the `text-to-cad:cad` skill, fit against
-  real purchased parts (boards, fans, fasteners) found with `text-to-cad:step-parts`, and make
+  real purchased parts (boards, fans, fasteners) from [step.parts](https://step.parts), and make
   dimensioned drawings with `text-to-cad:engineering-drawing`. The MakerWorld listing gets the
   design's Bambu Studio projects and a STEP export.
 - **OpenSCAD only when the MakerWorld listing should be customisable**: something the person
@@ -34,8 +34,8 @@ Each design has one source in one toolchain. Never keep the same geometry in two
   Maker. The `.scad` is the source and the build generates its MakerWorld edition, as in
   `streaming-lettering`, whose design notes record MakerWorld's limits. Write and check it with
   the `openscad` MCP server.
-- Whichever toolchain made it, check the exported mesh with text-to-cad: `cad_show` opens an STL
-  or 3MF in the CAD Viewer, and `text-to-cad:dfam-check` measures overhangs and print orientations.
+- Whichever toolchain made it, check the exported mesh with `text-to-cad:cad`: it opens an STL or
+  3MF in the CAD Viewer and measures overhangs and print orientations.
 - text-to-cad and the `openscad` server are set up for this repo only, not per user: text-to-cad
   for Claude Code, the `openscad` server for Claude Code, Codex and OpenCode (Codex loads
   `.codex/config.toml` only once you trust the repo). If an agent lacks a tool it needs, say so:
@@ -45,8 +45,9 @@ Each design has one source in one toolchain. Never keep the same geometry in two
 
 - Design every part to print without supports in PLA and PETG: pick the print pose, keep
   overhangs within 45° of vertical (chamfers, teardrops), or split it into parts that fit together.
-  Measure the overhangs of new or reshaped parts in their print pose with
-  `text-to-cad:dfam-check` (`measure`, `orientations`); bridges and 0.2 mm stepped chamfers are fine.
+  Measure the overhangs of new or reshaped parts in their print pose with text-to-cad's printing
+  check (`cad stl dfm --process printing`, `--candidates` for orientations); bridges and 0.2 mm
+  stepped chamfers are fine.
 - If a support can't be avoided, use [Support Fins](https://github.com/gittrahan/support-fins)
   and nothing else: no slicer supports, no home-made fins. Run its CLI with bun
   (`bun support-fins.mjs`; it isn't on npm), pinned by commit or checksum in `tools/docker/`.
