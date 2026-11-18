@@ -10,7 +10,7 @@ WHITE = "#FAF5E8"  # one warm white spool for the flag, block print and counters
 GREEN = "#01411C"
 BOARD_HEIGHT = 6
 INLAY_DEPTH = 0.6
-MARK_WIDTH = 16
+MARK_MAX_SIDE = 16
 MARK_CENTER = (-77, -63)
 SCHOOL_MARK = Path(__file__).resolve().parent / "reference" / "school-mark.svg"
 
@@ -91,7 +91,8 @@ def school_mark(svg):
     if not faces or any(not isinstance(face, bd.Face) for face in faces):
         raise ValueError("Use an SVG containing filled paths for the school mark")
     profile = bd.Compound(children=list(faces))
-    profile = profile.scale(MARK_WIDTH / profile.bounding_box().size.X)
+    size = profile.bounding_box().size
+    profile = profile.scale(MARK_MAX_SIDE / max(size.X, size.Y))
     center = profile.bounding_box().center()
     x, y = MARK_CENTER
     return inlay(bd.Pos(x - center.X, y - center.Y) * profile, "School mark", GREEN)
