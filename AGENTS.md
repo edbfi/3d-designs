@@ -18,28 +18,32 @@ One home per topic. Read it there, change it there, link to it from anywhere els
 | The pinned build toolchain: OpenSCAD, build123d and Bambu Studio in Docker, shared by every design | [`tools/docker/`](tools/docker) |
 | OpenSCAD for the `openscad` MCP server | [`tools/openscad`](tools/openscad) |
 | Publishing a design's release | [`tools/release.sh`](tools/release.sh) |
-| Agent setup: the text-to-cad plugin for Claude Code; the `openscad` MCP server for Claude Code, Codex and OpenCode | [`.claude/settings.json`](.claude/settings.json), [`.mcp.json`](.mcp.json), [`.codex/config.toml`](.codex/config.toml), [`opencode.json`](opencode.json) |
+| Agent setup | [`skills-lock.json`](skills-lock.json), [`.claude/settings.json`](.claude/settings.json), [`.mcp.json`](.mcp.json), [`.codex/config.toml`](.codex/config.toml), [`opencode.json`](opencode.json) |
 | Worked examples of all of the above: OpenSCAD with a MakerWorld edition, and build123d | [`streaming-lettering/`](streaming-lettering), [`q6a-fan-stand/`](q6a-fan-stand) |
 
 ## Modelling
 
 Each design has one source in one toolchain. Never keep the same geometry in two.
 
-- **build123d with text-to-cad, by default.** Model with the `text-to-cad:cad` skill, fit against
+- **build123d with text-to-cad, by default.** Model with the `cad` skill, fit against
   real purchased parts (boards, fans, fasteners) from [step.parts](https://step.parts), and make
-  dimensioned drawings with `text-to-cad:engineering-drawing`. The MakerWorld listing gets the
+  dimensioned drawings with `engineering-drawing`. The MakerWorld listing gets the
   design's Bambu Studio projects and a STEP export.
 - **OpenSCAD only when the MakerWorld listing should be customisable**: something the person
   printing chooses, such as their own text, a name or a size, set in MakerWorld's Parametric Model
   Maker. The `.scad` is the source and the build generates its MakerWorld edition, as in
   `streaming-lettering`, whose design notes record MakerWorld's limits. Write and check it with
   the `openscad` MCP server.
-- Whichever toolchain made it, check the exported mesh with `text-to-cad:cad`: it opens an STL or
+- Whichever toolchain made it, check the exported mesh with the `cad` skill. It opens an STL or
   3MF in the CAD Viewer and measures overhangs and print orientations.
-- text-to-cad and the `openscad` server are set up for this repo only, not per user: text-to-cad
-  for Claude Code, the `openscad` server for Claude Code, Codex and OpenCode (Codex loads
-  `.codex/config.toml` only once you trust the repo). If an agent lacks a tool it needs, say so:
-  don't switch toolchains to work around it.
+- Claude Code gets the text-to-cad skills from its project plugin. For Codex, restore them from
+  the repo root with `bunx skills install --agent codex --frozen-lockfile`. Both use the
+  [text-to-cad CLI](https://github.com/earthtojake/text-to-cad/blob/main/docs/install.md).
+  `cad doctor --check` reports its setup, and `cad update --dry-run` previews updates to the
+  machine's runtime and agent plugins.
+- The `openscad` server is configured for Claude Code, Codex and OpenCode. Trust the repo in
+  Codex to load `.codex/config.toml`. If an agent lacks a tool it needs, say so and keep the
+  design's toolchain.
 
 ## Printing
 

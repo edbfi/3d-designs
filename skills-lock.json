@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "skills": {
+    "cad": {
+      "source": "earthtojake/text-to-cad",
+      "ref": "v0.11.11",
+      "commit": "f34aeafc99cf3b0b51e2f71caaffd7579756b887",
+      "sourceType": "github",
+      "skillPath": "skills/cad/SKILL.md",
+      "computedHash": "d401611a5ac67261064403c9bd96404621c3617175295fb904f64e3f59c6df67"
+    },
+    "engineering-drawing": {
+      "source": "earthtojake/text-to-cad",
+      "ref": "v0.11.11",
+      "commit": "f34aeafc99cf3b0b51e2f71caaffd7579756b887",
+      "sourceType": "github",
+      "skillPath": "skills/engineering-drawing/SKILL.md",
+      "computedHash": "66806f40ebb5a229be1e8416fb8b75f5362d179c2289a559f226689440b77618"
+    }
+  }
+}
