@@ -23,7 +23,7 @@ Start with an empty board. Take turns placing one counter on an empty ring until
 
 From this folder, run `../tools/docker/run.sh python3 tools/build.py --jobs 2` for the projects and assembled STEP. Run `cad run do-guti.py` to inspect the playing set in text-to-cad.
 
-For a school edition, put a filled vector outline in `reference/school-mark.svg` and add `--school` to the build command. The board carries the mark in the lower-right margin and the personalised projects and STEP go to `build/school/release/`. The CAD viewer picks up the local artwork when present.
+For a school edition, put a filled vector outline in `reference/school-mark.svg` and add `--school` to the build command. The board carries the mark in the lower-left margin and the personalised projects and STEP go to `build/school/release/`. The CAD viewer picks up the local artwork when present.
 
 ## MakerWorld and licence
 

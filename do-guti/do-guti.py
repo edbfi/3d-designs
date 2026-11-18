@@ -11,7 +11,7 @@ GREEN = "#01411C"
 BOARD_HEIGHT = 6
 INLAY_DEPTH = 0.6
 MARK_WIDTH = 16
-MARK_CENTER = (77, -63)
+MARK_CENTER = (-77, -63)
 SCHOOL_MARK = Path(__file__).resolve().parent / "reference" / "school-mark.svg"
 
 SITES = [(-73, 50), (73, 50), (-73, -39), (73, -39), (0, 3.5)]
