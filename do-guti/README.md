@@ -6,12 +6,12 @@ An Ajrak-inspired board for the two-player blocking game documented in Punjab. M
 
 ## What to print
 
-Open the projects from `build/release/` in Bambu Studio. Use a 0.4 mm nozzle, the textured PEI plate and the PLA Basic profiles saved in the projects. The top artwork prints flush. The pieces are loose and the set needs no assembly.
+Download the projects below and open them in Bambu Studio. Use a 0.4 mm nozzle, the textured PEI plate and the PLA Basic profiles saved in the projects. The top artwork prints flush. The pieces are loose and the set needs no assembly.
 
 | Printer | Project | Filament |
 |---|---|---|
-| A2L | `do-guti-board-a2l.3mf` | Map the four slots to indigo, madder red, warm white and flag green. |
-| A1 mini | `do-guti-counters-a1-mini.3mf` | Print the madder pair on the first plate and the white pair on the second. Each plate uses a single colour. |
+| A2L | [do-guti-board-a2l.3mf](https://github.com/edbfi/3d-designs/releases/download/do-guti-latest/do-guti-board-a2l.3mf) | Map the four slots to indigo, madder red, warm white and flag green. |
+| A1 mini | [do-guti-counters-a1-mini.3mf](https://github.com/edbfi/3d-designs/releases/download/do-guti-latest/do-guti-counters-a1-mini.3mf) | Print the madder pair on the first plate and the white pair on the second. Each plate uses a single colour. |
 
 For slicer estimates, see the [build summary](docs/build-summary.md).
 
