@@ -7,6 +7,10 @@ reference/
 # Local Claude Code settings
 .claude/settings.local.json
 
+# Repo-local skills restored from skills-lock.json
+/.agents/skills/cad/
+/.agents/skills/engineering-drawing/
+
 # Python
 __pycache__/
 *.pyc
