@@ -51,21 +51,23 @@
    "#283953",
    "#A24135",
    "#FAF5E8",
-   "#01411C"
+   "#01411C",
+   "#FAF5E8"
   ],
   "plates": [
    {
     "plate": 1,
     "name": "Board",
-    "minutes": 148,
-    "purge_g": 2.4,
+    "minutes": 151,
+    "purge_g": 2.7,
     "grams": {
      "1": 66.9,
      "2": 37.6,
-     "3": 2.7,
-     "4": 0.5
+     "3": 2.6,
+     "4": 0.5,
+     "5": 0.3
     },
-    "colour_changes": 10,
+    "colour_changes": 13,
     "objects": [
      "Ajrak board"
     ],

@@ -10,10 +10,12 @@ Download the projects below and open them in Bambu Studio. Use a 0.4 mm nozzle, 
 
 | Printer | Project | Filament |
 |---|---|---|
-| A2L | [do-guti-board-a2l.3mf](https://github.com/edbfi/3d-designs/releases/download/do-guti-latest/do-guti-board-a2l.3mf) | Map the four slots to indigo, madder red, warm white and flag green. |
+| A2L | [do-guti-board-a2l.3mf](https://github.com/edbfi/3d-designs/releases/download/do-guti-latest/do-guti-board-a2l.3mf) | Indigo, madder red, warm white and flag green. |
 | A1 mini | [do-guti-counters-a1-mini.3mf](https://github.com/edbfi/3d-designs/releases/download/do-guti-latest/do-guti-counters-a1-mini.3mf) | Print the madder pair on the first plate and the white pair on the second. Each plate uses a single colour. |
 
 For slicer estimates, see the [build summary](docs/build-summary.md).
+
+To recolour the flag, expand **Ajrak board** in Bambu Studio’s **Objects** list. Use **Change Filament** on `flag-field_1` for the background or `flag-devices_1` for the stripe, crescent and star. For the original palette with four active filaments, assign the flag details to the same warm white as the lettering and the school mark to the same green as the flag field.
 
 ## How to play
 

@@ -38,6 +38,7 @@ def export_mesh(shape, path):
 def make_project(product, build, mark, jobs):
     meshes = build / "stl"
     meshes.mkdir(parents=True, exist_ok=True)
+    extra_slots = {}
     if product == "board":
         bodies = design.board(mark)
         # The joined STL is also the one-body geometry for the printing DFM check.
@@ -45,7 +46,12 @@ def make_project(product, build, mark, jobs):
         if len(joined.solids()) != 1:
             raise ValueError("Board inlays must join the plate")
         export_mesh(joined, meshes / "board.stl")
-        palette = [design.INDIGO, design.MADDER, design.WHITE, design.GREEN]
+        # Separate project slots let each flag colour be edited without recolouring other artwork.
+        palette = [design.INDIGO, design.MADDER, design.WHITE, design.GREEN, design.WHITE]
+        extra_slots["Flag devices"] = 5
+        if mark is not None:
+            palette.append(design.GREEN)
+            extra_slots["School mark"] = 6
     else:
         bodies = [design.counter(True), design.counter(False)]
         palette = [design.MADDER, design.WHITE]
@@ -56,7 +62,7 @@ def make_project(product, build, mark, jobs):
         export_mesh(shape, path)
         rgb = tuple(shape.color)[:3]
         color = "#" + "".join(f"{round(channel * 255):02X}" for channel in rgb)
-        slot = palette.index(color) + 1
+        slot = extra_slots.get(name, palette.index(color) + 1)
         return bambu.Part(name, {}, slot, stl=path, bbox=bambu.stl_bbox(path))
 
     with ThreadPoolExecutor(max_workers=jobs) as pool:
