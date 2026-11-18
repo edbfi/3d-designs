@@ -1,77 +1,77 @@
 [
-  {
-    "key": "do-guti-counters-a1-mini",
-    "product": "counters",
-    "printer": "a1-mini",
-    "printer_label": "Bambu Lab A1 mini",
-    "filaments": [
-      "#A24135",
-      "#FAF5E8"
+ {
+  "key": "do-guti-counters-a1-mini",
+  "product": "counters",
+  "printer": "a1-mini",
+  "printer_label": "Bambu Lab A1 mini",
+  "filaments": [
+   "#A24135",
+   "#FAF5E8"
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Madder pair",
+    "minutes": 13,
+    "purge_g": 0.0,
+    "grams": {
+     "1": 2.5
+    },
+    "colour_changes": 0,
+    "objects": [
+     "One dimple",
+     "One dimple"
     ],
-    "plates": [
-      {
-        "plate": 1,
-        "name": "Madder pair",
-        "minutes": 13,
-        "purge_g": 0.0,
-        "grams": {
-          "1": 2.5
-        },
-        "colour_changes": 0,
-        "objects": [
-          "One dimple",
-          "One dimple"
-        ],
-        "warning": ""
-      },
-      {
-        "plate": 2,
-        "name": "White pair",
-        "minutes": 14,
-        "purge_g": 0.0,
-        "grams": {
-          "2": 2.6
-        },
-        "colour_changes": 0,
-        "objects": [
-          "Two dimples",
-          "Two dimples"
-        ],
-        "warning": ""
-      }
+    "warning": ""
+   },
+   {
+    "plate": 2,
+    "name": "White pair",
+    "minutes": 14,
+    "purge_g": 0.0,
+    "grams": {
+     "2": 2.6
+    },
+    "colour_changes": 0,
+    "objects": [
+     "Two dimples",
+     "Two dimples"
     ],
-    "file": "do-guti-counters-a1-mini.3mf"
-  },
-  {
-    "key": "do-guti-board-a2l",
-    "product": "board",
-    "printer": "a2l",
-    "printer_label": "Bambu Lab A2L",
-    "filaments": [
-      "#283953",
-      "#A24135",
-      "#FAF5E8",
-      "#01411C"
+    "warning": ""
+   }
+  ],
+  "file": "do-guti-counters-a1-mini.3mf"
+ },
+ {
+  "key": "do-guti-board-a2l",
+  "product": "board",
+  "printer": "a2l",
+  "printer_label": "Bambu Lab A2L",
+  "filaments": [
+   "#283953",
+   "#A24135",
+   "#FAF5E8",
+   "#01411C"
+  ],
+  "plates": [
+   {
+    "plate": 1,
+    "name": "Board",
+    "minutes": 148,
+    "purge_g": 2.4,
+    "grams": {
+     "1": 66.9,
+     "2": 37.6,
+     "3": 2.7,
+     "4": 0.5
+    },
+    "colour_changes": 10,
+    "objects": [
+     "Ajrak board"
     ],
-    "plates": [
-      {
-        "plate": 1,
-        "name": "Board",
-        "minutes": 148,
-        "purge_g": 2.4,
-        "grams": {
-          "1": 66.9,
-          "2": 37.6,
-          "3": 2.7,
-          "4": 0.5
-        },
-        "colour_changes": 10,
-        "objects": [
-          "Ajrak board"
-        ],
-        "warning": ""
-      }
-    ],
-    "file": "do-guti-board-a2l.3mf"
-  }
+    "warning": ""
+   }
+  ],
+  "file": "do-guti-board-a2l.3mf"
+ }
 ]
