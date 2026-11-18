@@ -21,6 +21,7 @@ My parametric 3D-print designs. Each one is a parametric source you can customis
 | Design | What it is | Path |
 |--------|------------|------|
 | Streaming-style lettering | Bent streaming-style lettering for a library display: a stand, a plaque, loose wall letters and two pinboard frames | [`streaming-lettering`](streaming-lettering) |
+| Do Guti | Ajrak-inspired Pakistani board game with four tactile counters | [`do-guti`](do-guti) |
 | Q6A fan stand | A stand that holds a Noctua NF-A8 80 mm fan over a Radxa Dragon Q6A in its Armor Case 7056A, with the 40-pin header free | [`q6a-fan-stand`](q6a-fan-stand) |
 
 ## Layout

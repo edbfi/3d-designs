@@ -497,11 +497,11 @@ def resolve_preset(kind, name):
     return out
 
 
-def flat_presets(v: Project):
+def flat_presets(v: Project, build_dir=BUILD):
     """Write fully resolved presets (the CLI does not resolve includes on its own)."""
     pr = PRINTERS[v.printer]
     colours = v.filaments
-    d = BUILD / "presets" / v.key
+    d = build_dir / "presets" / v.key
     d.mkdir(parents=True, exist_ok=True)
     machine = resolve_preset("machine", pr["machine"])
     process = resolve_preset("process", pr["process"])
@@ -822,15 +822,15 @@ def check_gcode(final: Path, layout):
     return problems
 
 
-def build_project(v: Project):
-    work = BUILD / "work" / v.key
+def build_project(v: Project, build_dir=BUILD, release_dir=RELEASE):
+    work = build_dir / "work" / v.key
     if work.exists():
         shutil.rmtree(work)
     work.mkdir(parents=True)
     layout = pack(v)
     asm = assemble_json(v, layout)
     (work / "assemble.json").write_text(json.dumps(asm, indent=1))
-    machine, process, fils = flat_presets(v)
+    machine, process, fils = flat_presets(v, build_dir)
     settings = f"{machine};{process}"
     filaments = ";".join(str(f) for f in fils)
 
@@ -860,8 +860,8 @@ def build_project(v: Project):
 
     # Ship the checked project unsliced: MakerWorld and Bambu Studio slice it for the printer
     # they print on, and the G-code would be most of the file.
-    RELEASE.mkdir(parents=True, exist_ok=True)
-    shutil.copy(work / "project.3mf", RELEASE / f"{v.key}.3mf")
+    release_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy(work / "project.3mf", release_dir / f"{v.key}.3mf")
 
     plates = []
     stats = plate_stats(final)
