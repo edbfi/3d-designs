@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Build ready-to-print Bambu Studio projects for the streaming-style lettering.
 
+The Do Guti build also imports the Bambu project pipeline and its printer presets.
+
 For every product x printer this script
   1. exports the print parts from streaming-lettering.scad with OpenSCAD, and checks each mesh
      is a closed solid with no stray slivers,

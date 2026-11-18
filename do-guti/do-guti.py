@@ -114,6 +114,7 @@ def board(mark=None):
 
 
 def counter(single):
+    # (height, radius): the first millimetre flares at 45 degrees for a support-free foot.
     sections = [(0, 9), (1, 10), (4.8, 10), (7, 8.5), (8, 6.4)]
     faces = [bd.Pos(0, 0, z) * bd.RegularPolygon(r, 8 if single else 12) for z, r in sections]
     body = bd.loft(faces, ruled=True)
